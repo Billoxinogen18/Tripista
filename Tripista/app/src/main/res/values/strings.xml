@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Tripista</string>
+    <string name="hint_user_name">user name</string>
+    <string name="hint_phone_number">phone number</string>
+    <string name="hint_password">password</string>
+    <string name="hint_confirm_password">confirm password</string>
+    <string name="signup_activity_name">sign up</string>
 </resources>
