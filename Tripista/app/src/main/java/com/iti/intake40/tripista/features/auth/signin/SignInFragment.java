@@ -17,12 +17,10 @@ import com.iti.intake40.tripista.core.FireBaseCore;
 import com.iti.intake40.tripista.features.auth.Delegate;
 
 
-public class SignInFragment extends Fragment implements ViewInterface {
+public class SignInFragment extends Fragment  {
     FloatingActionButton nextBtn;
     TextInputEditText etEmailPhone;
     String inputData;
-    FireBaseCore core;
-    PresenterInterface presenterInterface;
     Delegate delegate;
     public SignInFragment() {
         // Required empty public constructor
@@ -32,9 +30,6 @@ public class SignInFragment extends Fragment implements ViewInterface {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        presenterInterface = new SigninPresenter(this,core);
-
-
     }
 
     @Override
@@ -42,7 +37,6 @@ public class SignInFragment extends Fragment implements ViewInterface {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_sign_in, container, false);
-        core = FireBaseCore.getInstance();
         etEmailPhone =view.findViewById(R.id.et_user_email_phone);
         nextBtn = view.findViewById(R.id.next_button);
         nextBtn.setOnClickListener(new View.OnClickListener() {
@@ -87,19 +81,6 @@ public class SignInFragment extends Fragment implements ViewInterface {
             }
         }
     }
-    @Override
-    public void sentMessage(int message) {
 
-    }
-
-    @Override
-    public void sentError(int message) {
-
-    }
-
-    @Override
-    public void changeFragment() {
-
-    }
 
 }

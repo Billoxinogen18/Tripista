@@ -10,25 +10,10 @@ public interface SignupContract {
     void changeActivity();
 }
 interface PresenterInterface extends SignupContract{
-    @Override
-    void sentMessage(int message);
-
-    @Override
-    void sentError(int message);
-
-    @Override
-    void changeActivity();
 
     void signup(UserModel model);
 }
 
 interface ViewInterface extends SignupContract {
-    @Override
-    void sentMessage(int message);
 
-    @Override
-    void sentError(int message);
-
-    @Override
-    void changeActivity();
 }

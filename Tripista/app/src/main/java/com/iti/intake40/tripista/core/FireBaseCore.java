@@ -19,8 +19,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.iti.intake40.tripista.R;
-import com.iti.intake40.tripista.features.auth.signin.SigninContract;
-import com.iti.intake40.tripista.features.auth.signup.SignupContract;
+import com.iti.intake40.tripista.features.auth.signin.SigninPresenter;
 import com.iti.intake40.tripista.features.auth.signup.SignupPresenter;
 
 import static androidx.constraintlayout.widget.Constraints.TAG;
@@ -52,11 +51,7 @@ public class FireBaseCore {
         }
         return core;
     }
-    //**************************
-    //shrouq
 
-    //**************************
-    //mahmoud
     public void addUserData(UserModel model) {
         DatabaseReference profilePath = rootDB.child("users").child("profile").child(id);
         profilePath.setValue(model);
@@ -139,15 +134,22 @@ public class FireBaseCore {
         });
     }
 
-    private void signInWithEmailAndPassword(String emailAddress, String password) {
-
+    public void signInWithEmailAndPassword(String emailAddress, String password , final SigninPresenter signinPresenter) {
+        this.signinPresenter =signupPresenter;
         auth.signInWithEmailAndPassword(emailAddress, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
                     currentUser = auth.getCurrentUser();
                     id = currentUser.getUid();
-                    signinPresenter.sentMessage(R.string.logged_in_successfuly);
+                    if(isCheckedEmailVerfication()) {
+
+                        signinPresenter.sentMessage(R.string.logged_in_successfuly);
+                    }
+                    else
+                    {
+                        signinPresenter.sentError(R.string.verfy_error);
+                    }
 
                 } else {
                     signinPresenter.sentError(R.string.login_failed);
@@ -156,6 +158,9 @@ public class FireBaseCore {
         });
 
 
+    }
+    private boolean isCheckedEmailVerfication() {
+        return auth.getCurrentUser().isEmailVerified();
     }
 
 }
