@@ -7,10 +7,13 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.facebook.AccessToken;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -20,6 +23,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.iti.intake40.tripista.R;
 import com.iti.intake40.tripista.features.auth.signin.SigninContract;
+import com.iti.intake40.tripista.features.auth.signin.SigninPresenter;
 import com.iti.intake40.tripista.features.auth.signup.SignupContract;
 import com.iti.intake40.tripista.features.auth.signup.SignupPresenter;
 
@@ -31,8 +35,9 @@ public class FireBaseCore {
     private FirebaseUser currentUser;
     private FirebaseDatabase database;
     private FirebaseAuth auth;
-    private SignupPresenter signinPresenter;
-    private  SignupPresenter signupPresenter;
+    private SigninPresenter signinPresenter;
+    private SignupPresenter signupPresenter;
+    private AuthCredential credential;
     private String id;
     //make singletone class
     public static FireBaseCore core;
@@ -43,6 +48,7 @@ public class FireBaseCore {
         database.setPersistenceEnabled(true);
         rootDB = database.getInstance().getReference().child("tripista");
         rootStorage = FirebaseStorage.getInstance().getReference().child("tripista");
+        currentUser = auth.getCurrentUser();
     }
 
     public static FireBaseCore getInstance() {
@@ -155,7 +161,32 @@ public class FireBaseCore {
             }
         });
 
-
     }
 
+    //sign in with facebook
+    public FirebaseUser signInWithFaceBook(AccessToken token) {
+        credential = FacebookAuthProvider.getCredential(token.getToken());
+        auth.signInWithCredential(credential).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    // Sign in success, update UI with the signed-in user's information
+                    Log.d(TAG, "signInWithCredential:success");
+                    currentUser = auth.getCurrentUser();
+                } else {
+                    // If sign in fails, display a message to the user.
+                    currentUser = null;
+                    //TODO add to res strings
+                    //signinPresenter.sentError("auth failed");
+                    //updateUI(null);
+                }
+            }
+        });
+
+        return currentUser;
+    }
+
+    public FirebaseUser getCurrentUser() {
+        return currentUser;
+    }
 }

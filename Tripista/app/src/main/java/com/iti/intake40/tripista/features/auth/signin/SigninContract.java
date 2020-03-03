@@ -1,5 +1,7 @@
 package com.iti.intake40.tripista.features.auth.signin;
 
+import com.facebook.AccessToken;
+import com.google.firebase.auth.FirebaseUser;
 import com.iti.intake40.tripista.core.UserModel;
 
 public interface SigninContract {
@@ -20,10 +22,14 @@ interface PresenterInterface  extends  SigninContract{
     void changeFragment();
 
     void signIn(UserModel model);
+    void signinWithFacebook(FirebaseUser user);
+
+    FirebaseUser getFacebookUser(AccessToken token);
 
 }
 
 interface ViewInterface extends SigninContract{
+
     @Override
     void sentMessage(int message);
 

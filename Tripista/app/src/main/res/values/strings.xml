@@ -1,4 +1,10 @@
 <resources>
+
+    <!--  strings for Facebook Auth -->
+    <string name="facebook_app_id">654784595275405</string>
+    <string name="fb_login_protocol_scheme">fb654784595275405</string>
+
+
     <string name="app_name">Tripista</string>
     <string name="hint_user_name">user name</string>
     <string name="hint_phone_number">phone number</string>
@@ -32,7 +38,7 @@
     <string name="menu_slideshow">Slideshow</string>
 
     <string name="home_second">Home Second</string>
-    
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
