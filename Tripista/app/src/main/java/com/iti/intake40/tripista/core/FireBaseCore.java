@@ -58,7 +58,7 @@ public class FireBaseCore {
     //**************************
     //mahmoud
     public void addUserData(UserModel model) {
-        DatabaseReference profilePath = rootDB.child("users").child("profile").child("123");
+        DatabaseReference profilePath = rootDB.child("users").child("profile").child(id);
         profilePath.setValue(model);
         profilePath = rootDB.child("users").child("profile").child(model.getPhone());
         profilePath.setValue(id).addOnCompleteListener(new OnCompleteListener<Void>() {
