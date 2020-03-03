@@ -14,8 +14,10 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.iti.intake40.tripista.R;
 import com.iti.intake40.tripista.core.FireBaseCore;
+import com.iti.intake40.tripista.features.auth.Delegate;
 
-public class SigninActivity extends AppCompatActivity  {
+public class SigninActivity extends AppCompatActivity implements Delegate {
+    public final static String EMAIL_ARG="Email";
     FragmentManager mgr;
     Fragment signIn;
     FragmentTransaction trns;
@@ -28,14 +30,21 @@ public class SigninActivity extends AppCompatActivity  {
         signIn = new SignInFragment();
         trns.replace(R.id.container, signIn, "signFragment");
         trns.commit();
-
         /*remon
 
          */
-
     }
 
 
-
-
+    @Override
+    public void setData(String data) {
+        Bundle bundle = new Bundle();
+        bundle.putString(EMAIL_ARG,data);
+       // set Fragmentclass Arguments
+        PasswordFragment passwordFragment = new PasswordFragment();
+        passwordFragment.setArguments(bundle);
+        trns = mgr.beginTransaction();
+        trns.replace(R.id.container, passwordFragment, "passwordFragment");
+        trns.commit();
+    }
 }

@@ -14,6 +14,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.iti.intake40.tripista.R;
 import com.iti.intake40.tripista.core.FireBaseCore;
+import com.iti.intake40.tripista.features.auth.Delegate;
 
 
 public class SignInFragment extends Fragment implements ViewInterface {
@@ -22,6 +23,7 @@ public class SignInFragment extends Fragment implements ViewInterface {
     String inputData;
     FireBaseCore core;
     PresenterInterface presenterInterface;
+    Delegate delegate;
     public SignInFragment() {
         // Required empty public constructor
     }
@@ -69,7 +71,10 @@ public class SignInFragment extends Fragment implements ViewInterface {
         {
             if(isEmailValid(inputData))
             {
+                delegate =(Delegate) getActivity();
                 Toast.makeText(getActivity(),"email",Toast.LENGTH_LONG).show();
+                delegate.setData(inputData);
+
             }
             else if (isPhoneValid(inputData))
             {
