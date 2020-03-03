@@ -5,4 +5,17 @@
     <string name="hint_password">password</string>
     <string name="hint_confirm_password">confirm password</string>
     <string name="signup_activity_name">sign up</string>
+    <string name="hint_user_email">email</string>
+    <string name="signup_email_alread_exust">email already exist</string>
+    <string name="signup_email_linke_sent">link sent to email</string>
+    <string name="signup_email_linke_not_sent">email don`t sent</string>
+    <string name="error_on_send_verify">cant send Verficatio on this mail</string>
+    <string name="saved_in_fire_base">saved successfully</string>
+    <string name="hint_user_email_phone">enter your email or phone</string>
+    <string name="txt_forget_password">forget password</string>
+    <string name="txt_or">OR</string>
+    <string name="next">next</string>
+    <string name="txt_have_account">already have account?</string>
+    <string name="logged_in_successfuly">Logged in successfully</string>
+    <string name="login_failed">wrong email or password</string>
 </resources>

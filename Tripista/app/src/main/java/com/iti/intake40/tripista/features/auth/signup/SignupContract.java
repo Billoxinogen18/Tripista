@@ -1,15 +1,15 @@
-package com.iti.intake40.tripista.features.auth.signin;
+package com.iti.intake40.tripista.features.auth.signup;
 
 import com.iti.intake40.tripista.core.UserModel;
 
-public interface SigninContract {
+public interface SignupContract {
     void sentMessage(int message);
 
     void sentError(int message);
 
-    void changeFragment();
+    void changeActivity();
 }
-interface PresenterInterface  extends  SigninContract{
+interface PresenterInterface extends SignupContract{
     @Override
     void sentMessage(int message);
 
@@ -17,13 +17,12 @@ interface PresenterInterface  extends  SigninContract{
     void sentError(int message);
 
     @Override
-    void changeFragment();
+    void changeActivity();
 
-    void signIn(UserModel model);
-
+    void signup(UserModel model);
 }
 
-interface ViewInterface extends SigninContract{
+interface ViewInterface extends SignupContract {
     @Override
     void sentMessage(int message);
 
@@ -31,5 +30,5 @@ interface ViewInterface extends SigninContract{
     void sentError(int message);
 
     @Override
-    void changeFragment();
+    void changeActivity();
 }

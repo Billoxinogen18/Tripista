@@ -15,19 +15,23 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.iti.intake40.tripista.R;
 import com.iti.intake40.tripista.core.FireBaseCore;
 import com.iti.intake40.tripista.core.UserModel;
+import com.iti.intake40.tripista.features.auth.signin.SigninActivity;
 import com.theartofdev.edmodo.cropper.CropImage;
 
-public class SignUp extends AppCompatActivity {
+public class SignUp extends AppCompatActivity implements ViewInterface {
     private Uri imageUri;
     private TextInputEditText etUserName;
     private TextInputEditText etPasword;
     private TextInputEditText etRePassword;
     private TextInputEditText etPhoneNumber;
+    private TextInputEditText etEmail;
+    private  PresenterInterface presenterInterface;
     ImageView profileImage;
     String userName;
     String phoneNumber;
     String password;
     String repassword;
+    String email;
     UserModel model;
     FireBaseCore core;
 
@@ -41,6 +45,7 @@ public class SignUp extends AppCompatActivity {
         etPasword = findViewById(R.id.et_password);
         etRePassword = findViewById(R.id.et_confirm_password);
         etPhoneNumber = findViewById(R.id.et_phone_number);
+        etEmail = findViewById(R.id.et_user_email);
         core = FireBaseCore.getInstance();
         model = new UserModel();
     }
@@ -51,18 +56,17 @@ public class SignUp extends AppCompatActivity {
         phoneNumber = etPhoneNumber.getText().toString();
         password = etPasword.getText().toString();
         repassword = etRePassword.getText().toString();
-        if (!TextUtils.isEmpty(userName) && !TextUtils.isEmpty(phoneNumber) && !TextUtils.isEmpty(password) && !TextUtils.isEmpty(repassword)) {
-            if (imageUri != null) {
+        email = etEmail.getText().toString();
+        if (!TextUtils.isEmpty(userName) &&  !TextUtils.isEmpty(email) &&!TextUtils.isEmpty(phoneNumber) && !TextUtils.isEmpty(password) && !TextUtils.isEmpty(repassword)) {
                model.setName(userName);
                model.setPhone(phoneNumber);
                model.setPassWord(password);
-               core.addUserWithImage(model,this,imageUri);
-            } else {
-                core.addUserData(model,this);
-            }
+               model.setImageUrl(imageUri.toString());
+               model.setEmail(email);
+               presenterInterface.signup(model);
         }
     }
-//get image from galary
+   //get image from galary
     public void getImgFromGalory(View view) {
         CropImage.activity(imageUri)
                 .setAspectRatio(1, 1)
@@ -81,4 +85,31 @@ public class SignUp extends AppCompatActivity {
 
         }
     }
+
+    @Override
+    public void sentMessage(int message) {
+        Toast.makeText(this,getResources().getString(message),Toast.LENGTH_LONG).show();
+
+    }
+
+    @Override
+    public void sentError(int message) {
+        Toast.makeText(this,getResources().getString(message),Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void changeActivity() {
+        Intent goSignIn = new Intent(this, SigninActivity.class);
+        goSignIn.putExtra("email",email);
+        goSignIn.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(goSignIn);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        presenterInterface = new SignupPresenter(this,core);
+    }
+
+
 }
