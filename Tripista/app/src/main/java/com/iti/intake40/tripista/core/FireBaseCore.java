@@ -4,13 +4,16 @@ package com.iti.intake40.tripista.core;
 import android.net.Uri;
 import android.util.Log;
 
-
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
 
+import com.facebook.AccessToken;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -31,7 +34,7 @@ public class FireBaseCore {
     private FirebaseDatabase database;
     private FirebaseAuth auth;
     private SignupPresenter signinPresenter;
-    private  SignupPresenter signupPresenter;
+    private SignupPresenter signupPresenter;
     private String id;
     //make singletone class
     public static FireBaseCore core;
@@ -134,20 +137,18 @@ public class FireBaseCore {
         });
     }
 
-    public void signInWithEmailAndPassword(String emailAddress, String password , final SigninPresenter signinPresenter) {
-        this.signinPresenter =signupPresenter;
+    public void signInWithEmailAndPassword(String emailAddress, String password, final SigninPresenter signinPresenter) {
+        this.signinPresenter = signupPresenter;
         auth.signInWithEmailAndPassword(emailAddress, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
                     currentUser = auth.getCurrentUser();
                     id = currentUser.getUid();
-                    if(isCheckedEmailVerfication()) {
+                    if (isCheckedEmailVerfication()) {
 
                         signinPresenter.sentMessage(R.string.logged_in_successfuly);
-                    }
-                    else
-                    {
+                    } else {
                         signinPresenter.sentError(R.string.verfy_error);
                     }
 
@@ -159,8 +160,35 @@ public class FireBaseCore {
 
 
     }
+
     private boolean isCheckedEmailVerfication() {
         return auth.getCurrentUser().isEmailVerified();
+    }
+
+    public void handleFacebookAccessToken(AccessToken token, FragmentActivity signinActivity) {
+        Log.d(TAG, "handleFacebookAccessToken: " + token);
+        final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
+
+        firebaseAuth.signInWithCredential(credential)
+                .addOnCompleteListener(signinActivity, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d(TAG, "signInWithCredential:success");
+                            FirebaseUser user = firebaseAuth.getCurrentUser();
+
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w(TAG, "signInWithCredential:failure", task.getException());
+                            //login.sentError(R.string.signin_failed);
+
+
+                        }
+                    }
+                });
     }
 
 }

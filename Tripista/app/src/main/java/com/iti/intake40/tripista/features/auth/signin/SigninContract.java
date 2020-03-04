@@ -16,7 +16,7 @@ interface PresenterInterface extends SigninContract {
 
     void signIn(String email, String password);
 
-    public void handleFacebookAccessToken(AccessToken token);
+    public void handleFacebookSignin(AccessToken accessToken);
 
 }
 
