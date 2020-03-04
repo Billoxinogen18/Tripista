@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.auth.FirebaseUser;
 import com.iti.intake40.tripista.R;
 import com.iti.intake40.tripista.core.FireBaseCore;
 
@@ -72,7 +73,8 @@ public class PasswordFragment extends Fragment implements ViewInterface {
     }
 
     @Override
-    public void changeFragment() {
+    public void changeFragment(FirebaseUser user) {
 
     }
+
 }

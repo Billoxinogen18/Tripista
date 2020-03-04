@@ -20,6 +20,8 @@ import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.iti.intake40.tripista.R;
 import com.iti.intake40.tripista.core.FireBaseCore;
 import com.iti.intake40.tripista.features.auth.Delegate;
@@ -51,6 +53,12 @@ public class SignInFragment extends Fragment implements ViewInterface {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
     }
 
     @Override
@@ -151,9 +159,13 @@ public class SignInFragment extends Fragment implements ViewInterface {
     }
 
     @Override
-    public void changeFragment() {
+    public void changeFragment(FirebaseUser user) {
         //update UI when login successful
         //go to home
-        
+
+        Intent gotoHomeIntent = new Intent(getContext(), HomeActivity.class);
+        gotoHomeIntent.putExtra("user", user);
+        startActivity(gotoHomeIntent);
+
     }
 }

@@ -33,7 +33,7 @@ public class FireBaseCore {
     private FirebaseUser currentUser;
     private FirebaseDatabase database;
     private FirebaseAuth auth;
-    private SignupPresenter signinPresenter;
+    private SigninPresenter signinPresenter;
     private SignupPresenter signupPresenter;
     private String id;
     //make singletone class
@@ -138,7 +138,7 @@ public class FireBaseCore {
     }
 
     public void signInWithEmailAndPassword(String emailAddress, String password, final SigninPresenter signinPresenter) {
-        this.signinPresenter = signupPresenter;
+        this.signinPresenter = signinPresenter;
         auth.signInWithEmailAndPassword(emailAddress, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
@@ -165,7 +165,7 @@ public class FireBaseCore {
         return auth.getCurrentUser().isEmailVerified();
     }
 
-    public void handleFacebookAccessToken(AccessToken token, FragmentActivity signinActivity) {
+    public void handleFacebookAccessToken(AccessToken token, FragmentActivity signinActivity, final SigninPresenter signinPresenter) {
         Log.d(TAG, "handleFacebookAccessToken: " + token);
         final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
@@ -179,6 +179,7 @@ public class FireBaseCore {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = firebaseAuth.getCurrentUser();
+                            signinPresenter.changeFragment(user);
 
                         } else {
                             // If sign in fails, display a message to the user.

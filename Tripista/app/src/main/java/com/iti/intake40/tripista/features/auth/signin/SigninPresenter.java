@@ -4,6 +4,7 @@ package com.iti.intake40.tripista.features.auth.signin;
 import androidx.fragment.app.FragmentActivity;
 
 import com.facebook.AccessToken;
+import com.google.firebase.auth.FirebaseUser;
 import com.iti.intake40.tripista.core.FireBaseCore;
 
 
@@ -36,8 +37,8 @@ public class SigninPresenter implements PresenterInterface {
     }
 
     @Override
-    public void changeFragment() {
-        login.changeFragment();
+    public void changeFragment(FirebaseUser user) {
+        login.changeFragment(user);
     }
 
     @Override
@@ -46,7 +47,7 @@ public class SigninPresenter implements PresenterInterface {
     }
 
     public void handleFacebookSignin(AccessToken accessToken) {
-        core.handleFacebookAccessToken(accessToken, signinActivity);
+        core.handleFacebookAccessToken(accessToken, signinActivity, this);
     }
 
 }
