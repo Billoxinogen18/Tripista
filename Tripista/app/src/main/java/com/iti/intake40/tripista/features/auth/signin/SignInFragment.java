@@ -3,15 +3,22 @@ package com.iti.intake40.tripista.features.auth.signin;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.iti.intake40.tripista.R;
@@ -19,12 +26,21 @@ import com.iti.intake40.tripista.features.auth.Delegate;
 import com.iti.intake40.tripista.features.auth.signup.SignUp;
 
 
-public class SignInFragment extends Fragment {
+public class SignInFragment extends Fragment implements ViewInterface {
+
+    private static final String TAG = "signinFragment";
+
     private FloatingActionButton nextBtn;
     private TextInputEditText etEmailPhone;
     private String inputData;
     private Delegate delegate;
     private TextView signupLink;
+
+    private SigninPresenter signinPresenter;
+
+    //facebook auth
+    private LoginButton loginButton;
+    private CallbackManager callbackManager;
 
     public SignInFragment() {
         // Required empty public constructor
@@ -56,6 +72,31 @@ public class SignInFragment extends Fragment {
                 gotoSignUpActivity();
             }
         });
+
+        signinPresenter = new SigninPresenter(getActivity());
+
+        loginButton = view.findViewById(R.id.login_button);
+        callbackManager = CallbackManager.Factory.create();
+
+        loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                Log.d(TAG, "onSuccess: ");
+                signinPresenter.handleFacebookAccessToken(loginResult.getAccessToken());
+
+            }
+
+            @Override
+            public void onCancel() {
+                Log.d(TAG, "onCancel: ");
+            }
+
+            @Override
+            public void onError(FacebookException error) {
+                Log.d(TAG, "onError: ");
+            }
+        });
+
         return view;
     }
 
@@ -92,5 +133,25 @@ public class SignInFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        callbackManager.onActivityResult(requestCode, resultCode, data);
+    }
 
+    @Override
+    public void sentMessage(int message) {
+
+    }
+
+    @Override
+    public void sentError(int message) {
+
+    }
+
+    @Override
+    public void changeFragment() {
+        //update UI when login successful
+        //go to home
+    }
 }

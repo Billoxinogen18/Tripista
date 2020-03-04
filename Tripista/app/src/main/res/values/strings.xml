@@ -19,21 +19,10 @@
     <string name="logged_in_successfuly">Logged in successfully</string>
     <string name="login_failed">wrong email or password</string>
 
-    <string name="title_activity_home">HomeActivity</string>
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
-    <string name="nav_header_desc">Navigation header</string>
-    <string name="action_settings">Settings</string>
-
-    <string name="menu_home">Home</string>
-    <string name="menu_gallery">Gallery</string>
-    <string name="menu_slideshow">Slideshow</string>
-
-    <string name="home_second">Home Second</string>
-    
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="verfy_error">this email is not verfiy</string>
+    <string name="signin_failed">Sign in failed</string>
+    <!-- Facebook Strings-->
+    <string name="facebook_app_id">654784595275405</string>
+    <string name="fb_login_protocol_scheme">fb654784595275405</string>
+
 </resources>
