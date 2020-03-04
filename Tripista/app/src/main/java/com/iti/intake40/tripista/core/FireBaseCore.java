@@ -179,7 +179,8 @@ public class FireBaseCore {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = firebaseAuth.getCurrentUser();
-                            signinPresenter.changeFragment(user);
+                            //TODO enable this later
+                            //signinPresenter.changeFragment(user);
 
                         } else {
                             // If sign in fails, display a message to the user.

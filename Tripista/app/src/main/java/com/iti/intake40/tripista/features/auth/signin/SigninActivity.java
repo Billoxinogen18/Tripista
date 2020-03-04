@@ -25,19 +25,20 @@ public class SigninActivity extends AppCompatActivity implements Delegate {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
 
+        /*
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = firebaseAuth.getCurrentUser();
         if (currentUser != null) {
             Intent gotoHomeIntent = new Intent(SigninActivity.this, HomeActivity.class);
             gotoHomeIntent.putExtra("user", currentUser);
             startActivity(gotoHomeIntent);
-        } else {
+        } else {*/
             mgr = getSupportFragmentManager();
             trns = mgr.beginTransaction();
             signIn = new SignInFragment();
             trns.replace(R.id.container, signIn, "signFragment");
             trns.commit();
-        }
+
         /*remon
 
          */
