@@ -6,10 +6,13 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -17,15 +20,19 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.facebook.Profile;
+import com.facebook.login.LoginManager;
 import com.facebook.login.widget.ProfilePictureView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.iti.intake40.tripista.HistoryFragment;
 import com.iti.intake40.tripista.R;
+import com.iti.intake40.tripista.UpcommingFragment;
+import com.iti.intake40.tripista.features.auth.signin.SignInFragment;
 
 import java.net.URL;
 
-public class HomeActivity extends AppCompatActivity {
+public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final String TAG = "Home";
     private Toolbar toolbar;
@@ -47,6 +54,7 @@ public class HomeActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
         header = navigationView.getHeaderView(0);
         drawerLayout = findViewById(R.id.drawer_layout);
         //imageView = header.findViewById(R.id.nav_header_image);
@@ -77,5 +85,33 @@ public class HomeActivity extends AppCompatActivity {
         } else {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        switch (menuItem.getItemId()) {
+            case R.id.nav_upcomming:
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                        new UpcommingFragment()).commit();
+                break;
+            case R.id.nav_history:
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                        new HistoryFragment()).commit();
+                break;
+
+            case R.id.nav_sync:
+                Toast.makeText(this, "syncing", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.nav_logout:
+                //log the user out
+                //go to signin screen
+                firebaseAuth.signOut();
+                LoginManager.getInstance().logOut();
+                Intent signoutIntent = new Intent(this, SignInFragment.class);
+                startActivity(signoutIntent);
+                finish();
+                break;
+        }
+        return true;
     }
 }
