@@ -4,22 +4,21 @@ import com.facebook.AccessToken;
 import com.google.firebase.auth.FirebaseUser;
 
 public interface SigninContract {
-    void sentMessage(int message);
+    interface PresenterInterface {
+        void replyByMessage(int message);
+        void replyByError(int message);
+        void replayByChangeFragment(FirebaseUser user);
+        void signIn(String email, String password);
+        void handleFacebookSignin(AccessToken accessToken);
+        void signInWithMobile (String phone);
 
-    void sentError(int message);
+    }
 
-    void changeFragment(FirebaseUser user);
+    interface ViewInterface  {
+        void sentMessage(int message);
+        void sentError(int message);
+        void changeFragment(FirebaseUser user);
+    }
 }
 
-interface PresenterInterface extends SigninContract {
 
-
-    void signIn(String email, String password);
-
-    public void handleFacebookSignin(AccessToken accessToken);
-
-}
-
-interface ViewInterface extends SigninContract {
-
-}

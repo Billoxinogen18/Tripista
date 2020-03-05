@@ -3,17 +3,24 @@ package com.iti.intake40.tripista.features.auth.signup;
 import com.iti.intake40.tripista.core.UserModel;
 
 public interface SignupContract {
-    void sentMessage(int message);
+    interface PresenterInterface {
 
-    void sentError(int message);
+        void signup(UserModel model);
 
-    void changeActivity();
+        void replyByMessage(int message);
+
+        void replyByError(int message);
+
+        void replayByChangeActivity();
+    }
+
+    interface ViewInterface {
+        void sentMessage(int message);
+
+        void sentError(int message);
+
+        void changeActivity();
+    }
+
 }
-interface PresenterInterface extends SignupContract{
 
-    void signup(UserModel model);
-}
-
-interface ViewInterface extends SignupContract {
-
-}

@@ -25,4 +25,10 @@
     <string name="facebook_app_id">654784595275405</string>
     <string name="fb_login_protocol_scheme">fb654784595275405</string>
 
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="hint_verfy_code">code</string>
+    <string name="phone_verified">Phone Verfied</string>
+    <string name="phone_wrong">phone can`t verfied</string>
+
 </resources>

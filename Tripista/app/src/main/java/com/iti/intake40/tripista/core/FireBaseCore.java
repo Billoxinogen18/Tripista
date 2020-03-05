@@ -16,6 +16,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -24,6 +25,7 @@ import com.google.firebase.storage.StorageTask;
 import com.iti.intake40.tripista.R;
 import com.iti.intake40.tripista.features.auth.signin.SigninPresenter;
 import com.iti.intake40.tripista.features.auth.signup.SignupPresenter;
+
 
 import static androidx.constraintlayout.widget.Constraints.TAG;
 
@@ -36,6 +38,7 @@ public class FireBaseCore {
     private SigninPresenter signinPresenter;
     private SignupPresenter signupPresenter;
     private String id;
+    private String  verificationId;
     //make singletone class
     public static FireBaseCore core;
 
@@ -63,8 +66,8 @@ public class FireBaseCore {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
-                    signupPresenter.sentMessage(R.string.saved_in_fire_base);
-                    signupPresenter.changeActivity();
+                    signupPresenter.replyByMessage(R.string.saved_in_fire_base);
+                    signupPresenter.replayByChangeActivity();
 
                 }
             }
@@ -94,7 +97,7 @@ public class FireBaseCore {
                     profilePath.setValue(model);
                     profilePath = rootDB.child("users").child("profile").child(model.getPhone());
                     profilePath.setValue(id);
-                    signupPresenter.changeActivity();
+                    signupPresenter.replayByChangeActivity();
                 }
             }
         });
@@ -111,7 +114,7 @@ public class FireBaseCore {
                             sendEmailVarificationLink(model);
                         } else {
                             Log.w(TAG, task.getException());
-                            signupPresenter.sentError(R.string.error_on_send_verify);
+                            signupPresenter.replyByError(R.string.error_on_send_verify);
                         }
                     }
                 });
@@ -122,7 +125,7 @@ public class FireBaseCore {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
-                    signupPresenter.sentMessage(R.string.signup_email_linke_sent);
+                    signupPresenter.replyByMessage(R.string.signup_email_linke_sent);
                     currentUser = auth.getCurrentUser();
                     id = currentUser.getUid();
                     model.setId(id);
@@ -131,14 +134,13 @@ public class FireBaseCore {
                     else
                         addUserData(model);
                 } else {
-                    signupPresenter.sentError(R.string.signup_email_linke_not_sent);
+                    signupPresenter.replyByError(R.string.signup_email_linke_not_sent);
                 }
             }
         });
     }
 
     public void signInWithEmailAndPassword(String emailAddress, String password, final SigninPresenter signinPresenter) {
-        this.signinPresenter = signinPresenter;
         auth.signInWithEmailAndPassword(emailAddress, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
@@ -147,13 +149,13 @@ public class FireBaseCore {
                     id = currentUser.getUid();
                     if (isCheckedEmailVerfication()) {
 
-                        signinPresenter.sentMessage(R.string.logged_in_successfuly);
+                        signinPresenter.replyByMessage(R.string.logged_in_successfuly);
                     } else {
-                        signinPresenter.sentError(R.string.verfy_error);
+                        signinPresenter.replyByError(R.string.verfy_error);
                     }
 
                 } else {
-                    signinPresenter.sentError(R.string.login_failed);
+                    signinPresenter.replyByError(R.string.login_failed);
                 }
             }
         });
@@ -192,5 +194,6 @@ public class FireBaseCore {
                     }
                 });
     }
+
 
 }

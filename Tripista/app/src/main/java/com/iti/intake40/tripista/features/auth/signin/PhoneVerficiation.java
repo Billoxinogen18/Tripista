@@ -4,7 +4,6 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,48 +14,47 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseUser;
 import com.iti.intake40.tripista.R;
 import com.iti.intake40.tripista.core.FireBaseCore;
+import com.iti.intake40.tripista.features.auth.Delegate;
 
-import static com.iti.intake40.tripista.features.auth.signin.SigninActivity.EMAIL_ARG;
+import static com.iti.intake40.tripista.features.auth.signin.SigninActivity.PHONE_ARG;
 
-public class PasswordFragment extends Fragment implements SigninContract.ViewInterface {
-    private String email;
-    private String password;
+public class PhoneVerficiation extends Fragment implements SigninContract.ViewInterface {
+    private TextInputEditText etPhoneCode;
+    private FloatingActionButton nextBtn;
+    private String phone;
     private FireBaseCore core;
     private SigninContract.PresenterInterface presenterInterface;
-    private TextInputEditText et_password;
-    private FloatingActionButton signIn;
-    public PasswordFragment() {
+    private Delegate delegate;
+
+
+    public PhoneVerficiation() {
         // Required empty public constructor
     }
-
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        core =FireBaseCore.getInstance();
-        presenterInterface = new SigninPresenter(this,core);
+        phone= getArguments().getString(PHONE_ARG);
+        core=FireBaseCore.getInstance();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view =inflater.inflate(R.layout.fragment_password, container, false);
-        et_password=view.findViewById(R.id.et_password_login);
-        signIn =view.findViewById(R.id.sign_in);
         // Inflate the layout for this fragment
-        email= getArguments().getString(EMAIL_ARG);
-        signIn.setOnClickListener(new View.OnClickListener() {
+        View view =inflater.inflate(R.layout.fragment_phone_verficiation, container, false);
+        etPhoneCode = view.findViewById(R.id.et_phone_verfy_code);
+        nextBtn = view.findViewById(R.id.sign_in_phone);
+        delegate = (Delegate)getActivity();
+        delegate.sendVerificationCode(phone);
+
+        nextBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                password = et_password.getText().toString();
-                if(!TextUtils.isEmpty(email)&&!TextUtils.isEmpty(password))
-                {
-                    presenterInterface.signIn(email,password);
-                }
+                changeFragment(null);
             }
         });
-
         return view;
     }
 
@@ -74,7 +72,7 @@ public class PasswordFragment extends Fragment implements SigninContract.ViewInt
 
     @Override
     public void changeFragment(FirebaseUser user) {
-
+    //go to home
+        Toast.makeText(getActivity(),"go to home",Toast.LENGTH_LONG).show();
     }
-
 }
