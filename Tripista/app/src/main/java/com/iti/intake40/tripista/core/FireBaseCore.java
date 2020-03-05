@@ -180,7 +180,7 @@ public class FireBaseCore {
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = firebaseAuth.getCurrentUser();
                             //TODO enable this later
-                            //signinPresenter.changeFragment(user);
+                            signinPresenter.changeFragment(user);
 
                         } else {
                             // If sign in fails, display a message to the user.

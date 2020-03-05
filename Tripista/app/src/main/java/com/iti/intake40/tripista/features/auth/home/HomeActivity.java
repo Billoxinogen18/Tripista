@@ -1,11 +1,20 @@
 package com.iti.intake40.tripista.features.auth.home;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+
+import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.iti.intake40.tripista.R;
@@ -13,15 +22,49 @@ import com.iti.intake40.tripista.R;
 public class HomeActivity extends AppCompatActivity {
 
     private static final String TAG = "Home";
+    private Toolbar toolbar;
+    private NavigationView navigationView;
+    private View header;
+    private DrawerLayout drawerLayout;
+    private ImageView imageView;
+    private TextView userNameTextView;
+    private TextView emailTextView;
+    private FirebaseUser firebaseUser;
+    private FirebaseAuth firebaseAuth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        Intent siginIntent = getIntent();
-        FirebaseAuth auth = FirebaseAuth.getInstance();
-        FirebaseUser user = auth.getCurrentUser();
-        Log.d(TAG, "onCreate: "+ user.toString());
-        Log.d(TAG, "onCreate: " + user.getDisplayName());
 
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        navigationView = findViewById(R.id.nav_view);
+        header = navigationView.getHeaderView(0);
+        drawerLayout = findViewById(R.id.drawer_layout);
+        imageView = header.findViewById(R.id.nav_header_image);
+        userNameTextView = header.findViewById(R.id.nav_header_userName);
+        emailTextView = header.findViewById(R.id.nav_header_email);
+
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar,
+                R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        //handle toggle button click
+        drawerLayout.addDrawerListener(toggle);
+        //add animation to toggle button
+        toggle.syncState();
+        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseUser = firebaseAuth.getCurrentUser();
+
+        userNameTextView.setText(firebaseUser.getDisplayName());
+        Log.d(TAG, "onCreate: " + firebaseUser.getPhotoUrl());
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
     }
 }

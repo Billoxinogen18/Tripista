@@ -25,4 +25,14 @@
     <string name="facebook_app_id">654784595275405</string>
     <string name="fb_login_protocol_scheme">fb654784595275405</string>
 
+    <!-- nav drawer strings -->
+    <string name="def_user_name">User Name</string>
+    <string name="upcomming">Upcomming</string>
+    <string name="history">History</string>
+    <string name="other">Other</string>
+    <string name="sync">Sync</string>
+    <string name="logout">Log out</string>
+    <string name="def_email">Email</string>
+    <string name="navigation_drawer_open">open navigation drawer</string>
+    <string name="navigation_drawer_close">close navigation drawer</string>
 </resources>
