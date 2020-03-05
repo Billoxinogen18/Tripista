@@ -20,11 +20,9 @@ import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.iti.intake40.tripista.R;
 import com.iti.intake40.tripista.core.FireBaseCore;
-import com.iti.intake40.tripista.features.auth.Delegate;
 import com.iti.intake40.tripista.features.auth.home.HomeActivity;
 import com.iti.intake40.tripista.features.auth.signup.SignUp;
 

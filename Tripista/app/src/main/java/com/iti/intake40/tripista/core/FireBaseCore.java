@@ -23,8 +23,8 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.iti.intake40.tripista.R;
-import com.iti.intake40.tripista.features.auth.signin.SigninPresenter;
-import com.iti.intake40.tripista.features.auth.signup.SignupPresenter;
+import com.iti.intake40.tripista.features.auth.signin.SigninContract;
+import com.iti.intake40.tripista.features.auth.signup.SignupContract;
 
 
 import static androidx.constraintlayout.widget.Constraints.TAG;
@@ -35,8 +35,8 @@ public class FireBaseCore {
     private FirebaseUser currentUser;
     private FirebaseDatabase database;
     private FirebaseAuth auth;
-    private SigninPresenter signinPresenter;
-    private SignupPresenter signupPresenter;
+    private SigninContract.PresenterInterface signinPresenter;
+    private SignupContract.PresenterInterface signupPresenter;
     private String id;
     private String  verificationId;
     //make singletone class
@@ -104,8 +104,8 @@ public class FireBaseCore {
     }
 
     //signup with email and password
-    public void signUpEithEmailAndPassword(final UserModel model, final SignupPresenter signupPresenter) {
-        this.signupPresenter = signupPresenter;
+    public void signUpEithEmailAndPassword(final UserModel model, SignupContract.PresenterInterface presenter) {
+        this.signupPresenter = presenter;
         auth.createUserWithEmailAndPassword(model.getEmail(), model.getPassWord())
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
@@ -140,7 +140,8 @@ public class FireBaseCore {
         });
     }
 
-    public void signInWithEmailAndPassword(String emailAddress, String password, final SigninPresenter signinPresenter) {
+    public void signInWithEmailAndPassword(String emailAddress, String password, SigninContract.PresenterInterface presenter) {
+        signinPresenter =presenter;
         auth.signInWithEmailAndPassword(emailAddress, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
@@ -167,12 +168,13 @@ public class FireBaseCore {
         return auth.getCurrentUser().isEmailVerified();
     }
 
-    public void handleFacebookAccessToken(AccessToken token, FragmentActivity signinActivity, final SigninPresenter signinPresenter) {
+    public void handleFacebookAccessToken(AccessToken token, FragmentActivity signinActivity, SigninContract.PresenterInterface presenter) {
+        signinPresenter = presenter;
         Log.d(TAG, "handleFacebookAccessToken: " + token);
-        final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        auth = FirebaseAuth.getInstance();
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
 
-        firebaseAuth.signInWithCredential(credential)
+        auth.signInWithCredential(credential)
                 .addOnCompleteListener(signinActivity, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
@@ -180,14 +182,15 @@ public class FireBaseCore {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
-                            FirebaseUser user = firebaseAuth.getCurrentUser();
+                            FirebaseUser user = auth.getCurrentUser();
                             //TODO enable this later
-                            //signinPresenter.changeFragment(user);
+                           // signinPresenter.replayByChangeFragment(user);
 
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
-                            //login.sentError(R.string.signin_failed);
+                            //TODO enable this later
+                            //signinPresenter.replyByError(R.string.signin_failed);
 
 
                         }

@@ -1,6 +1,5 @@
-package com.iti.intake40.tripista.features.auth;
+package com.iti.intake40.tripista.features.auth.signin;
 
-import com.iti.intake40.tripista.features.auth.signin.SigninPresenter;
 
 public interface Delegate {
      void setData(String data);

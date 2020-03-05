@@ -14,7 +14,6 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseUser;
 import com.iti.intake40.tripista.R;
 import com.iti.intake40.tripista.core.FireBaseCore;
-import com.iti.intake40.tripista.features.auth.Delegate;
 
 import static com.iti.intake40.tripista.features.auth.signin.SigninActivity.PHONE_ARG;
 
