@@ -29,6 +29,7 @@ import com.iti.intake40.tripista.HistoryFragment;
 import com.iti.intake40.tripista.R;
 import com.iti.intake40.tripista.UpcommingFragment;
 import com.iti.intake40.tripista.features.auth.signin.SignInFragment;
+import com.iti.intake40.tripista.features.auth.signin.SigninActivity;
 
 import java.net.URL;
 
@@ -68,6 +69,15 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         drawerLayout.addDrawerListener(toggle);
         //add animation to toggle button
         toggle.syncState();
+
+        if (savedInstanceState == null) {
+            //open the first fragment imdedaitely
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                    new UpcommingFragment()).commit();
+            //select the first item
+            navigationView.setCheckedItem(R.id.nav_upcomming);
+        }
+
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseUser = firebaseAuth.getCurrentUser();
 
@@ -107,11 +117,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 //go to signin screen
                 firebaseAuth.signOut();
                 LoginManager.getInstance().logOut();
-                Intent signoutIntent = new Intent(this, SignInFragment.class);
+                Intent signoutIntent = new Intent(this, SigninActivity.class);
                 startActivity(signoutIntent);
                 finish();
                 break;
         }
+        drawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
 }

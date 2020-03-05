@@ -164,8 +164,8 @@ public class SignInFragment extends Fragment implements ViewInterface {
         //go to home
 
         Intent gotoHomeIntent = new Intent(getContext(), HomeActivity.class);
-        gotoHomeIntent.putExtra("user", user);
+        //gotoHomeIntent.putExtra("user", user);
         startActivity(gotoHomeIntent);
-
+        getActivity().finish();
     }
 }
