@@ -81,10 +81,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseUser = firebaseAuth.getCurrentUser();
-
+        //Log.d(TAG, "onCreate: " + firebaseUser.getPhotoUrl());
+        Log.d(TAG, "onCreate: " + firebaseUser.getDisplayName());
+        Log.d(TAG, "onCreate: " + firebaseUser.getEmail());
         userNameTextView.setText(firebaseUser.getDisplayName());
         emailTextView.setText(firebaseUser.getEmail());
-
         //profilePictureView.setProfileId(Profile.getCurrentProfile().getId());
         Glide.with(this)
                 .load(firebaseUser.getPhotoUrl().toString() + "?height=500")
@@ -92,7 +93,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 .placeholder(R.drawable.com_facebook_profile_picture_blank_portrait)
                 .into(profilePictureView);
 
-        Log.d(TAG, "onCreate: " + firebaseUser.getPhotoUrl());
     }
 
     @Override
