@@ -1,11 +1,9 @@
 package com.iti.intake40.tripista.features.auth.home;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
+
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -20,21 +18,17 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.bumptech.glide.Glide;
-import com.facebook.Profile;
 import com.facebook.login.LoginManager;
-import com.facebook.login.widget.ProfilePictureView;
 import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.iti.intake40.tripista.HistoryFragment;
 import com.iti.intake40.tripista.R;
 import com.iti.intake40.tripista.UpcommingFragment;
-import com.iti.intake40.tripista.features.auth.signin.SignInFragment;
+import com.iti.intake40.tripista.core.FireBaseCore;
 import com.iti.intake40.tripista.features.auth.signin.SigninActivity;
 
 import java.net.URL;
 
-public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, HomeContract.ViewInterface {
 
     private static final String TAG = "Home";
     private Toolbar toolbar;
@@ -45,14 +39,13 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private TextView userNameTextView;
     private TextView emailTextView;
     private URL img_value = null;
-    private FirebaseUser firebaseUser;
-    private FirebaseAuth firebaseAuth;
+    private FireBaseCore core;
+    private HomePresenter homePresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         navigationView = findViewById(R.id.nav_view);
@@ -79,19 +72,15 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             navigationView.setCheckedItem(R.id.nav_upcomming);
         }
 
-        firebaseAuth = FirebaseAuth.getInstance();
-        firebaseUser = firebaseAuth.getCurrentUser();
-        //Log.d(TAG, "onCreate: " + firebaseUser.getPhotoUrl());
-        Log.d(TAG, "onCreate: " + firebaseUser.getDisplayName());
-        Log.d(TAG, "onCreate: " + firebaseUser.getEmail());
-        userNameTextView.setText(firebaseUser.getDisplayName());
-        emailTextView.setText(firebaseUser.getEmail());
+       //set prsenter and firebase core
+        core =FireBaseCore.getInstance();
+        homePresenter = new HomePresenter(core);
         //profilePictureView.setProfileId(Profile.getCurrentProfile().getId());
-        Glide.with(this)
+        /*Glide.with(this)
                 .load(firebaseUser.getPhotoUrl().toString() + "?height=500")
                 .centerCrop()
                 .placeholder(R.drawable.com_facebook_profile_picture_blank_portrait)
-                .into(profilePictureView);
+                .into(profilePictureView);*/
 
     }
 
@@ -122,7 +111,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_logout:
                 //log the user out
                 //go to signin screen
-                firebaseAuth.signOut();
+                homePresenter.signOut();
                 LoginManager.getInstance().logOut();
                 Intent signoutIntent = new Intent(this, SigninActivity.class);
                 startActivity(signoutIntent);
@@ -131,5 +120,23 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         }
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public void sentMessage(int message) {
+        Toast.makeText(this,getResources().getString(message),Toast.LENGTH_LONG).show();
+
+    }
+
+    @Override
+    public void sentError(int message) {
+        Toast.makeText(this,getResources().getString(message),Toast.LENGTH_LONG).show();
+
+    }
+
+
+    @Override
+    public void changeActivity() {
+
     }
 }

@@ -27,6 +27,13 @@ public class UserModel {
         this.email=email;
     }
 
+    public UserModel(String id, String name, String imageUrl, String email) {
+        this.id = id;
+        this.name = name;
+        this.imageUrl = imageUrl;
+        this.email = email;
+    }
+
     public String getEmail() {
         return email;
     }

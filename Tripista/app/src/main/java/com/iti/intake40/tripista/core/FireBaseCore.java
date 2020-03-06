@@ -16,12 +16,17 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.iti.intake40.tripista.R;
+import com.iti.intake40.tripista.features.auth.home.HomeContract;
+import com.iti.intake40.tripista.features.auth.home.HomePresenter;
 import com.iti.intake40.tripista.features.auth.signin.SigninContract;
 import com.iti.intake40.tripista.features.auth.signup.SignupContract;
 
@@ -32,9 +37,13 @@ public class FireBaseCore {
     private StorageReference rootStorage;
     private FirebaseUser currentUser;
     private FirebaseDatabase database;
+    private StorageReference storagePath;
     private FirebaseAuth auth;
+    private AuthCredential credential;
+    private DatabaseReference profilePath;
     private SigninContract.PresenterInterface signinPresenter;
     private SignupContract.PresenterInterface signupPresenter;
+    private HomeContract.PresenterInterface homePresenter;
     private String id;
     private String verificationId;
     //make singletone class
@@ -51,13 +60,12 @@ public class FireBaseCore {
     public static FireBaseCore getInstance() {
         if (core == null) {
             core = new FireBaseCore();
-
         }
         return core;
     }
 
     public void addUserData(UserModel model) {
-        DatabaseReference profilePath = rootDB.child("users").child("profile").child(id);
+        profilePath = rootDB.child("users").child("profile").child(id);
         profilePath.setValue(model);
         profilePath = rootDB.child("users").child("profile").child(model.getPhone());
         profilePath.setValue(id).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -66,14 +74,13 @@ public class FireBaseCore {
                 if (task.isSuccessful()) {
                     signupPresenter.replyByMessage(R.string.saved_in_fire_base);
                     signupPresenter.replayByChangeActivity();
-
                 }
             }
         });
     }
 
     public void addUserWithImage(final UserModel model) {
-        final StorageReference storagePath = rootStorage.child("Profile").child(id);
+        storagePath = rootStorage.child("Profile").child(id);
         Uri imageUri = Uri.parse(model.getImageUrl());
         StorageTask uploadTask = storagePath.putFile(imageUri);
         uploadTask.continueWithTask(new Continuation() {
@@ -91,7 +98,7 @@ public class FireBaseCore {
                     Uri imageUploaded = task.getResult();
                     String imageLink = imageUploaded.toString();
                     model.setImageUrl(imageLink);
-                    DatabaseReference profilePath = rootDB.child("users").child("profile").child(id);
+                    profilePath = rootDB.child("users").child("profile").child(id);
                     profilePath.setValue(model);
                     profilePath = rootDB.child("users").child("profile").child(model.getPhone());
                     profilePath.setValue(id);
@@ -170,7 +177,7 @@ public class FireBaseCore {
         signinPresenter = presenter;
         Log.d(TAG, "handleFacebookAccessToken: " + token);
         auth = FirebaseAuth.getInstance();
-        AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
+        credential = FacebookAuthProvider.getCredential(token.getToken());
 
         auth.signInWithCredential(credential)
                 .addOnCompleteListener(signinActivity, new OnCompleteListener<AuthResult>() {
@@ -181,17 +188,69 @@ public class FireBaseCore {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = auth.getCurrentUser();
-                            //TODO enable this later
-                            //signinPresenter.changeFragment(user);
+                            UserModel model = new UserModel(user.getUid(), user.getDisplayName(), user.getPhotoUrl().toString(), user.getEmail());
+                            checkUser(model);
                             signinPresenter.replayByChangeFragment(user);
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
-                            //TODO enable this later
                             signinPresenter.replyByError(R.string.signin_failed);
                         }
                     }
                 });
+    }
+
+    //check facebook user id exist before or not
+    private void checkUser(final UserModel model) {
+        currentUser = auth.getCurrentUser();
+        id = currentUser.getUid();
+        profilePath = rootDB.child("users").child("profile").child(id);
+        profilePath.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot == null) {
+                    addFacebookUser(model);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
+    //add user login by face book
+    private void addFacebookUser(final UserModel model) {
+
+        storagePath = rootStorage.child("Profile").child(id);
+        Uri imageUri = Uri.parse(model.getImageUrl());
+        StorageTask uploadTask = storagePath.putFile(imageUri);
+        uploadTask.continueWithTask(new Continuation() {
+            @Override
+            public Object then(@NonNull Task task) throws Exception {
+                if (!task.isSuccessful()) {
+                    throw task.getException();
+                }
+                return storagePath.getDownloadUrl();
+            }
+        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+            @Override
+            public void onComplete(@NonNull Task<Uri> task) {
+                if (task.isSuccessful()) {
+                    Uri imageUploaded = task.getResult();
+                    String imageLink = imageUploaded.toString();
+                    model.setImageUrl(imageLink);
+                    profilePath = rootDB.child("users").child("profile").child(id);
+                    profilePath.setValue(model);
+                }
+            }
+        });
+    }
+
+    public void signOut() {
+        auth.signOut();
     }
 
 
