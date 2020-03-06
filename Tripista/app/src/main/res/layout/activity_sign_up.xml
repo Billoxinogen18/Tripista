@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".features.auth.signup.SignUp"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context=".features.auth.signup.SignUp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -16,17 +16,17 @@
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/profile_image"
-            android:layout_centerHorizontal="true"
             android:layout_width="130dp"
             android:layout_height="100dp"
-            android:layout_margin="5dp"
-            android:padding="5dp"
+            android:layout_centerHorizontal="true"
             android:layout_gravity="center"
+            android:layout_margin="5dp"
+            android:onClick="getImgFromGalory"
+            android:padding="5dp"
             android:src="@drawable/profile"
             app:civ_border_color="@color/colorPrimary"
-            app:civ_border_width="2dp"
-            android:onClick="getImgFromGalory"
-            />
+            app:civ_border_width="2dp" />
+
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/input_layout_user_name"
             android:layout_width="match_parent"
@@ -66,17 +66,17 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:layout_margin="3dp"
+            android:orientation="horizontal"
             android:weightSum="2">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
                 android:text="+2 "
                 android:textColor="@color/colorPrimaryDark"
-                android:textSize="22sp"
-                android:layout_gravity="center_vertical"
-                />
+                android:textSize="22sp" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/input_layout_phone"

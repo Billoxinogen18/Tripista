@@ -19,6 +19,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.bumptech.glide.Glide;
 import com.facebook.Profile;
 import com.facebook.login.LoginManager;
 import com.facebook.login.widget.ProfilePictureView;
@@ -40,7 +41,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private NavigationView navigationView;
     private View header;
     private DrawerLayout drawerLayout;
-    private ProfilePictureView profilePictureView;
+    private ImageView profilePictureView;
     private TextView userNameTextView;
     private TextView emailTextView;
     private URL img_value = null;
@@ -59,7 +60,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         header = navigationView.getHeaderView(0);
         drawerLayout = findViewById(R.id.drawer_layout);
         //imageView = header.findViewById(R.id.nav_header_image);
-        profilePictureView = header.findViewById(R.id.friendProfilePicture);
+        profilePictureView = header.findViewById(R.id.nav_profile_image);
         userNameTextView = header.findViewById(R.id.nav_header_userName);
         emailTextView = header.findViewById(R.id.nav_header_email);
 
@@ -84,7 +85,13 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         userNameTextView.setText(firebaseUser.getDisplayName());
         emailTextView.setText(firebaseUser.getEmail());
 
-        profilePictureView.setProfileId(Profile.getCurrentProfile().getId());
+        //profilePictureView.setProfileId(Profile.getCurrentProfile().getId());
+        Glide.with(this)
+                .load(firebaseUser.getPhotoUrl().toString() + "?height=500")
+                .centerCrop()
+                .placeholder(R.drawable.com_facebook_profile_picture_blank_portrait)
+                .into(profilePictureView);
+
         Log.d(TAG, "onCreate: " + firebaseUser.getPhotoUrl());
     }
 
