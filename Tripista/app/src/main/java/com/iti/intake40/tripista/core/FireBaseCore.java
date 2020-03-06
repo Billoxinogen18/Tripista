@@ -208,7 +208,7 @@ public class FireBaseCore {
         profilePath.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot == null) {
+                if (dataSnapshot.getValue() == null) {
                     addFacebookUser(model);
                 }
             }
@@ -223,31 +223,9 @@ public class FireBaseCore {
 
     //add user login by face book
     private void addFacebookUser(final UserModel model) {
-
-        storagePath = rootStorage.child("Profile").child(id);
-        Uri imageUri = Uri.parse(model.getImageUrl());
-        StorageTask uploadTask = storagePath.putFile(imageUri);
-        uploadTask.continueWithTask(new Continuation() {
-            @Override
-            public Object then(@NonNull Task task) throws Exception {
-                if (!task.isSuccessful()) {
-                    throw task.getException();
-                }
-                return storagePath.getDownloadUrl();
-            }
-        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-            @Override
-            public void onComplete(@NonNull Task<Uri> task) {
-                if (task.isSuccessful()) {
-                    Uri imageUploaded = task.getResult();
-                    String imageLink = imageUploaded.toString();
-                    model.setImageUrl(imageLink);
                     profilePath = rootDB.child("users").child("profile").child(id);
                     profilePath.setValue(model);
                 }
-            }
-        });
-    }
 
     public void signOut() {
         auth.signOut();
