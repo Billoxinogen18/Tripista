@@ -1,5 +1,6 @@
 package com.iti.intake40.tripista.features.auth.signin;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -15,6 +16,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseUser;
 import com.iti.intake40.tripista.R;
 import com.iti.intake40.tripista.core.FireBaseCore;
+import com.iti.intake40.tripista.features.auth.home.HomeActivity;
 
 import static com.iti.intake40.tripista.features.auth.signin.SigninActivity.EMAIL_ARG;
 
@@ -73,8 +75,9 @@ public class PasswordFragment extends Fragment implements SigninContract.ViewInt
     }
 
     @Override
-    public void changeFragment(FirebaseUser user) {
-
+    public void changeFragment() {
+        Toast.makeText(getActivity(),"go home",Toast.LENGTH_LONG).show();
+        startActivity(new Intent(getActivity(), HomeActivity.class));
     }
 
 }

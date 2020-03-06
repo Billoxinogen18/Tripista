@@ -26,7 +26,6 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.iti.intake40.tripista.R;
 import com.iti.intake40.tripista.features.auth.home.HomeContract;
-import com.iti.intake40.tripista.features.auth.home.HomePresenter;
 import com.iti.intake40.tripista.features.auth.signin.SigninContract;
 import com.iti.intake40.tripista.features.auth.signup.SignupContract;
 
@@ -46,6 +45,7 @@ public class FireBaseCore {
     private HomeContract.PresenterInterface homePresenter;
     private String id;
     private String verificationId;
+    private DataSnapshot dataSnapshot;
     //make singletone class
     public static FireBaseCore core;
 
@@ -156,6 +156,7 @@ public class FireBaseCore {
                     if (isCheckedEmailVerfication()) {
 
                         signinPresenter.replyByMessage(R.string.logged_in_successfuly);
+                        signinPresenter.replayByChangeFragment();
                     } else {
                         signinPresenter.replyByError(R.string.verfy_error);
                     }
@@ -187,10 +188,10 @@ public class FireBaseCore {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
-                            FirebaseUser user = auth.getCurrentUser();
-                            UserModel model = new UserModel(user.getUid(), user.getDisplayName(), user.getPhotoUrl().toString(), user.getEmail());
+                            currentUser = auth.getCurrentUser();
+                            UserModel model = new UserModel(currentUser.getUid(), currentUser.getDisplayName(), currentUser.getPhotoUrl().toString(), currentUser.getEmail());
                             checkUser(model);
-                            signinPresenter.replayByChangeFragment(user);
+                            signinPresenter.replayByChangeFragment();
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
@@ -230,6 +231,27 @@ public class FireBaseCore {
     public void signOut() {
         auth.signOut();
     }
+    // get info for user
+    public void getUserInfo( HomeContract.PresenterInterface home)
+    {
+        homePresenter =home ;
+        currentUser = auth.getCurrentUser();
+        id = currentUser.getUid();
+        profilePath = rootDB.child("users").child("profile").child(id);
+        profilePath.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getValue() != null) {
+                    UserModel model =dataSnapshot.getValue(UserModel.class);
+                    homePresenter.setUserInfo(model);
+                }
+            }
 
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
 
 }

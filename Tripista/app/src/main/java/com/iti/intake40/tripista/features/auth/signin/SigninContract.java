@@ -7,7 +7,7 @@ public interface SigninContract {
     interface PresenterInterface {
         void replyByMessage(int message);
         void replyByError(int message);
-        void replayByChangeFragment(FirebaseUser user);
+        void replayByChangeFragment();
         void signIn(String email, String password);
         void handleFacebookSignin(AccessToken accessToken);
         void signInWithMobile (String phone);
@@ -17,7 +17,7 @@ public interface SigninContract {
     interface ViewInterface  {
         void sentMessage(int message);
         void sentError(int message);
-        void changeFragment(FirebaseUser user);
+        void changeFragment();
     }
 }
 

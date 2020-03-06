@@ -2,11 +2,14 @@ package com.iti.intake40.tripista.features.auth.home;
 
 import com.google.firebase.auth.FirebaseUser;
 import com.iti.intake40.tripista.core.FireBaseCore;
+import com.iti.intake40.tripista.core.UserModel;
 
 public class HomePresenter implements HomeContract.PresenterInterface {
     FireBaseCore core;
-    public HomePresenter(FireBaseCore core) {
+    private HomeContract.ViewInterface home;
+    public HomePresenter(FireBaseCore core,HomeActivity home) {
         this.core=core;
+        this.home =home;
     }
 
     @Override
@@ -33,4 +36,15 @@ public class HomePresenter implements HomeContract.PresenterInterface {
     public void signOut() {
      core.signOut();
     }
+
+    @Override
+    public void setUserInfo(UserModel model) {
+        home.showUserInfo(model);
+    }
+    @Override
+    public void fetchUserInFo()
+    {
+        core.getUserInfo(this);
+    }
+
 }
