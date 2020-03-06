@@ -18,14 +18,14 @@ import com.iti.intake40.tripista.core.UserModel;
 import com.iti.intake40.tripista.features.auth.signin.SigninActivity;
 import com.theartofdev.edmodo.cropper.CropImage;
 
-public class SignUp extends AppCompatActivity implements ViewInterface {
+public class SignUp extends AppCompatActivity implements SignupContract.ViewInterface {
     private Uri imageUri;
     private TextInputEditText etUserName;
     private TextInputEditText etPasword;
     private TextInputEditText etRePassword;
     private TextInputEditText etPhoneNumber;
     private TextInputEditText etEmail;
-    private  PresenterInterface presenterInterface;
+    private SignupContract.PresenterInterface presenterInterface;
     ImageView profileImage;
     String userName;
     String phoneNumber;
@@ -61,6 +61,7 @@ public class SignUp extends AppCompatActivity implements ViewInterface {
                model.setName(userName);
                model.setPhone(phoneNumber);
                model.setPassWord(password);
+               if(imageUri !=null)
                model.setImageUrl(imageUri.toString());
                model.setEmail(email);
                presenterInterface.signup(model);

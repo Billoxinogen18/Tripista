@@ -4,9 +4,9 @@ package com.iti.intake40.tripista.features.auth.signup;
 import com.iti.intake40.tripista.core.FireBaseCore;
 import com.iti.intake40.tripista.core.UserModel;
 
-public class SignupPresenter implements PresenterInterface {
+public class SignupPresenter implements SignupContract.PresenterInterface {
     private FireBaseCore core;
-    private ViewInterface signUp;
+    private SignupContract.ViewInterface signUp;
     public SignupPresenter(SignUp signUp, FireBaseCore core) {
         this.core = core;
         this.signUp = signUp;
@@ -19,18 +19,18 @@ public class SignupPresenter implements PresenterInterface {
     }
 
     @Override
-    public void sentMessage(int messegeResourse) {
-        signUp.sentMessage(messegeResourse);
+    public void replyByMessage(int message) {
+        signUp.sentMessage(message);
     }
 
     @Override
-    public void sentError(int messegeResourse) {
-        signUp.sentError(messegeResourse);
-
+    public void replyByError(int message) {
+        signUp.sentError(message);
     }
 
     @Override
-    public void changeActivity() {
+    public void replayByChangeActivity() {
         signUp.changeActivity();
     }
+
 }

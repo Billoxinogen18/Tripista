@@ -22,8 +22,8 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.iti.intake40.tripista.R;
-import com.iti.intake40.tripista.features.auth.signin.SigninPresenter;
-import com.iti.intake40.tripista.features.auth.signup.SignupPresenter;
+import com.iti.intake40.tripista.features.auth.signin.SigninContract;
+import com.iti.intake40.tripista.features.auth.signup.SignupContract;
 
 import static androidx.constraintlayout.widget.Constraints.TAG;
 
@@ -33,9 +33,10 @@ public class FireBaseCore {
     private FirebaseUser currentUser;
     private FirebaseDatabase database;
     private FirebaseAuth auth;
-    private SigninPresenter signinPresenter;
-    private SignupPresenter signupPresenter;
+    private SigninContract.PresenterInterface signinPresenter;
+    private SignupContract.PresenterInterface signupPresenter;
     private String id;
+    private String verificationId;
     //make singletone class
     public static FireBaseCore core;
 
@@ -63,8 +64,8 @@ public class FireBaseCore {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
-                    signupPresenter.sentMessage(R.string.saved_in_fire_base);
-                    signupPresenter.changeActivity();
+                    signupPresenter.replyByMessage(R.string.saved_in_fire_base);
+                    signupPresenter.replayByChangeActivity();
 
                 }
             }
@@ -94,15 +95,15 @@ public class FireBaseCore {
                     profilePath.setValue(model);
                     profilePath = rootDB.child("users").child("profile").child(model.getPhone());
                     profilePath.setValue(id);
-                    signupPresenter.changeActivity();
+                    signupPresenter.replayByChangeActivity();
                 }
             }
         });
     }
 
     //signup with email and password
-    public void signUpEithEmailAndPassword(final UserModel model, final SignupPresenter signupPresenter) {
-        this.signupPresenter = signupPresenter;
+    public void signUpEithEmailAndPassword(final UserModel model, SignupContract.PresenterInterface presenter) {
+        this.signupPresenter = presenter;
         auth.createUserWithEmailAndPassword(model.getEmail(), model.getPassWord())
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
@@ -111,7 +112,7 @@ public class FireBaseCore {
                             sendEmailVarificationLink(model);
                         } else {
                             Log.w(TAG, task.getException());
-                            signupPresenter.sentError(R.string.error_on_send_verify);
+                            signupPresenter.replyByError(R.string.error_on_send_verify);
                         }
                     }
                 });
@@ -122,7 +123,7 @@ public class FireBaseCore {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
-                    signupPresenter.sentMessage(R.string.signup_email_linke_sent);
+                    signupPresenter.replyByMessage(R.string.signup_email_linke_sent);
                     currentUser = auth.getCurrentUser();
                     id = currentUser.getUid();
                     model.setId(id);
@@ -131,14 +132,14 @@ public class FireBaseCore {
                     else
                         addUserData(model);
                 } else {
-                    signupPresenter.sentError(R.string.signup_email_linke_not_sent);
+                    signupPresenter.replyByError(R.string.signup_email_linke_not_sent);
                 }
             }
         });
     }
 
-    public void signInWithEmailAndPassword(String emailAddress, String password, final SigninPresenter signinPresenter) {
-        this.signinPresenter = signinPresenter;
+    public void signInWithEmailAndPassword(String emailAddress, String password, SigninContract.PresenterInterface presenter) {
+        signinPresenter = presenter;
         auth.signInWithEmailAndPassword(emailAddress, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
@@ -147,13 +148,13 @@ public class FireBaseCore {
                     id = currentUser.getUid();
                     if (isCheckedEmailVerfication()) {
 
-                        signinPresenter.sentMessage(R.string.logged_in_successfuly);
+                        signinPresenter.replyByMessage(R.string.logged_in_successfuly);
                     } else {
-                        signinPresenter.sentError(R.string.verfy_error);
+                        signinPresenter.replyByError(R.string.verfy_error);
                     }
 
                 } else {
-                    signinPresenter.sentError(R.string.login_failed);
+                    signinPresenter.replyByError(R.string.login_failed);
                 }
             }
         });
@@ -165,12 +166,13 @@ public class FireBaseCore {
         return auth.getCurrentUser().isEmailVerified();
     }
 
-    public void handleFacebookAccessToken(AccessToken token, FragmentActivity signinActivity, final SigninPresenter signinPresenter) {
+    public void handleFacebookAccessToken(AccessToken token, FragmentActivity signinActivity, SigninContract.PresenterInterface presenter) {
+        signinPresenter = presenter;
         Log.d(TAG, "handleFacebookAccessToken: " + token);
-        final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        auth = FirebaseAuth.getInstance();
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
 
-        firebaseAuth.signInWithCredential(credential)
+        auth.signInWithCredential(credential)
                 .addOnCompleteListener(signinActivity, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
@@ -178,19 +180,19 @@ public class FireBaseCore {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
-                            FirebaseUser user = firebaseAuth.getCurrentUser();
+                            FirebaseUser user = auth.getCurrentUser();
                             //TODO enable this later
-                            signinPresenter.changeFragment(user);
-
+                            //signinPresenter.changeFragment(user);
+                            signinPresenter.replayByChangeFragment(user);
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
-                            //login.sentError(R.string.signin_failed);
-
-
+                            //TODO enable this later
+                            signinPresenter.replyByError(R.string.signin_failed);
                         }
                     }
                 });
     }
+
 
 }
