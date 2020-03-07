@@ -1,6 +1,8 @@
 package com.iti.intake40.tripista.features.auth.signin;
 
 
+import android.view.View;
+
 import androidx.fragment.app.FragmentActivity;
 
 import com.facebook.AccessToken;
@@ -33,6 +35,8 @@ public class SigninPresenter implements SigninContract.PresenterInterface {
     }
 
 
+
+
     @Override
     public void replyByMessage(int message) {
         login.sentMessage(message);
@@ -58,8 +62,8 @@ public class SigninPresenter implements SigninContract.PresenterInterface {
     }
 
     @Override
-    public void signInWithMobile(String code) {
-        //core.verifyCode(code);
+    public void signInWithMobile(String phone,SigninActivity activity) {
+     //   core.sendVerificationCode(phone,this,activity);
     }
 
 

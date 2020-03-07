@@ -10,7 +10,7 @@ public interface SigninContract {
         void replayByChangeFragment();
         void signIn(String email, String password);
         void handleFacebookSignin(AccessToken accessToken);
-        void signInWithMobile (String phone);
+        void signInWithMobile (String phone,SigninActivity activity);
 
     }
 
