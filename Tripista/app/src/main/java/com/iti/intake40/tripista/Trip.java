@@ -13,4 +13,41 @@ public class Trip {
     String type; //one way / round trip
 
     List<Note> notes = new ArrayList<>();
+
+    public Trip(String date, String time) {
+        this.date = date;
+        this.time = time;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public String getStartPoint() {
+        return startPoint;
+    }
+
+    public String getEndPoint() {
+        return endPoint;
+    }
+
+    public String getReminderRepeat() {
+        return reminderRepeat;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public List<Note> getNotes() {
+        return notes;
+    }
 }

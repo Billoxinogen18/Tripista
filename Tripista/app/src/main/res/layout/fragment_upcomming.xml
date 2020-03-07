@@ -7,6 +7,7 @@
     tools:context=".UpcommingFragment">
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/upcommming_rc"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:layout_editor_absoluteX="-28dp"
@@ -20,7 +21,7 @@
         android:layout_marginRight="28dp"
         android:layout_marginBottom="28dp"
         android:clickable="true"
-        android:src="@drawable/common_google_signin_btn_icon_dark"
+        android:src="@drawable/ic_add_circle_outline_black_24dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
