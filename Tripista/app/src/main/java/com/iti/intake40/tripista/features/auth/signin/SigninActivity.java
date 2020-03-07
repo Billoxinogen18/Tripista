@@ -30,16 +30,15 @@ public class SigninActivity extends AppCompatActivity implements Delegate {
     FragmentManager mgr;
     Fragment signIn;
     FragmentTransaction trns;
+    String verificationId;
     private FirebaseAuth auth;
     private SigninContract.PresenterInterface presenterInterface;
     private FireBaseCore core;
-    String verificationId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
-
 
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = firebaseAuth.getCurrentUser();
@@ -55,9 +54,6 @@ public class SigninActivity extends AppCompatActivity implements Delegate {
             trns.replace(R.id.container, signIn, "signFragment");
             trns.commit();
         }
-        /*remon
-
-         */
     }
 
 

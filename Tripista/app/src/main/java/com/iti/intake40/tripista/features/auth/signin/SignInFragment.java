@@ -20,7 +20,6 @@ import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.firebase.auth.FirebaseUser;
 import com.iti.intake40.tripista.R;
 import com.iti.intake40.tripista.core.FireBaseCore;
 import com.iti.intake40.tripista.features.auth.home.HomeActivity;
@@ -47,6 +46,12 @@ public class SignInFragment extends Fragment implements SigninContract.ViewInter
         // Required empty public constructor
     }
 
+    public static boolean isPhoneValid(String phone) {
+        if (phone.length() != 13)
+            return false;
+        String regex = "^\\+?[0-9. ()-]{9,25}$";
+        return phone.matches(regex);
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -116,13 +121,6 @@ public class SignInFragment extends Fragment implements SigninContract.ViewInter
         return emailAddress.matches(regex);
     }
 
-    public static boolean isPhoneValid(String phone) {
-        if (phone.length() != 13)
-            return false;
-        String regex = "^\\+?[0-9. ()-]{9,25}$";
-        return phone.matches(regex);
-    }
-
     public void gotoPasswordFragment() {
         inputData = etEmailPhone.getText().toString();
         if (!TextUtils.isEmpty(inputData)) {
@@ -134,7 +132,7 @@ public class SignInFragment extends Fragment implements SigninContract.ViewInter
             } else if (isPhoneValid(inputData)) {
                 delegate = (Delegate) getActivity();
                 Toast.makeText(getActivity(), "phone", Toast.LENGTH_LONG).show();
-                 delegate.changeFragment(inputData);
+                delegate.changeFragment(inputData);
             } else {
                 Toast.makeText(getActivity(), "this is not phone or email please enter correct data", Toast.LENGTH_LONG).show();
 

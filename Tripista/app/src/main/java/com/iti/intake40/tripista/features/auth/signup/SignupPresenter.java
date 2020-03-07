@@ -7,6 +7,7 @@ import com.iti.intake40.tripista.core.UserModel;
 public class SignupPresenter implements SignupContract.PresenterInterface {
     private FireBaseCore core;
     private SignupContract.ViewInterface signUp;
+
     public SignupPresenter(SignUp signUp, FireBaseCore core) {
         this.core = core;
         this.signUp = signUp;

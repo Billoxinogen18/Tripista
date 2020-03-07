@@ -2,8 +2,6 @@ package com.iti.intake40.tripista.features.auth.home;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -73,9 +71,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             navigationView.setCheckedItem(R.id.nav_upcomming);
         }
 
-       //set prsenter and firebase core
-        core =FireBaseCore.getInstance();
-        homePresenter = new HomePresenter(core,this);
+        //set prsenter and firebase core
+        core = FireBaseCore.getInstance();
+        homePresenter = new HomePresenter(core, this);
         homePresenter.fetchUserInFo();
         //profilePictureView.setProfileId(Profile.getCurrentProfile().getId());
 
@@ -122,13 +120,13 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public void sentMessage(int message) {
-        Toast.makeText(this,getResources().getString(message),Toast.LENGTH_LONG).show();
+        Toast.makeText(this, getResources().getString(message), Toast.LENGTH_LONG).show();
 
     }
 
     @Override
     public void sentError(int message) {
-        Toast.makeText(this,getResources().getString(message),Toast.LENGTH_LONG).show();
+        Toast.makeText(this, getResources().getString(message), Toast.LENGTH_LONG).show();
 
     }
 

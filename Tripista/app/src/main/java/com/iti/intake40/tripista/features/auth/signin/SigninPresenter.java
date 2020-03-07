@@ -4,7 +4,6 @@ package com.iti.intake40.tripista.features.auth.signin;
 import androidx.fragment.app.FragmentActivity;
 
 import com.facebook.AccessToken;
-import com.google.firebase.auth.FirebaseUser;
 import com.iti.intake40.tripista.core.FireBaseCore;
 
 
@@ -52,6 +51,7 @@ public class SigninPresenter implements SigninContract.PresenterInterface {
     public void signIn(String email, String password) {
         core.signInWithEmailAndPassword(email, password, this);
     }
+
     @Override
     public void handleFacebookSignin(AccessToken accessToken) {
         core.handleFacebookAccessToken(accessToken, signinActivity, this);

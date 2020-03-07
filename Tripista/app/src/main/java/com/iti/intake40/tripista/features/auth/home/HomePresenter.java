@@ -7,9 +7,10 @@ import com.iti.intake40.tripista.core.UserModel;
 public class HomePresenter implements HomeContract.PresenterInterface {
     FireBaseCore core;
     private HomeContract.ViewInterface home;
-    public HomePresenter(FireBaseCore core,HomeActivity home) {
-        this.core=core;
-        this.home =home;
+
+    public HomePresenter(FireBaseCore core, HomeActivity home) {
+        this.core = core;
+        this.home = home;
     }
 
     @Override
@@ -34,16 +35,16 @@ public class HomePresenter implements HomeContract.PresenterInterface {
 
     @Override
     public void signOut() {
-     core.signOut();
+        core.signOut();
     }
 
     @Override
     public void setUserInfo(UserModel model) {
         home.showUserInfo(model);
     }
+
     @Override
-    public void fetchUserInFo()
-    {
+    public void fetchUserInFo() {
         core.getUserInfo(this);
     }
 

@@ -1,4 +1,4 @@
-package com.iti.intake40.tripista.features.auth;
+package com.iti.intake40.tripista;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -11,15 +11,12 @@ import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.iti.intake40.tripista.R;
-import com.iti.intake40.tripista.Trip;
-
 import java.util.List;
 
 public class UpcommingTripAdapter extends RecyclerView.Adapter<UpcommingTripAdapter.ViewHolder> {
 
-    private List<Trip> trips;
     private final Context context;
+    private List<Trip> trips;
     private Trip currentTrip;
 
     public UpcommingTripAdapter(Context context, List<Trip> trips) {

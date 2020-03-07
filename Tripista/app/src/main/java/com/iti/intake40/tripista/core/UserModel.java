@@ -11,7 +11,8 @@ public class UserModel {
     public UserModel() {
 
     }
-    public UserModel(String id, String email,String name, String phone, String passWord, String imageUrl) {
+
+    public UserModel(String id, String email, String name, String phone, String passWord, String imageUrl) {
         this.id = id;
         this.name = name;
         this.phone = phone;
@@ -19,12 +20,12 @@ public class UserModel {
         this.imageUrl = imageUrl;
     }
 
-    public UserModel(String id, String name, String email,String phone, String passWord) {
+    public UserModel(String id, String name, String email, String phone, String passWord) {
         this.id = id;
         this.name = name;
         this.phone = phone;
         this.passWord = passWord;
-        this.email=email;
+        this.email = email;
     }
 
     public UserModel(String id, String name, String imageUrl, String email) {

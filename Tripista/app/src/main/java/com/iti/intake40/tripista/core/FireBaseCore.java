@@ -32,6 +32,8 @@ import com.iti.intake40.tripista.features.auth.signup.SignupContract;
 import static androidx.constraintlayout.widget.Constraints.TAG;
 
 public class FireBaseCore {
+    //make singletone class
+    public static FireBaseCore core;
     private DatabaseReference rootDB;
     private StorageReference rootStorage;
     private FirebaseUser currentUser;
@@ -46,8 +48,6 @@ public class FireBaseCore {
     private String id;
     private String verificationId;
     private DataSnapshot dataSnapshot;
-    //make singletone class
-    public static FireBaseCore core;
 
     private FireBaseCore() {
         auth = FirebaseAuth.getInstance();
@@ -224,17 +224,17 @@ public class FireBaseCore {
 
     //add user login by face book
     private void addFacebookUser(final UserModel model) {
-                    profilePath = rootDB.child("users").child("profile").child(id);
-                    profilePath.setValue(model);
-                }
+        profilePath = rootDB.child("users").child("profile").child(id);
+        profilePath.setValue(model);
+    }
 
     public void signOut() {
         auth.signOut();
     }
+
     // get info for user
-    public void getUserInfo( HomeContract.PresenterInterface home)
-    {
-        homePresenter =home ;
+    public void getUserInfo(HomeContract.PresenterInterface home) {
+        homePresenter = home;
         currentUser = auth.getCurrentUser();
         id = currentUser.getUid();
         profilePath = rootDB.child("users").child("profile").child(id);
@@ -242,7 +242,7 @@ public class FireBaseCore {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.getValue() != null) {
-                    UserModel model =dataSnapshot.getValue(UserModel.class);
+                    UserModel model = dataSnapshot.getValue(UserModel.class);
                     homePresenter.setUserInfo(model);
                 }
             }
