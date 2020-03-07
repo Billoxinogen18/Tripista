@@ -44,8 +44,8 @@ public class SigninPresenter implements SigninContract.PresenterInterface {
     }
 
     @Override
-    public void replayByChangeFragment(FirebaseUser user) {
-        login.changeFragment(user);
+    public void replayByChangeFragment() {
+        login.changeFragment();
     }
 
     @Override

@@ -51,7 +51,7 @@ public class PhoneVerficiation extends Fragment implements SigninContract.ViewIn
         nextBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                changeFragment(null);
+                changeFragment();
             }
         });
         return view;
@@ -70,8 +70,10 @@ public class PhoneVerficiation extends Fragment implements SigninContract.ViewIn
     }
 
     @Override
-    public void changeFragment(FirebaseUser user) {
-    //go to home
+    public void changeFragment() {
+        //go to home
         Toast.makeText(getActivity(),"go to home",Toast.LENGTH_LONG).show();
     }
+
+
 }

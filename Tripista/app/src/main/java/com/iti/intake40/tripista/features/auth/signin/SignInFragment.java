@@ -159,7 +159,7 @@ public class SignInFragment extends Fragment implements SigninContract.ViewInter
     }
 
     @Override
-    public void changeFragment(FirebaseUser user) {
+    public void changeFragment() {
         //update UI when login successful
         //go to home
 

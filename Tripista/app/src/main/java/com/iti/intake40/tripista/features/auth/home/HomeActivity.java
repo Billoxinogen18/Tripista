@@ -24,6 +24,7 @@ import com.iti.intake40.tripista.HistoryFragment;
 import com.iti.intake40.tripista.R;
 import com.iti.intake40.tripista.UpcommingFragment;
 import com.iti.intake40.tripista.core.FireBaseCore;
+import com.iti.intake40.tripista.core.UserModel;
 import com.iti.intake40.tripista.features.auth.signin.SigninActivity;
 
 import java.net.URL;
@@ -40,7 +41,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private TextView emailTextView;
     private URL img_value = null;
     private FireBaseCore core;
-    private HomePresenter homePresenter;
+    private HomeContract.PresenterInterface homePresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,13 +75,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
        //set prsenter and firebase core
         core =FireBaseCore.getInstance();
-        homePresenter = new HomePresenter(core);
+        homePresenter = new HomePresenter(core,this);
+        homePresenter.fetchUserInFo();
         //profilePictureView.setProfileId(Profile.getCurrentProfile().getId());
-        /*Glide.with(this)
-                .load(firebaseUser.getPhotoUrl().toString() + "?height=500")
-                .centerCrop()
-                .placeholder(R.drawable.com_facebook_profile_picture_blank_portrait)
-                .into(profilePictureView);*/
+
 
     }
 
@@ -138,5 +136,16 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public void changeActivity() {
 
+    }
+
+    @Override
+    public void showUserInfo(UserModel model) {
+        userNameTextView.setText(model.getName());
+        emailTextView.setText(model.getEmail());
+        Glide.with(this)
+                .load(model.getImageUrl())
+                .centerCrop()
+                .placeholder(R.drawable.com_facebook_profile_picture_blank_portrait)
+                .into(profilePictureView);
     }
 }
