@@ -75,6 +75,7 @@ public class UpcommingTripAdapter extends RecyclerView.Adapter<UpcommingTripAdap
             endPoint = itemView.findViewById(R.id.txt_end_point);
             distance = itemView.findViewById(R.id.txt_distance);
             rootLayout = itemView.findViewById(R.id.trip_row);
+
         }
     }
 }

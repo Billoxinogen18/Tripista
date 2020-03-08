@@ -105,6 +105,7 @@ public class SignUp extends AppCompatActivity implements SignupContract.ViewInte
         goSignIn.putExtra("email", email);
         goSignIn.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(goSignIn);
+        finish();
     }
 
     @Override

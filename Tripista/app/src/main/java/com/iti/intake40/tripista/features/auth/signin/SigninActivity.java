@@ -46,7 +46,7 @@ public class SigninActivity extends AppCompatActivity implements Delegate {
             Intent gotoHomeIntent = new Intent(SigninActivity.this, HomeActivity.class);
             gotoHomeIntent.putExtra("user", currentUser);
             startActivity(gotoHomeIntent);
-
+            finish();
         } else {
             mgr = getSupportFragmentManager();
             trns = mgr.beginTransaction();
