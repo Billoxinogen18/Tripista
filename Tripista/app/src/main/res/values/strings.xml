@@ -44,4 +44,5 @@
     <string name="start_details">Start Details</string>
     <string name="add_trip">Add trip</string>
     <string name="three_dots"><![CDATA[&#8942;]]></string>
+    <string name="wrong_code">Wrong Code</string>
 </resources>

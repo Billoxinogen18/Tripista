@@ -31,7 +31,6 @@ import com.google.firebase.storage.StorageTask;
 import com.iti.intake40.tripista.R;
 import com.iti.intake40.tripista.core.model.UserModel;
 import com.iti.intake40.tripista.features.auth.home.HomeContract;
-import com.iti.intake40.tripista.features.auth.signin.SigninActivity;
 import com.iti.intake40.tripista.features.auth.signin.SigninContract;
 import com.iti.intake40.tripista.features.auth.signup.SignupContract;
 
@@ -263,25 +262,65 @@ public class FireBaseCore {
         });
     }
 
-    public void signInWithCredential(PhoneAuthCredential credential, SigninContract.PresenterInterface presenter) {
-        signinPresenter = presenter;
+    public void signInWithCredential(final PhoneAuthCredential credential) {
         auth.signInWithCredential(credential)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-
-                            signinPresenter.replayByChangeFragment();
+                            signinPresenter.sendCode(credential.getSmsCode());
                         } else {
-
+                            signinPresenter.replyByMessage(R.string.wrong_code);
                         }
                     }
                 });
     }
-/*
-mahmoud
 
- */
+    /*
+    mahmoud
+
+     */
+//send phone
+    public void verifyCode(String code) {
+        PhoneAuthCredential phoneAuthCredential = PhoneAuthProvider.getCredential(verificationId, code);
+        /** sign in method **/
+        signInWithCredential(phoneAuthCredential);
+    }
+
+    public void sendVerificationCode(String number, SigninContract.PresenterInterface presenter) {
+        signinPresenter = presenter;
+        PhoneAuthProvider.getInstance().verifyPhoneNumber(
+                number,
+                60,
+                TimeUnit.SECONDS,
+                TaskExecutors.MAIN_THREAD,
+                mCallBack
+        );
+
+    }
+
+    private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallBack = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+        @Override
+        public void onCodeSent(String s, PhoneAuthProvider.ForceResendingToken forceResendingToken) {
+            super.onCodeSent(s, forceResendingToken);
+            verificationId = s;
+        }
+
+        /** get the code sent by sms automatically **/
+        @Override
+        public void onVerificationCompleted(PhoneAuthCredential phoneAuthCredential) {
+            String code = phoneAuthCredential.getSmsCode();
+            if (code != null) {
+                verifyCode(code);
+            }
+        }
+
+        @Override
+        public void onVerificationFailed(FirebaseException e) {
+
+
+        }
+    };
 
 /*
 shrouq

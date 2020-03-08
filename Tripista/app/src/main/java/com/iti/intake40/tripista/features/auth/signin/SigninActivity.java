@@ -54,48 +54,6 @@ public class SigninActivity extends AppCompatActivity implements Delegate {
         }
     }
 
-    //send phone
-    public void verifyCode(String code) {
-        PhoneAuthCredential phoneAuthCredential = PhoneAuthProvider.getCredential(verificationId, code);
-        /** sign in method **/
-        core.signInWithCredential(phoneAuthCredential,presenterInterface);
-
-    }
-
-    @Override
-    public void sendVerificationCode(String number) {
-        PhoneAuthProvider.getInstance().verifyPhoneNumber(
-                number,
-                60,
-                TimeUnit.SECONDS,
-                TaskExecutors.MAIN_THREAD,
-                mCallBack
-        );
-
-    }
-
-    private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallBack = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
-        @Override
-        public void onCodeSent(String s, PhoneAuthProvider.ForceResendingToken forceResendingToken) {
-            super.onCodeSent(s, forceResendingToken);
-            verificationId = s;
-        }
-
-        /** get the code sent by sms automatically **/
-        @Override
-        public void onVerificationCompleted(PhoneAuthCredential phoneAuthCredential) {
-            String code = phoneAuthCredential.getSmsCode();
-            if (code != null) {
-                verifyCode(code);
-            }
-        }
-
-        @Override
-        public void onVerificationFailed(FirebaseException e) {
-            //viewInterface.onVerificationFailed(e);
-
-        }
-    };
 
     @Override
     public void setData(String data) {

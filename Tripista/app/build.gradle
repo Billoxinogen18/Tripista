@@ -66,6 +66,12 @@ dependencies {
     implementation 'de.hdodenhof:circleimageview:3.1.0'
     //crop image
     implementation 'com.theartofdev.edmodo:android-image-cropper:2.8.+'
+    //verfy mobile text code library
+    implementation ('com.alimuzaffar.lib:pinentryedittext:2.0.6') {
+        // Exclude is only needed if you already have
+        // androidx.appcompat as a dependency in your app.
+        exclude group: 'androidx.appcompat', module: 'appcompat'
+    }
 }
 
 apply plugin: 'com.android.application'

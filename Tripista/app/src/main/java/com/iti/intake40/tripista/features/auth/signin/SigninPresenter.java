@@ -1,7 +1,6 @@
 package com.iti.intake40.tripista.features.auth.signin;
 
 
-import android.view.View;
 
 import androidx.fragment.app.FragmentActivity;
 
@@ -62,9 +61,16 @@ public class SigninPresenter implements SigninContract.PresenterInterface {
     }
 
     @Override
-    public void signInWithMobile(String phone,SigninActivity activity) {
-     //   core.sendVerificationCode(phone,this,activity);
+    public void signInWithMobile(String phone) {
+        core.sendVerificationCode(phone,this);
     }
 
 
+    @Override
+    public void sendCode(String code) {
+        login.reciveCode(code);
+    }
+
+    @Override
+    public  void  checKCode(String code){core.verifyCode(code);}
 }

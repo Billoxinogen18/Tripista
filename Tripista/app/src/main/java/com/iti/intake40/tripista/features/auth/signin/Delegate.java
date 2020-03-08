@@ -5,6 +5,4 @@ public interface Delegate {
     void setData(String data);
 
     void changeFragment(String data);
-
-    void sendVerificationCode(String phone);
 }
