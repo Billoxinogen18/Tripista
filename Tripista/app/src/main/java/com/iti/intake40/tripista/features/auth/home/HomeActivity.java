@@ -17,7 +17,9 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.bumptech.glide.Glide;
 import com.facebook.login.LoginManager;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
+import com.iti.intake40.tripista.AddTripFragment;
 import com.iti.intake40.tripista.HistoryFragment;
 import com.iti.intake40.tripista.R;
 import com.iti.intake40.tripista.UpcommingFragment;
@@ -40,6 +42,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private URL img_value = null;
     private FireBaseCore core;
     private HomeContract.PresenterInterface homePresenter;
+    private FloatingActionButton addButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +59,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         userNameTextView = header.findViewById(R.id.nav_header_userName);
         emailTextView = header.findViewById(R.id.nav_header_email);
 
+        addButton = findViewById(R.id.floatingActionButton);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar,
                 R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         //handle toggle button click
@@ -79,6 +83,16 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         //profilePictureView.setProfileId(Profile.getCurrentProfile().getId());
 
 
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.fragment_container, new AddTripFragment())
+                        .addToBackStack("add_trip")
+                        .commit();
+            }
+        });
     }
 
     @Override
@@ -117,9 +131,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
          */
     }
-
-
-
 
 
     @Override

@@ -38,7 +38,6 @@ public class UpcommingFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         final View rootView = inflater.inflate(R.layout.fragment_upcomming, container, false);
-        addButton = rootView.findViewById(R.id.floatingActionButton);
         //test data
         for (int i = 0; i < 10; i++) {
             Trip t = new Trip("date" + i, "time" + i);
@@ -51,16 +50,6 @@ public class UpcommingFragment extends Fragment {
         adapter = new UpcommingTripAdapter(getContext(), tripList);
         upcommingRecyclerView.setAdapter(adapter);
 
-        addButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getActivity().getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.fragment_container, new AddTripFragment())
-                        .addToBackStack("add_trip")
-                        .commit();
-            }
-        });
         return rootView;
     }
 
