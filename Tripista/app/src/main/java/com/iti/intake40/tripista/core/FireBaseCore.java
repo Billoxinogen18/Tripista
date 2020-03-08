@@ -262,7 +262,8 @@ public class FireBaseCore {
             }
         });
     }
-    public void signInWithCredential(PhoneAuthCredential credential , SigninContract.PresenterInterface presenter) {
+
+    public void signInWithCredential(PhoneAuthCredential credential, SigninContract.PresenterInterface presenter) {
         signinPresenter = presenter;
         auth.signInWithCredential(credential)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -270,13 +271,20 @@ public class FireBaseCore {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
 
-                        signinPresenter.replayByChangeFragment();
+                            signinPresenter.replayByChangeFragment();
                         } else {
 
                         }
                     }
                 });
     }
+/*
+mahmoud
 
+ */
 
+/*
+shrouq
+
+ */
 }
