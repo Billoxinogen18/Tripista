@@ -1,5 +1,6 @@
 package com.iti.intake40.tripista.features.auth.signin;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.iti.intake40.tripista.R;
 import com.iti.intake40.tripista.core.FireBaseCore;
+import com.iti.intake40.tripista.features.auth.home.HomeActivity;
 
 import static com.iti.intake40.tripista.features.auth.signin.SigninActivity.PHONE_ARG;
 
@@ -32,8 +34,11 @@ public class PhoneVerficiation extends Fragment implements SigninContract.ViewIn
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         phone = getArguments().getString(PHONE_ARG);
         core = FireBaseCore.getInstance();
+        presenterInterface = new SigninPresenter(this, core);
+
     }
 
     @Override
@@ -45,11 +50,13 @@ public class PhoneVerficiation extends Fragment implements SigninContract.ViewIn
         nextBtn = view.findViewById(R.id.sign_in_phone);
         delegate = (Delegate) getActivity();
         delegate.sendVerificationCode(phone);
-
+        SigninActivity activity = (SigninActivity) getActivity();
+        presenterInterface.signInWithMobile(phone, activity);
         nextBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                changeFragment();
+
+                // changeFragment();
             }
         });
         return view;
@@ -70,7 +77,9 @@ public class PhoneVerficiation extends Fragment implements SigninContract.ViewIn
     @Override
     public void changeFragment() {
         //go to home
-        Toast.makeText(getActivity(), "go to home", Toast.LENGTH_LONG).show();
+        Intent intent = new Intent(getActivity(), HomeActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
     }
 
 

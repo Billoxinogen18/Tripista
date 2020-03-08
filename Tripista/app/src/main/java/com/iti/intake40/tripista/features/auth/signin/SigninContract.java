@@ -14,7 +14,7 @@ public interface SigninContract {
 
         void handleFacebookSignin(AccessToken accessToken);
 
-        void signInWithMobile(String phone);
+        void signInWithMobile(String phone, SigninActivity activity);
 
     }
 
