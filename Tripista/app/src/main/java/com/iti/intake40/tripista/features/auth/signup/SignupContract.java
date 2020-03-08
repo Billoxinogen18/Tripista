@@ -1,6 +1,6 @@
 package com.iti.intake40.tripista.features.auth.signup;
 
-import com.iti.intake40.tripista.core.UserModel;
+import com.iti.intake40.tripista.core.model.UserModel;
 
 public interface SignupContract {
     interface PresenterInterface {

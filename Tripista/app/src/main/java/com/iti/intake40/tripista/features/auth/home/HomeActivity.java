@@ -1,5 +1,6 @@
 package com.iti.intake40.tripista.features.auth.home;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -10,6 +11,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
@@ -22,7 +24,7 @@ import com.iti.intake40.tripista.HistoryFragment;
 import com.iti.intake40.tripista.R;
 import com.iti.intake40.tripista.UpcommingFragment;
 import com.iti.intake40.tripista.core.FireBaseCore;
-import com.iti.intake40.tripista.core.UserModel;
+import com.iti.intake40.tripista.core.model.UserModel;
 import com.iti.intake40.tripista.features.auth.signin.SigninActivity;
 
 import java.net.URL;
@@ -63,13 +65,15 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         //add animation to toggle button
         toggle.syncState();
 
-        if (savedInstanceState == null) {
+        //if (savedInstanceState == null) {
             //open the first fragment imdedaitely
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                    new UpcommingFragment()).commit();
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, new UpcommingFragment())
+                    .addToBackStack("upcomming")
+                    .commit();
             //select the first item
             navigationView.setCheckedItem(R.id.nav_upcomming);
-        }
+        //}
 
         //set prsenter and firebase core
         core = FireBaseCore.getInstance();
@@ -87,6 +91,34 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         } else {
             super.onBackPressed();
         }
+
+        /*
+        int count = getSupportFragmentManager().getBackStackEntryCount();
+
+        if (count == 0) {
+            super.onBackPressed();
+            //additional code
+            AlertDialog signout = new AlertDialog.Builder(this)
+                    .setTitle("sign out")
+                    .setMessage("Are you sure you want to sign out ?")
+
+                    // Specifying a listener allows you to take an action before dismissing the dialog.
+                    // The dialog is automatically dismissed when a dialog button is clicked.
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            // Continue with delete operation
+                        }
+                    })
+
+                    // A null listener allows the button to dismiss the dialog and take no further action.
+                    .setNegativeButton(android.R.string.no, null)
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();
+        } else {
+            getSupportFragmentManager().popBackStack();
+        }
+
+         */
     }
 
     @Override

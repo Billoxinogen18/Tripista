@@ -1,4 +1,4 @@
-package com.iti.intake40.tripista;
+package com.iti.intake40.tripista.core.model;
 
 import java.util.ArrayList;
 import java.util.List;

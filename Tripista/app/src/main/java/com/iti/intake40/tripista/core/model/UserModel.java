@@ -1,4 +1,4 @@
-package com.iti.intake40.tripista.core;
+package com.iti.intake40.tripista.core.model;
 
 public class UserModel {
     String id;

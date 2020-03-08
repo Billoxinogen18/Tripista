@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.iti.intake40.tripista.core.model.Trip;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +50,17 @@ public class UpcommingFragment extends Fragment {
         upcommingRecyclerView.setLayoutManager(layoutManager);
         adapter = new UpcommingTripAdapter(getContext(), tripList);
         upcommingRecyclerView.setAdapter(adapter);
-        
+
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.fragment_container, new AddTripFragment())
+                        .addToBackStack("add_trip")
+                        .commit();
+            }
+        });
         return rootView;
     }
 
