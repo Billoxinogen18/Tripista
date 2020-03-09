@@ -261,6 +261,28 @@ public class FireBaseCore {
             }
         });
     }
+    //get user info by phone
+    // get info for user
+    public void getUserInfoByPhone(HomeContract.PresenterInterface home ,String number) {
+        homePresenter = home;
+        DataSnapshot getId = checkPhoneExisit(number);
+        id = getId.getValue().toString();
+        profilePath = rootDB.child("users").child("profile").child(id);
+        profilePath.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getValue() != null) {
+                    UserModel model = dataSnapshot.getValue(UserModel.class);
+                    homePresenter.setUserInfo(model);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
 
     public void signInWithCredential(final PhoneAuthCredential credential) {
         auth.signInWithCredential(credential)
@@ -288,15 +310,38 @@ public class FireBaseCore {
     }
 
     public void sendVerificationCode(String number, SigninContract.PresenterInterface presenter) {
-        signinPresenter = presenter;
-        PhoneAuthProvider.getInstance().verifyPhoneNumber(
-                number,
-                60,
-                TimeUnit.SECONDS,
-                TaskExecutors.MAIN_THREAD,
-                mCallBack
-        );
+       dataSnapshot = checkPhoneExisit(number);
+       if(dataSnapshot!=null) {
+           signinPresenter = presenter;
+           PhoneAuthProvider.getInstance().verifyPhoneNumber(
+                   number,
+                   60,
+                   TimeUnit.SECONDS,
+                   TaskExecutors.MAIN_THREAD,
+                   mCallBack
+           );
+       }
 
+    }
+
+    private DataSnapshot checkPhoneExisit(final String number) {
+        profilePath = rootDB.child("users").child("profile").child(number);
+        profilePath.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot data) {
+                if(data.getValue() !=null) {
+                    dataSnapshot = data;
+                }
+                else
+                    dataSnapshot =null;
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+        return  dataSnapshot;
     }
 
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallBack = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {

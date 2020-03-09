@@ -11,7 +11,6 @@ import androidx.fragment.app.Fragment;
 
 import com.alimuzaffar.lib.pin.PinEntryEditText;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.textfield.TextInputEditText;
 import com.iti.intake40.tripista.R;
 import com.iti.intake40.tripista.core.FireBaseCore;
 import com.iti.intake40.tripista.features.auth.home.HomeActivity;
@@ -77,6 +76,7 @@ public class PhoneVerficiation extends Fragment implements SigninContract.ViewIn
         //go to home
         Intent intent = new Intent(getActivity(), HomeActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.putExtra(PHONE_ARG,phone);
         startActivity(intent);
     }
 

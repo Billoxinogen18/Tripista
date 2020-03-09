@@ -45,4 +45,5 @@
     <string name="add_trip">Add trip</string>
     <string name="three_dots"><![CDATA[&#8942;]]></string>
     <string name="wrong_code">Wrong Code</string>
+    <string name="no_account_related">no account related for this mobile</string>
 </resources>
