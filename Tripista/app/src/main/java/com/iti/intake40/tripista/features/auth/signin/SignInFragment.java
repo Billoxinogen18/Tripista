@@ -166,4 +166,9 @@ public class SignInFragment extends Fragment implements SigninContract.ViewInter
         startActivity(gotoHomeIntent);
         getActivity().finish();
     }
+
+    @Override
+    public void reciveCode(String code) {
+
+    }
 }

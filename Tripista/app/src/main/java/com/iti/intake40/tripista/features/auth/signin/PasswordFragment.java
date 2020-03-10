@@ -77,4 +77,9 @@ public class PasswordFragment extends Fragment implements SigninContract.ViewInt
         startActivity(new Intent(getActivity(), HomeActivity.class));
     }
 
+    @Override
+    public void reciveCode(String code) {
+
+    }
+
 }

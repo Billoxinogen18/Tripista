@@ -14,7 +14,12 @@ public interface SigninContract {
 
         void handleFacebookSignin(AccessToken accessToken);
 
-        void signInWithMobile(String phone, SigninActivity activity);
+        void signInWithMobile(String phone);
+
+        void sendCode(String code);
+
+        void checKCode(String code);
+
 
     }
 
@@ -24,7 +29,11 @@ public interface SigninContract {
         void sentError(int message);
 
         void changeFragment();
+
+        void reciveCode(String code);
+
     }
+
 }
 
 

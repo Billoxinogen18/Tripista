@@ -27,6 +27,8 @@ import com.iti.intake40.tripista.features.auth.signin.SigninActivity;
 
 import java.net.URL;
 
+import static com.iti.intake40.tripista.features.auth.signin.SigninActivity.PHONE_ARG;
+
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, HomeContract.ViewInterface {
 
     private static final String TAG = "Home";
@@ -71,13 +73,16 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             //select the first item
             navigationView.setCheckedItem(R.id.nav_upcomming);
         }
-
         //set prsenter and firebase core
         core = FireBaseCore.getInstance();
         homePresenter = new HomePresenter(core, this);
-        homePresenter.fetchUserInFo();
-        //profilePictureView.setProfileId(Profile.getCurrentProfile().getId());
-
+        Intent intent = getIntent();
+        if ( intent.getStringExtra(PHONE_ARG)!= null) {
+            String phone = intent.getStringExtra(PHONE_ARG);
+            homePresenter.fetchUserInfoByPhone(phone);
+        } else {
+            homePresenter.fetchUserInFo();
+        }
 
     }
 
@@ -117,9 +122,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
          */
     }
-
-
-
 
 
     @Override

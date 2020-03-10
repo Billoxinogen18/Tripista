@@ -32,7 +32,6 @@ import com.iti.intake40.tripista.R;
 import com.iti.intake40.tripista.core.model.Trip;
 import com.iti.intake40.tripista.core.model.UserModel;
 import com.iti.intake40.tripista.features.auth.home.HomeContract;
-import com.iti.intake40.tripista.features.auth.signin.SigninActivity;
 import com.iti.intake40.tripista.features.auth.signin.SigninContract;
 import com.iti.intake40.tripista.features.auth.signup.SignupContract;
 
@@ -263,26 +262,111 @@ public class FireBaseCore {
             }
         });
     }
+    //get user info by phone
+    // get info for user
+    public void getUserInfoByPhone(HomeContract.PresenterInterface home ,String number) {
+        homePresenter = home;
+        DataSnapshot getId = checkPhoneExisit(number);
+        id = getId.getValue().toString();
+        profilePath = rootDB.child("users").child("profile").child(id);
+        profilePath.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getValue() != null) {
+                    UserModel model = dataSnapshot.getValue(UserModel.class);
+                    homePresenter.setUserInfo(model);
+                }
+            }
 
-    public void signInWithCredential(PhoneAuthCredential credential, SigninContract.PresenterInterface presenter) {
-        signinPresenter = presenter;
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public void signInWithCredential(final PhoneAuthCredential credential) {
         auth.signInWithCredential(credential)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-
-                            signinPresenter.replayByChangeFragment();
+                            signinPresenter.sendCode(credential.getSmsCode());
                         } else {
-
+                            signinPresenter.replyByMessage(R.string.wrong_code);
                         }
                     }
                 });
     }
-/*
-mahmoud
 
- */
+    /*
+    mahmoud
+
+     */
+//send phone
+    public void verifyCode(String code) {
+        PhoneAuthCredential phoneAuthCredential = PhoneAuthProvider.getCredential(verificationId, code);
+        /** sign in method **/
+        signInWithCredential(phoneAuthCredential);
+    }
+
+    public void sendVerificationCode(String number, SigninContract.PresenterInterface presenter) {
+       dataSnapshot = checkPhoneExisit(number);
+       if(dataSnapshot!=null) {
+           signinPresenter = presenter;
+           PhoneAuthProvider.getInstance().verifyPhoneNumber(
+                   number,
+                   60,
+                   TimeUnit.SECONDS,
+                   TaskExecutors.MAIN_THREAD,
+                   mCallBack
+           );
+       }
+
+    }
+
+    private DataSnapshot checkPhoneExisit(final String number) {
+        profilePath = rootDB.child("users").child("profile").child(number);
+        profilePath.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot data) {
+                if(data.getValue() !=null) {
+                    dataSnapshot = data;
+                }
+                else
+                    dataSnapshot =null;
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+        return  dataSnapshot;
+    }
+
+    private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallBack = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+        @Override
+        public void onCodeSent(String s, PhoneAuthProvider.ForceResendingToken forceResendingToken) {
+            super.onCodeSent(s, forceResendingToken);
+            verificationId = s;
+        }
+
+        /** get the code sent by sms automatically **/
+        @Override
+        public void onVerificationCompleted(PhoneAuthCredential phoneAuthCredential) {
+            String code = phoneAuthCredential.getSmsCode();
+            if (code != null) {
+                verifyCode(code);
+            }
+        }
+
+        @Override
+        public void onVerificationFailed(FirebaseException e) {
+
+
+        }
+    };
 
     /*
     shrouq
