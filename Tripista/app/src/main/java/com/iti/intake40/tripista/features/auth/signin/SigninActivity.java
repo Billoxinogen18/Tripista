@@ -2,11 +2,9 @@ package com.iti.intake40.tripista.features.auth.signin;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.preference.SwitchPreference;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -32,6 +30,28 @@ public class SigninActivity extends AppCompatActivity implements Delegate {
     private FirebaseAuth auth;
     private SigninContract.PresenterInterface presenterInterface;
     private FireBaseCore core;
+    private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallBack = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+        @Override
+        public void onCodeSent(String s, PhoneAuthProvider.ForceResendingToken forceResendingToken) {
+            super.onCodeSent(s, forceResendingToken);
+            verificationId = s;
+        }
+
+        /** get the code sent by sms automatically **/
+        @Override
+        public void onVerificationCompleted(PhoneAuthCredential phoneAuthCredential) {
+            String code = phoneAuthCredential.getSmsCode();
+            if (code != null) {
+                verifyCode(code);
+            }
+        }
+
+        @Override
+        public void onVerificationFailed(FirebaseException e) {
+            //viewInterface.onVerificationFailed(e);
+
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +78,7 @@ public class SigninActivity extends AppCompatActivity implements Delegate {
     public void verifyCode(String code) {
         PhoneAuthCredential phoneAuthCredential = PhoneAuthProvider.getCredential(verificationId, code);
         /** sign in method **/
-        core.signInWithCredential(phoneAuthCredential,presenterInterface);
+        core.signInWithCredential(phoneAuthCredential, presenterInterface);
 
     }
 
@@ -73,29 +93,6 @@ public class SigninActivity extends AppCompatActivity implements Delegate {
         );
 
     }
-
-    private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallBack = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
-        @Override
-        public void onCodeSent(String s, PhoneAuthProvider.ForceResendingToken forceResendingToken) {
-            super.onCodeSent(s, forceResendingToken);
-            verificationId = s;
-        }
-
-        /** get the code sent by sms automatically **/
-        @Override
-        public void onVerificationCompleted(PhoneAuthCredential phoneAuthCredential) {
-            String code = phoneAuthCredential.getSmsCode();
-            if (code != null) {
-                verifyCode(code);
-            }
-        }
-
-        @Override
-        public void onVerificationFailed(FirebaseException e) {
-            //viewInterface.onVerificationFailed(e);
-
-        }
-    };
 
     @Override
     public void setData(String data) {
