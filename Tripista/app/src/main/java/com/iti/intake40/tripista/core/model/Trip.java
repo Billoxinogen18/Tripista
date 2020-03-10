@@ -10,7 +10,7 @@ public class Trip {
     String time;
     String startPoint;
     String endPoint;
-//    String reminderRepeat; // daily / weekly / monthly
+    //    String reminderRepeat; // daily / weekly / monthly
     String status; //upcomming / done / cancelled
     String type; //one way / round trip
     String latLng;
@@ -21,29 +21,13 @@ public class Trip {
     public Trip() {
     }
 
-    public void setDate(String date) {
-        this.date = date;
-    }
-
-    public void setTime(String time) {
-        this.time = time;
-    }
-
-    public Trip(String tripId, String title, String date, String time, String startPoint, String endPoint,String latLng) {
+    public Trip(String tripId, String title, String date, String time, String startPoint, String endPoint, String latLng) {
         this.tripId = tripId;
         this.title = title;
         this.date = date;
         this.time = time;
         this.startPoint = startPoint;
         this.endPoint = endPoint;
-        this.latLng = latLng;
-    }
-
-    public String getLatLng() {
-        return latLng;
-    }
-
-    public void setLatLng(String latLng) {
         this.latLng = latLng;
     }
 
@@ -58,6 +42,19 @@ public class Trip {
         this.notes = notes;
     }
 
+    public Trip(String date, String time) {
+        this.date = date;
+        this.time = time;
+    }
+
+    public String getLatLng() {
+        return latLng;
+    }
+
+    public void setLatLng(String latLng) {
+        this.latLng = latLng;
+    }
+
     public String getTripId() {
         return tripId;
     }
@@ -70,11 +67,6 @@ public class Trip {
         return title;
     }
 
-    public Trip(String date, String time) {
-        this.date = date;
-        this.time = time;
-    }
-
     public void setTitle(String title) {
         this.title = title;
     }
@@ -83,8 +75,16 @@ public class Trip {
         return date;
     }
 
+    public void setDate(String date) {
+        this.date = date;
+    }
+
     public String getTime() {
         return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
     }
 
     public String getStartPoint() {

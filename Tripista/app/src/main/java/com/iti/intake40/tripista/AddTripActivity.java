@@ -34,22 +34,8 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class AddTripActivity extends AppCompatActivity {
-    private TextView text;
-
-    private Button addTripBtn;
-    private FireBaseCore core;
-    private String name;
-    private Button timeBtn;
-    private Button dateBtn;
-    public Trip tripModel;
-    DatePickerDialog datePicker;
-    TimePickerDialog timePicker;
-    private int mYear, mMonth, mDay, hour, minute;
-    Calendar cal;
-    Calendar now;
-    Calendar current;
     final static int RQS_1 = 1;
-    String TAG = "place";
+    public Trip tripModel;
     public String startPlace;
     public String endPlace;
     public String time;
@@ -57,6 +43,19 @@ public class AddTripActivity extends AppCompatActivity {
     public String strDate;
     public String strTime;
     public String coordinates;
+    DatePickerDialog datePicker;
+    TimePickerDialog timePicker;
+    Calendar cal;
+    Calendar now;
+    Calendar current;
+    String TAG = "place";
+    private TextView text;
+    private Button addTripBtn;
+    private FireBaseCore core;
+    private String name;
+    private Button timeBtn;
+    private Button dateBtn;
+    private int mYear, mMonth, mDay, hour, minute;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

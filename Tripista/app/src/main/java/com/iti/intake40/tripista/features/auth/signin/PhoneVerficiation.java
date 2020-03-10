@@ -52,7 +52,7 @@ public class PhoneVerficiation extends Fragment implements SigninContract.ViewIn
         nextBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                code =etPhoneCode.getText().toString();
+                code = etPhoneCode.getText().toString();
                 presenterInterface.checKCode(code);
             }
         });
@@ -76,7 +76,7 @@ public class PhoneVerficiation extends Fragment implements SigninContract.ViewIn
         //go to home
         Intent intent = new Intent(getActivity(), HomeActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        intent.putExtra(PHONE_ARG,phone);
+        intent.putExtra(PHONE_ARG, phone);
         startActivity(intent);
     }
 
