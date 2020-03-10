@@ -29,6 +29,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.iti.intake40.tripista.R;
+import com.iti.intake40.tripista.core.model.Trip;
 import com.iti.intake40.tripista.core.model.UserModel;
 import com.iti.intake40.tripista.features.auth.home.HomeContract;
 import com.iti.intake40.tripista.features.auth.signin.SigninActivity;
@@ -283,8 +284,35 @@ mahmoud
 
  */
 
-/*
-shrouq
+    /*
+    shrouq
+     */
+    public void addTrip(final Trip trip) {
+        //here we just only refer to path
+        profilePath = rootDB.child("users").child("trips").child(id);
+        //to add trips we should take snapshot from this path
+        final String key = profilePath.push().getKey();
+        trip.setTripId(key);
 
- */
+        profilePath.child(key).setValue(trip).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful())
+                {
+
+                }
+            }
+        });
+//      String tripId = profilePath.push().getKey();
+//      profilePath.setValue(createTrip(tripId));
+//      System.out.println("TEEEST");
+    }
+//
+//  public Trip createTrip(String tripId){
+//      Trip trip = new Trip(tripId,"test",);
+//
+//      return trip;
+//  }
+
+
 }
