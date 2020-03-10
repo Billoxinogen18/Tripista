@@ -18,6 +18,8 @@ public interface HomeContract {
         void setUserInfo(UserModel model);
 
         void fetchUserInFo();
+
+        void  fetchUserInfoByPhone(String number);
     }
 
     interface ViewInterface {

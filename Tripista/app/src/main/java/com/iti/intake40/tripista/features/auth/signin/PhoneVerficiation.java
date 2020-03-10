@@ -9,8 +9,8 @@ import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
+import com.alimuzaffar.lib.pin.PinEntryEditText;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.textfield.TextInputEditText;
 import com.iti.intake40.tripista.R;
 import com.iti.intake40.tripista.core.FireBaseCore;
 import com.iti.intake40.tripista.features.auth.home.HomeActivity;
@@ -18,12 +18,12 @@ import com.iti.intake40.tripista.features.auth.home.HomeActivity;
 import static com.iti.intake40.tripista.features.auth.signin.SigninActivity.PHONE_ARG;
 
 public class PhoneVerficiation extends Fragment implements SigninContract.ViewInterface {
-    private TextInputEditText etPhoneCode;
+    private PinEntryEditText etPhoneCode;
     private FloatingActionButton nextBtn;
     private String phone;
     private FireBaseCore core;
     private SigninContract.PresenterInterface presenterInterface;
-    private Delegate delegate;
+    private String code;
 
 
     public PhoneVerficiation() {
@@ -48,15 +48,12 @@ public class PhoneVerficiation extends Fragment implements SigninContract.ViewIn
         View view = inflater.inflate(R.layout.fragment_phone_verficiation, container, false);
         etPhoneCode = view.findViewById(R.id.et_phone_verfy_code);
         nextBtn = view.findViewById(R.id.sign_in_phone);
-        delegate = (Delegate) getActivity();
-        delegate.sendVerificationCode(phone);
-        SigninActivity activity = (SigninActivity) getActivity();
-        presenterInterface.signInWithMobile(phone, activity);
+        presenterInterface.signInWithMobile(phone);
         nextBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                // changeFragment();
+                code =etPhoneCode.getText().toString();
+                presenterInterface.checKCode(code);
             }
         });
         return view;
@@ -79,8 +76,14 @@ public class PhoneVerficiation extends Fragment implements SigninContract.ViewIn
         //go to home
         Intent intent = new Intent(getActivity(), HomeActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.putExtra(PHONE_ARG,phone);
         startActivity(intent);
     }
 
 
+    @Override
+    public void reciveCode(String code) {
+        etPhoneCode.setText(code);
+        changeFragment();
+    }
 }

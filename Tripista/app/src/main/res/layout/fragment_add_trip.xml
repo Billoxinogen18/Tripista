@@ -7,7 +7,7 @@
     tools:context=".AddTripFragment">
 
     <EditText
-        android:id="@+id/editText"
+        android:id="@+id/Name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="60dp"
@@ -20,7 +20,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <AutoCompleteTextView
-        android:id="@+id/autoCompleteTextView"
+        android:id="@+id/startAutoComplete"
         android:layout_width="214dp"
         android:layout_height="49dp"
         android:layout_marginStart="60dp"
@@ -28,7 +28,7 @@
         android:layout_marginTop="24dp"
         android:text="AutoCompleteTextView"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText" />
+        app:layout_constraintTop_toBottomOf="@+id/Name" />
 
     <AutoCompleteTextView
         android:id="@+id/autoCompleteTextView2"
@@ -39,7 +39,7 @@
         android:layout_marginTop="32dp"
         android:text="AutoCompleteTextView"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/autoCompleteTextView" />
+        app:layout_constraintTop_toBottomOf="@+id/startAutoComplete" />
 
     <TextView
         android:id="@+id/textView"
@@ -82,7 +82,7 @@
         app:layout_constraintTop_toTopOf="@+id/spinner" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/addTrip"
         android:layout_width="136dp"
         android:layout_height="40dp"
         android:layout_marginBottom="32dp"

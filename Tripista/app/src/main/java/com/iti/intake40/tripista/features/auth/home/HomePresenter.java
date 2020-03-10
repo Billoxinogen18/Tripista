@@ -48,4 +48,9 @@ public class HomePresenter implements HomeContract.PresenterInterface {
         core.getUserInfo(this);
     }
 
+    @Override
+    public void fetchUserInfoByPhone(String number) {
+        core.getUserInfoByPhone(this,number);
+    }
+
 }

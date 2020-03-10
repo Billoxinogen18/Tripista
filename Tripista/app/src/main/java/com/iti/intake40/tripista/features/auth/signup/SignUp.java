@@ -58,7 +58,7 @@ public class SignUp extends AppCompatActivity implements SignupContract.ViewInte
         email = etEmail.getText().toString();
         if (!TextUtils.isEmpty(userName) && !TextUtils.isEmpty(email) && !TextUtils.isEmpty(phoneNumber) && !TextUtils.isEmpty(password) && !TextUtils.isEmpty(repassword)) {
             model.setName(userName);
-            model.setPhone(phoneNumber);
+            model.setPhone("+2"+phoneNumber);
             model.setPassWord(password);
             if (imageUri != null)
                 model.setImageUrl(imageUri.toString());

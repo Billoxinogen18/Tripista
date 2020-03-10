@@ -8,17 +8,11 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.google.android.gms.tasks.TaskExecutors;
-import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.PhoneAuthCredential;
-import com.google.firebase.auth.PhoneAuthProvider;
 import com.iti.intake40.tripista.R;
 import com.iti.intake40.tripista.core.FireBaseCore;
 import com.iti.intake40.tripista.features.auth.home.HomeActivity;
-
-import java.util.concurrent.TimeUnit;
 
 public class SigninActivity extends AppCompatActivity implements Delegate {
     public final static String EMAIL_ARG = "Email";
@@ -30,28 +24,6 @@ public class SigninActivity extends AppCompatActivity implements Delegate {
     private FirebaseAuth auth;
     private SigninContract.PresenterInterface presenterInterface;
     private FireBaseCore core;
-    private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallBack = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
-        @Override
-        public void onCodeSent(String s, PhoneAuthProvider.ForceResendingToken forceResendingToken) {
-            super.onCodeSent(s, forceResendingToken);
-            verificationId = s;
-        }
-
-        /** get the code sent by sms automatically **/
-        @Override
-        public void onVerificationCompleted(PhoneAuthCredential phoneAuthCredential) {
-            String code = phoneAuthCredential.getSmsCode();
-            if (code != null) {
-                verifyCode(code);
-            }
-        }
-
-        @Override
-        public void onVerificationFailed(FirebaseException e) {
-            //viewInterface.onVerificationFailed(e);
-
-        }
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,26 +44,6 @@ public class SigninActivity extends AppCompatActivity implements Delegate {
             trns.replace(R.id.container, signIn, "signFragment");
             trns.commit();
         }
-    }
-
-    //send phone
-    public void verifyCode(String code) {
-        PhoneAuthCredential phoneAuthCredential = PhoneAuthProvider.getCredential(verificationId, code);
-        /** sign in method **/
-        core.signInWithCredential(phoneAuthCredential, presenterInterface);
-
-    }
-
-    @Override
-    public void sendVerificationCode(String number) {
-        PhoneAuthProvider.getInstance().verifyPhoneNumber(
-                number,
-                60,
-                TimeUnit.SECONDS,
-                TaskExecutors.MAIN_THREAD,
-                mCallBack
-        );
-
     }
 
     @Override

@@ -19,7 +19,7 @@ import com.bumptech.glide.Glide;
 import com.facebook.login.LoginManager;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
-import com.iti.intake40.tripista.AddTripFragment;
+import com.iti.intake40.tripista.AddTripActivity;
 import com.iti.intake40.tripista.HistoryFragment;
 import com.iti.intake40.tripista.R;
 import com.iti.intake40.tripista.UpcommingFragment;
@@ -28,6 +28,8 @@ import com.iti.intake40.tripista.core.model.UserModel;
 import com.iti.intake40.tripista.features.auth.signin.SigninActivity;
 
 import java.net.URL;
+
+import static com.iti.intake40.tripista.features.auth.signin.SigninActivity.PHONE_ARG;
 
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, HomeContract.ViewInterface {
 
@@ -42,7 +44,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private URL img_value = null;
     private FireBaseCore core;
     private HomeContract.PresenterInterface homePresenter;
-    private FloatingActionButton addButton;
+    private FloatingActionButton goToAddTrip;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,8 +60,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         profilePictureView = header.findViewById(R.id.nav_profile_image);
         userNameTextView = header.findViewById(R.id.nav_header_userName);
         emailTextView = header.findViewById(R.id.nav_header_email);
-
-        addButton = findViewById(R.id.floatingActionButton);
+        goToAddTrip = findViewById(R.id.floatingActionButton);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar,
                 R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         //handle toggle button click
@@ -75,24 +76,25 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             //select the first item
             navigationView.setCheckedItem(R.id.nav_upcomming);
         }
-
         //set prsenter and firebase core
         core = FireBaseCore.getInstance();
         homePresenter = new HomePresenter(core, this);
-        homePresenter.fetchUserInFo();
-        //profilePictureView.setProfileId(Profile.getCurrentProfile().getId());
+        Intent intent = getIntent();
+        if (intent.getStringExtra(PHONE_ARG) != null) {
+            String phone = intent.getStringExtra(PHONE_ARG);
+            homePresenter.fetchUserInfoByPhone(phone);
+        } else {
+            homePresenter.fetchUserInFo();
+        }
 
-
-        addButton.setOnClickListener(new View.OnClickListener() {
+        goToAddTrip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.fragment_container, new AddTripFragment())
-                        .addToBackStack("add_trip")
-                        .commit();
+                Intent intent = new Intent(HomeActivity.this, AddTripActivity.class);
+                startActivity(intent);
             }
         });
+
     }
 
     @Override

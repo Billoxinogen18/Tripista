@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.iti.intake40.tripista">
-
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -11,10 +11,22 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".AlertActivity"
+            android:theme="@style/Theme.AppCompat.Dialog"
+            ></activity>
+        <activity android:name=".AddTripActivity"
+            />
+        <receiver
+            android:name=".AlarmReceiver"
+            android:process=":remote">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
         <activity
             android:name=".features.auth.home.HomeActivity"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
-        <activity android:name=".features.auth.signup.SignUp"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".features.auth.signup.SignUp" />
         <activity android:name=".features.auth.signin.SigninActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -28,6 +40,8 @@
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
+        <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyDIHrWWuzN2st31DRm6G9KnULCEKSpcV-A"/>
+
 
         <activity
             android:name="com.facebook.FacebookActivity"
