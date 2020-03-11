@@ -19,13 +19,13 @@ import com.iti.intake40.tripista.features.auth.home.HomeActivity;
 import static com.iti.intake40.tripista.features.auth.signin.SigninActivity.PHONE_ARG;
 
 public class PhoneVerficiation extends Fragment implements SigninContract.ViewInterface {
+    public static final String PREF_NAME = "tripista";
     private PinEntryEditText etPhoneCode;
     private FloatingActionButton nextBtn;
     private String phone;
     private FireBaseCore core;
     private SigninContract.PresenterInterface presenterInterface;
     private String code;
-    public static final String PREF_NAME ="tripista";
 
 
     public PhoneVerficiation() {
@@ -54,7 +54,7 @@ public class PhoneVerficiation extends Fragment implements SigninContract.ViewIn
         nextBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                code =etPhoneCode.getText().toString();
+                code = etPhoneCode.getText().toString();
                 presenterInterface.checKCode(code);
             }
         });
@@ -78,9 +78,9 @@ public class PhoneVerficiation extends Fragment implements SigninContract.ViewIn
         //go to home
         Intent intent = new Intent(getActivity(), HomeActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        SharedPreferences preferences = getActivity().getSharedPreferences(PREF_NAME,0);
+        SharedPreferences preferences = getActivity().getSharedPreferences(PREF_NAME, 0);
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putString(PHONE_ARG,phone);
+        editor.putString(PHONE_ARG, phone);
         editor.commit();
         startActivity(intent);
     }

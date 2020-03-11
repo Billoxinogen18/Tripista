@@ -1,15 +1,11 @@
 package com.iti.intake40.tripista;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.AlarmManager;
 import android.app.DatePickerDialog;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.icu.text.TimeZoneFormat;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -19,8 +15,10 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.net.PlacesClient;
@@ -30,36 +28,34 @@ import com.iti.intake40.tripista.core.FireBaseCore;
 import com.iti.intake40.tripista.core.model.Trip;
 
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 
 public class AddTripActivity extends AppCompatActivity {
-    private TextView text;
-
-    private Button addTripBtn;
-    private FireBaseCore core;
-    private String name;
-    private Button timeBtn;
-    private Button dateBtn;
-    public Trip tripModel;
-    DatePickerDialog datePicker;
-    TimePickerDialog timePicker;
-    private int mYear, mMonth, mDay, hour, minute;
-    Calendar cal;
-    Calendar now;
-    Calendar current;
     final static int RQS_1 = 1;
-    String TAG = "place";
+    public Trip tripModel;
     public String startPlace;
     public String endPlace;
     public String time;
     public String date;
     public String strDate;
     public String strTime;
-    public String  coordinates;
+    public String coordinates;
+    DatePickerDialog datePicker;
+    TimePickerDialog timePicker;
+    Calendar cal;
+    Calendar now;
+    Calendar current;
+    String TAG = "place";
+    private TextView text;
+    private Button addTripBtn;
+    private FireBaseCore core;
+    private String name;
+    private Button timeBtn;
+    private Button dateBtn;
+    private int mYear, mMonth, mDay, hour, minute;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,8 +107,6 @@ public class AddTripActivity extends AppCompatActivity {
 //        LatLng cor = place.getLatLng();
 //          coordinates = String.valueOf(cor.latitude);
 ////               coordinates = String.valueOf(place.getLatLng().latitude).concat(" ").concat(String.valueOf(place.getLatLng().longitude));
-
-
 
 
             }

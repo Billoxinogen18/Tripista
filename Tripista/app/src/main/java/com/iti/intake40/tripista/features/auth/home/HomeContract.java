@@ -19,7 +19,7 @@ public interface HomeContract {
 
         void fetchUserInFo();
 
-        void  fetchUserInfoByPhone(String number);
+        void fetchUserInfoByPhone(String number);
     }
 
     interface ViewInterface {

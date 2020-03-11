@@ -1,11 +1,6 @@
 package com.iti.intake40.tripista;
 
 
-import android.os.Bundle;
-
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AlertDialog;
-
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Notification;
@@ -19,11 +14,15 @@ import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
+
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 
 
 public class AlertActivity extends Activity {
     Uri notification;
-    int notificationId = 0 ;
+    int notificationId = 0;
     Ringtone r;
 
     @Override
@@ -42,7 +41,7 @@ public class AlertActivity extends Activity {
         r.play();
     }
 
-    private void displayAlert(){
+    private void displayAlert() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("Your Trip ").setCancelable(
                 false).setPositiveButton("Snooze",
@@ -61,22 +60,23 @@ public class AlertActivity extends Activity {
                                 getSystemService(Context.
                                         NOTIFICATION_SERVICE);
                         //   notificationManager.cancelAll();
-                        notificationManager.cancel( notificationId);
+                        notificationManager.cancel(notificationId);
                         finish();
                     }
                 });
         AlertDialog alert = builder.create();
         alert.show();
     }
+
     @TargetApi(Build.VERSION_CODES.O)
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
 
-    public void show_Notification(){
-        Intent intent=new Intent(getApplicationContext(),AlertActivity.class);
-        String CHANNEL_ID="MYCHANNEL";
-        NotificationChannel notificationChannel=new NotificationChannel(CHANNEL_ID,"name",NotificationManager.IMPORTANCE_LOW);
-        PendingIntent pendingIntent=PendingIntent.getActivity(getApplicationContext(),1,intent,0);
-        Notification notification=new Notification.Builder(getApplicationContext(),CHANNEL_ID)
+    public void show_Notification() {
+        Intent intent = new Intent(getApplicationContext(), AlertActivity.class);
+        String CHANNEL_ID = "MYCHANNEL";
+        NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_ID, "name", NotificationManager.IMPORTANCE_LOW);
+        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 1, intent, 0);
+        Notification notification = new Notification.Builder(getApplicationContext(), CHANNEL_ID)
                 .setContentText("You are waiting for your trip")
                 .setContentTitle("Trip away")
                 .setContentIntent(pendingIntent)
@@ -85,12 +85,13 @@ public class AlertActivity extends Activity {
                 .setOngoing(true)
                 .build();
 
-        NotificationManager notificationManager=(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.createNotificationChannel(notificationChannel);
-        notificationManager.notify( notificationId,notification);
+        notificationManager.notify(notificationId, notification);
         finish();
 
     }
+
     @Override
     protected void onPause() {
         super.onPause();

@@ -9,10 +9,8 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.google.firebase.auth.FirebaseAuth;
-
 import com.iti.intake40.tripista.R;
 import com.iti.intake40.tripista.core.FireBaseCore;
-
 
 public class SigninActivity extends AppCompatActivity implements Delegate {
     public final static String EMAIL_ARG = "Email";
@@ -36,7 +34,6 @@ public class SigninActivity extends AppCompatActivity implements Delegate {
         trns.replace(R.id.container, signIn, "signFragment");
         trns.commit();
     }
-
 
     @Override
     public void setData(String data) {

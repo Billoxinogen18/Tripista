@@ -58,6 +58,28 @@ public class FireBaseCore {
     private String id;
     private String verificationId;
     private DataSnapshot dataSnapshot;
+    private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallBack = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+        @Override
+        public void onCodeSent(String s, PhoneAuthProvider.ForceResendingToken forceResendingToken) {
+            super.onCodeSent(s, forceResendingToken);
+            verificationId = s;
+        }
+
+        /** get the code sent by sms automatically **/
+        @Override
+        public void onVerificationCompleted(PhoneAuthCredential phoneAuthCredential) {
+            String code = phoneAuthCredential.getSmsCode();
+            if (code != null) {
+                verifyCode(code);
+            }
+        }
+
+        @Override
+        public void onVerificationFailed(FirebaseException e) {
+
+
+        }
+    };
 
     private FireBaseCore() {
         auth = FirebaseAuth.getInstance();
@@ -263,9 +285,10 @@ public class FireBaseCore {
             }
         });
     }
+
     //get user info by phone
     // get info for user
-    public void getUserInfoByPhone(HomeContract.PresenterInterface home ,String number) {
+    public void getUserInfoByPhone(HomeContract.PresenterInterface home, String number) {
         homePresenter = home;
         DataSnapshot getId = checkPhoneExisit(number);
         id = getId.getValue().toString();
@@ -312,17 +335,17 @@ public class FireBaseCore {
     }
 
     public void sendVerificationCode(String number, SigninContract.PresenterInterface presenter) {
-       dataSnapshot = checkPhoneExisit(number);
-       if(dataSnapshot!=null) {
-           signinPresenter = presenter;
-           PhoneAuthProvider.getInstance().verifyPhoneNumber(
-                   number,
-                   60,
-                   TimeUnit.SECONDS,
-                   TaskExecutors.MAIN_THREAD,
-                   mCallBack
-           );
-       }
+        dataSnapshot = checkPhoneExisit(number);
+        if (dataSnapshot != null) {
+            signinPresenter = presenter;
+            PhoneAuthProvider.getInstance().verifyPhoneNumber(
+                    number,
+                    60,
+                    TimeUnit.SECONDS,
+                    TaskExecutors.MAIN_THREAD,
+                    mCallBack
+            );
+        }
 
     }
 
@@ -331,11 +354,10 @@ public class FireBaseCore {
         profilePath.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot data) {
-                if(data.getValue() !=null) {
+                if (data.getValue() != null) {
                     dataSnapshot = data;
-                }
-                else
-                    dataSnapshot =null;
+                } else
+                    dataSnapshot = null;
             }
 
             @Override
@@ -343,31 +365,8 @@ public class FireBaseCore {
 
             }
         });
-        return  dataSnapshot;
+        return dataSnapshot;
     }
-
-    private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallBack = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
-        @Override
-        public void onCodeSent(String s, PhoneAuthProvider.ForceResendingToken forceResendingToken) {
-            super.onCodeSent(s, forceResendingToken);
-            verificationId = s;
-        }
-
-        /** get the code sent by sms automatically **/
-        @Override
-        public void onVerificationCompleted(PhoneAuthCredential phoneAuthCredential) {
-            String code = phoneAuthCredential.getSmsCode();
-            if (code != null) {
-                verifyCode(code);
-            }
-        }
-
-        @Override
-        public void onVerificationFailed(FirebaseException e) {
-
-
-        }
-    };
 
     /*
     shrouq
@@ -381,8 +380,7 @@ public class FireBaseCore {
         profilePath.child(key).setValue(trip).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                if(task.isSuccessful())
-                {
+                if (task.isSuccessful()) {
 
                 }
             }
@@ -390,17 +388,18 @@ public class FireBaseCore {
 
     }
 
-    public void checkCurrentUser (SplashContract.PresenterInterface splashInterface)
-    {
+    public void checkCurrentUser(SplashContract.PresenterInterface splashInterface) {
         currentUser = auth.getCurrentUser();
-        if(currentUser != null)
-        {
-           splashInterface.replayByChangeActivty(true);
-        }else
-        {
-          splashInterface.replayByChangeActivty(false);
+        if (currentUser != null) {
+            splashInterface.replayByChangeActivty(true);
+        } else {
+            splashInterface.replayByChangeActivty(false);
         }
     }
 
+/*
+remon
+
+ */
 
 }

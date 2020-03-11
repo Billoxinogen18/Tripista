@@ -1,6 +1,5 @@
 package com.iti.intake40.tripista;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.iti.intake40.tripista.core.model.Trip;
-import com.iti.intake40.tripista.features.auth.home.HomeActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +38,6 @@ public class UpcommingFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         final View rootView = inflater.inflate(R.layout.fragment_upcomming, container, false);
-        addButton = rootView.findViewById(R.id.floatingActionButton);
         //test data
         for (int i = 0; i < 10; i++) {
             Trip t = new Trip("date" + i, "time" + i);
@@ -54,18 +51,18 @@ public class UpcommingFragment extends Fragment {
         upcommingRecyclerView.setAdapter(adapter);
 
 
-        addButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                getActivity().getSupportFragmentManager()
-//                        .beginTransaction()
-//                        .replace(R.id.fragment_container, new AddTripFragment())
-//                        .addToBackStack("add_trip")
-//                        .commit();
-                Intent intent = new Intent(getContext(),AddTripActivity.class);
-                startActivity(intent);
-            }
-        });
+//        addButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+////                getActivity().getSupportFragmentManager()
+////                        .beginTransaction()
+////                        .replace(R.id.fragment_container, new AddTripFragment())
+////                        .addToBackStack("add_trip")
+////                        .commit();
+//                Intent intent = new Intent(getContext(),AddTripActivity.class);
+//                startActivity(intent);
+//            }
+//        });
         return rootView;
     }
 

@@ -2,8 +2,11 @@ package com.iti.intake40.tripista;
 
 import android.content.Context;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -63,8 +66,9 @@ public class UpcommingTripAdapter extends RecyclerView.Adapter<UpcommingTripAdap
         private TextView endPoint;
         private TextView distance;
         private ConstraintLayout rootLayout;
+        private ImageButton optionsButton;
 
-        ViewHolder(View itemView) {
+        ViewHolder(final View itemView) {
             super(itemView);
 
             tripDate = itemView.findViewById(R.id.txt_trip_date);
@@ -75,7 +79,40 @@ public class UpcommingTripAdapter extends RecyclerView.Adapter<UpcommingTripAdap
             endPoint = itemView.findViewById(R.id.txt_end_point);
             distance = itemView.findViewById(R.id.txt_distance);
             rootLayout = itemView.findViewById(R.id.trip_row);
+            optionsButton = itemView.findViewById(R.id.textViewOptions);
 
+            optionsButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    PopupMenu menu = new PopupMenu(context, optionsButton);
+                    menu.inflate(R.menu.trip_menu);
+
+                    menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem item) {
+                            switch (item.getItemId()) {
+                                case R.id.notes:
+                                    Toast.makeText(context, "notes", Toast.LENGTH_SHORT).show();
+                                    break;
+                                case R.id.edit:
+                                    Toast.makeText(context, "edit", Toast.LENGTH_SHORT).show();
+                                    break;
+                                case R.id.delete:
+                                    Toast.makeText(context, "delete", Toast.LENGTH_SHORT).show();
+                                    break;
+                                case R.id.cancel:
+                                    Toast.makeText(context, "cancel", Toast.LENGTH_SHORT).show();
+                                    break;
+                            }
+                            return false;
+                        }
+                    });
+                    //show the menu
+                    menu.show();
+                }
+            });
         }
+
     }
 }
+

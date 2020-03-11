@@ -1,9 +1,9 @@
 package com.iti.intake40.tripista.features.auth.splash;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.iti.intake40.tripista.R;
 import com.iti.intake40.tripista.core.FireBaseCore;

@@ -18,7 +18,9 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.bumptech.glide.Glide;
 import com.facebook.login.LoginManager;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
+import com.iti.intake40.tripista.AddTripActivity;
 import com.iti.intake40.tripista.HistoryFragment;
 import com.iti.intake40.tripista.R;
 import com.iti.intake40.tripista.UpcommingFragment;
@@ -44,6 +46,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private URL img_value = null;
     private FireBaseCore core;
     private HomeContract.PresenterInterface homePresenter;
+    private FloatingActionButton goToAddTrip;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +62,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         profilePictureView = header.findViewById(R.id.nav_profile_image);
         userNameTextView = header.findViewById(R.id.nav_header_userName);
         emailTextView = header.findViewById(R.id.nav_header_email);
-
+        goToAddTrip = findViewById(R.id.floatingActionButton);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar,
                 R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         //handle toggle button click
@@ -78,13 +81,21 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         //set prsenter and firebase core
         core = FireBaseCore.getInstance();
         homePresenter = new HomePresenter(core, this);
-        SharedPreferences preferences = getSharedPreferences(PREF_NAME,0);
-        String phone = preferences.getString(PHONE_ARG,"");
-        if ( !phone.equals("")) {
+        SharedPreferences preferences = getSharedPreferences(PREF_NAME, 0);
+        String phone = preferences.getString(PHONE_ARG, "");
+        if (!phone.equals("")) {
             homePresenter.fetchUserInfoByPhone(phone);
         } else {
             homePresenter.fetchUserInFo();
         }
+
+        goToAddTrip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(HomeActivity.this, AddTripActivity.class);
+                startActivity(intent);
+            }
+        });
 
     }
 
@@ -146,7 +157,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 //go to signin screen
                 homePresenter.signOut();
                 LoginManager.getInstance().logOut();
-                SharedPreferences preferences = getSharedPreferences(PREF_NAME,0);
+                SharedPreferences preferences = getSharedPreferences(PREF_NAME, 0);
                 preferences.edit().clear().commit();
                 Intent signoutIntent = new Intent(this, SigninActivity.class);
                 startActivity(signoutIntent);

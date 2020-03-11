@@ -36,8 +36,7 @@
             android:name=".features.auth.home.HomeActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".features.auth.signup.SignUp" />
-        <activity android:name=".features.auth.signin.SigninActivity">
-        </activity>
+        <activity android:name=".features.auth.signin.SigninActivity"></activity>
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat" /> <!-- Facebook auth activity -->
