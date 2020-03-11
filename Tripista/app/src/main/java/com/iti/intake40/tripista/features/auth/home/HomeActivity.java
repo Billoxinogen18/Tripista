@@ -1,6 +1,7 @@
 package com.iti.intake40.tripista.features.auth.home;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,6 +28,7 @@ import com.iti.intake40.tripista.features.auth.signin.SigninActivity;
 
 import java.net.URL;
 
+import static com.iti.intake40.tripista.features.auth.signin.PhoneVerficiation.PREF_NAME;
 import static com.iti.intake40.tripista.features.auth.signin.SigninActivity.PHONE_ARG;
 
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, HomeContract.ViewInterface {
@@ -76,9 +78,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         //set prsenter and firebase core
         core = FireBaseCore.getInstance();
         homePresenter = new HomePresenter(core, this);
-        Intent intent = getIntent();
-        if ( intent.getStringExtra(PHONE_ARG)!= null) {
-            String phone = intent.getStringExtra(PHONE_ARG);
+        SharedPreferences preferences = getSharedPreferences(PREF_NAME,0);
+        String phone = preferences.getString(PHONE_ARG,"");
+        if ( !phone.equals("")) {
             homePresenter.fetchUserInfoByPhone(phone);
         } else {
             homePresenter.fetchUserInFo();
@@ -144,6 +146,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 //go to signin screen
                 homePresenter.signOut();
                 LoginManager.getInstance().logOut();
+                SharedPreferences preferences = getSharedPreferences(PREF_NAME,0);
+                preferences.edit().clear().commit();
                 Intent signoutIntent = new Intent(this, SigninActivity.class);
                 startActivity(signoutIntent);
                 finish();

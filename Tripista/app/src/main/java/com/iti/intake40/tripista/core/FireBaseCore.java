@@ -34,6 +34,7 @@ import com.iti.intake40.tripista.core.model.UserModel;
 import com.iti.intake40.tripista.features.auth.home.HomeContract;
 import com.iti.intake40.tripista.features.auth.signin.SigninContract;
 import com.iti.intake40.tripista.features.auth.signup.SignupContract;
+import com.iti.intake40.tripista.features.auth.splash.SplashContract;
 
 import java.util.concurrent.TimeUnit;
 
@@ -377,7 +378,6 @@ public class FireBaseCore {
         //to add trips we should take snapshot from this path
         final String key = profilePath.push().getKey();
         trip.setTripId(key);
-
         profilePath.child(key).setValue(trip).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
@@ -387,16 +387,20 @@ public class FireBaseCore {
                 }
             }
         });
-//      String tripId = profilePath.push().getKey();
-//      profilePath.setValue(createTrip(tripId));
-//      System.out.println("TEEEST");
+
     }
-//
-//  public Trip createTrip(String tripId){
-//      Trip trip = new Trip(tripId,"test",);
-//
-//      return trip;
-//  }
+
+    public void checkCurrentUser (SplashContract.PresenterInterface splashInterface)
+    {
+        currentUser = auth.getCurrentUser();
+        if(currentUser != null)
+        {
+           splashInterface.replayByChangeActivty(true);
+        }else
+        {
+          splashInterface.replayByChangeActivty(false);
+        }
+    }
 
 
 }

@@ -1,6 +1,7 @@
 package com.iti.intake40.tripista.features.auth.signin;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,6 +25,7 @@ public class PhoneVerficiation extends Fragment implements SigninContract.ViewIn
     private FireBaseCore core;
     private SigninContract.PresenterInterface presenterInterface;
     private String code;
+    public static final String PREF_NAME ="tripista";
 
 
     public PhoneVerficiation() {
@@ -76,7 +78,10 @@ public class PhoneVerficiation extends Fragment implements SigninContract.ViewIn
         //go to home
         Intent intent = new Intent(getActivity(), HomeActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        intent.putExtra(PHONE_ARG,phone);
+        SharedPreferences preferences = getActivity().getSharedPreferences(PREF_NAME,0);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(PHONE_ARG,phone);
+        editor.commit();
         startActivity(intent);
     }
 
