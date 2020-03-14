@@ -3,6 +3,7 @@ package com.iti.intake40.tripista.features.auth.home;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -22,18 +23,24 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.iti.intake40.tripista.AddTripActivity;
 import com.iti.intake40.tripista.HistoryFragment;
+import com.iti.intake40.tripista.OnTripsLoaded;
 import com.iti.intake40.tripista.R;
 import com.iti.intake40.tripista.UpcommingFragment;
 import com.iti.intake40.tripista.core.FireBaseCore;
+import com.iti.intake40.tripista.core.model.Trip;
 import com.iti.intake40.tripista.core.model.UserModel;
 import com.iti.intake40.tripista.features.auth.signin.SigninActivity;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.iti.intake40.tripista.features.auth.signin.PhoneVerficiation.PREF_NAME;
 import static com.iti.intake40.tripista.features.auth.signin.SigninActivity.PHONE_ARG;
 
-public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, HomeContract.ViewInterface {
+public class HomeActivity extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener,
+        HomeContract.ViewInterface {
 
     private static final String TAG = "Home";
     private Toolbar toolbar;
@@ -47,6 +54,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private FireBaseCore core;
     private HomeContract.PresenterInterface homePresenter;
     private FloatingActionButton goToAddTrip;
+    private List<Trip> trips = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,42 +108,29 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        List<Trip> recTrips = new ArrayList<>();
+        //trips = homePresenter.getUserTrips();
+        core.getTripsForCurrentUser(new OnTripsLoaded() {
+            @Override
+            public void onTripsLoaded(List<Trip> trips) {
+                //set adapter
+                //recTrips = trips;
+                Log.d(TAG, "onTripsLoaded: " + trips.toString());
+            }
+        });
+        Log.d(TAG, "onStart: " + trips.toString());
+    }
+
+    @Override
     public void onBackPressed() {
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
         }
-
-        /*
-        int count = getSupportFragmentManager().getBackStackEntryCount();
-
-        if (count == 0) {
-            super.onBackPressed();
-            //additional code
-            AlertDialog signout = new AlertDialog.Builder(this)
-                    .setTitle("sign out")
-                    .setMessage("Are you sure you want to sign out ?")
-
-                    // Specifying a listener allows you to take an action before dismissing the dialog.
-                    // The dialog is automatically dismissed when a dialog button is clicked.
-                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            // Continue with delete operation
-                        }
-                    })
-
-                    // A null listener allows the button to dismiss the dialog and take no further action.
-                    .setNegativeButton(android.R.string.no, null)
-                    .setIcon(android.R.drawable.ic_dialog_alert)
-                    .show();
-        } else {
-            getSupportFragmentManager().popBackStack();
-        }
-
-         */
     }
-
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {

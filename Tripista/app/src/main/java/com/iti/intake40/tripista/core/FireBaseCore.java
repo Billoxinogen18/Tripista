@@ -28,6 +28,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
+import com.iti.intake40.tripista.OnTripsLoaded;
 import com.iti.intake40.tripista.R;
 import com.iti.intake40.tripista.core.model.Trip;
 import com.iti.intake40.tripista.core.model.UserModel;
@@ -36,6 +37,8 @@ import com.iti.intake40.tripista.features.auth.signin.SigninContract;
 import com.iti.intake40.tripista.features.auth.signup.SignupContract;
 import com.iti.intake40.tripista.features.auth.splash.SplashContract;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static androidx.constraintlayout.widget.Constraints.TAG;
@@ -397,9 +400,34 @@ public class FireBaseCore {
         }
     }
 
-/*
-remon
+    /*
+    remon
 
- */
+     */
+    ArrayList<Trip> recievedTrips = new ArrayList<>();
 
+    private void addTripToList(Trip t) {
+        recievedTrips.add(t);
+    }
+
+    public void getTripsForCurrentUser(final OnTripsLoaded onTripsLoaded) {
+        rootDB.child("users")
+                .child("trips")
+                .child(auth.getCurrentUser().getUid())
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        for (DataSnapshot tripSnapShot : dataSnapshot.getChildren()) {
+                            addTripToList(tripSnapShot.getValue(Trip.class));
+                        }
+                        onTripsLoaded.onTripsLoaded(recievedTrips);
+                        Log.d("firebase", "onDataChange: \n" + recievedTrips);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+    }
 }
