@@ -10,10 +10,14 @@ public class Trip {
     String time;
     String startPoint;
     String endPoint;
+    String backStartPoint;
+    String backEndPoint;
 //    String reminderRepeat; // daily / weekly / monthly
     String status; //upcomming / done / cancelled
     String type; //one way / round trip
     String latLng;
+    String backTime;
+    String backDate;
 
 
     List<Note> notes = new ArrayList<>();
@@ -29,7 +33,7 @@ public class Trip {
         this.time = time;
     }
 
-    public Trip(String tripId, String title, String date, String time, String startPoint, String endPoint,String latLng) {
+    public Trip(String tripId, String title, String date, String time, String startPoint, String endPoint,String latLng,String backDate, String backTime,String backStartPoint,String backEndPoint) {
         this.tripId = tripId;
         this.title = title;
         this.date = date;
@@ -37,6 +41,8 @@ public class Trip {
         this.startPoint = startPoint;
         this.endPoint = endPoint;
         this.latLng = latLng;
+        this.backStartPoint = backStartPoint;
+        this.backEndPoint = backEndPoint;
     }
 
     public String getLatLng() {
@@ -47,7 +53,23 @@ public class Trip {
         this.latLng = latLng;
     }
 
-    public Trip(String tripId, String title, String date, String time, String startPoint, String endPoint, String status, String type, List<Note> notes) {
+    public String getBackStartPoint() {
+        return backStartPoint;
+    }
+
+    public void setBackStartPoint(String backStartPoint) {
+        this.backStartPoint = backStartPoint;
+    }
+
+    public String getBackEndPoint() {
+        return backEndPoint;
+    }
+
+    public void setBackEndPoint(String backEndPoint) {
+        this.backEndPoint = backEndPoint;
+    }
+
+    public Trip(String tripId, String title, String date, String time, String startPoint, String endPoint, String status, String type, List<Note> notes, String backDate, String backTime, String backStartPoint, String backEndPoint) {
         this.tripId = tripId;
         this.date = date;
         this.time = time;
@@ -56,6 +78,10 @@ public class Trip {
         this.status = status;
         this.type = type;
         this.notes = notes;
+        this.backDate = backDate;
+        this.backTime = backTime;
+        this.backStartPoint = backStartPoint;
+        this.backEndPoint = backEndPoint;
     }
 
     public String getTripId() {
@@ -114,5 +140,21 @@ public class Trip {
 
     public List<Note> getNotes() {
         return notes;
+    }
+
+    public String getBackTime() {
+        return backTime;
+    }
+
+    public void setBackTime(String backTime) {
+        this.backTime = backTime;
+    }
+
+    public String getBackDate() {
+        return backDate;
+    }
+
+    public void setBackDate(String backDate) {
+        this.backDate = backDate;
     }
 }

@@ -387,16 +387,32 @@ public class FireBaseCore {
                 }
             }
         });
-//      String tripId = profilePath.push().getKey();
-//      profilePath.setValue(createTrip(tripId));
-//      System.out.println("TEEEST");
-    }
-//
-//  public Trip createTrip(String tripId){
-//      Trip trip = new Trip(tripId,"test",);
-//
-//      return trip;
-//  }
 
+    }
+
+//    public String getStrTime() {
+//        rootDB.child("users")
+//                .child("trips")
+//                .child("strTime")
+//                .child(auth.getCurrentUser().getUid()
+//                )
+//                .addValueEventListener(new ValueEventListener() {
+//                    @Override
+//                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                        for (DataSnapshot tripSnapShot : dataSnapshot.getChildren()) {
+////                            Trip trip =  tripSnapShot.getValue(Trip.class);
+////                            addTrip(trip);
+//                            Trip trip= dataSnapshot.getValue(Trip.class);
+//                            System.out.println(trip);
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//                    }
+//                });
+//        return null;
+//    }
 
 }
