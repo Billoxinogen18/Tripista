@@ -3,7 +3,6 @@ package com.iti.intake40.tripista.features.auth.home;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -23,17 +22,13 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.iti.intake40.tripista.AddTripActivity;
 import com.iti.intake40.tripista.HistoryFragment;
-import com.iti.intake40.tripista.OnTripsLoaded;
 import com.iti.intake40.tripista.R;
 import com.iti.intake40.tripista.UpcommingFragment;
 import com.iti.intake40.tripista.core.FireBaseCore;
-import com.iti.intake40.tripista.core.model.Trip;
 import com.iti.intake40.tripista.core.model.UserModel;
 import com.iti.intake40.tripista.features.auth.signin.SigninActivity;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
 import static com.iti.intake40.tripista.features.auth.signin.PhoneVerficiation.PREF_NAME;
 import static com.iti.intake40.tripista.features.auth.signin.SigninActivity.PHONE_ARG;
@@ -54,23 +49,13 @@ public class HomeActivity extends AppCompatActivity
     private FireBaseCore core;
     private HomeContract.PresenterInterface homePresenter;
     private FloatingActionButton goToAddTrip;
-    private List<Trip> trips = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-        header = navigationView.getHeaderView(0);
-        drawerLayout = findViewById(R.id.drawer_layout);
-        //imageView = header.findViewById(R.id.nav_header_image);
-        profilePictureView = header.findViewById(R.id.nav_profile_image);
-        userNameTextView = header.findViewById(R.id.nav_header_userName);
-        emailTextView = header.findViewById(R.id.nav_header_email);
-        goToAddTrip = findViewById(R.id.floatingActionButton);
+        setViews();
+
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar,
                 R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         //handle toggle button click
@@ -86,16 +71,8 @@ public class HomeActivity extends AppCompatActivity
             //select the first item
             navigationView.setCheckedItem(R.id.nav_upcomming);
         }
-        //set prsenter and firebase core
-        core = FireBaseCore.getInstance();
-        homePresenter = new HomePresenter(core, this);
-        SharedPreferences preferences = getSharedPreferences(PREF_NAME, 0);
-        String phone = preferences.getString(PHONE_ARG, "");
-        if (!phone.equals("")) {
-            homePresenter.fetchUserInfoByPhone(phone);
-        } else {
-            homePresenter.fetchUserInFo();
-        }
+
+        getUserInfo();
 
         goToAddTrip.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -104,7 +81,6 @@ public class HomeActivity extends AppCompatActivity
                 startActivity(intent);
             }
         });
-
     }
 
     @Override
@@ -183,5 +159,28 @@ public class HomeActivity extends AppCompatActivity
     }
 
     private void setViews() {
+        toolbar = findViewById(R.id.toolbar);
+        navigationView = findViewById(R.id.nav_view);
+        drawerLayout = findViewById(R.id.drawer_layout);
+        setSupportActionBar(toolbar);
+        navigationView.setNavigationItemSelectedListener(this);
+        header = navigationView.getHeaderView(0);
+        profilePictureView = header.findViewById(R.id.nav_profile_image);
+        userNameTextView = header.findViewById(R.id.nav_header_userName);
+        emailTextView = header.findViewById(R.id.nav_header_email);
+        goToAddTrip = findViewById(R.id.floatingActionButton);
+    }
+
+    private void getUserInfo() {
+        //set prsenter and firebase core
+        core = FireBaseCore.getInstance();
+        homePresenter = new HomePresenter(core, this);
+        SharedPreferences preferences = getSharedPreferences(PREF_NAME, 0);
+        String phone = preferences.getString(PHONE_ARG, "");
+        if (!phone.equals("")) {
+            homePresenter.fetchUserInfoByPhone(phone);
+        } else {
+            homePresenter.fetchUserInFo();
+        }
     }
 }
