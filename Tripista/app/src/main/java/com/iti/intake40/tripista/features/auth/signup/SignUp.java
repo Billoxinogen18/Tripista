@@ -18,6 +18,8 @@ import com.iti.intake40.tripista.core.model.UserModel;
 import com.iti.intake40.tripista.features.auth.signin.SigninActivity;
 import com.theartofdev.edmodo.cropper.CropImage;
 
+import static com.iti.intake40.tripista.features.auth.signin.SigninActivity.EMAIL_ARG;
+
 public class SignUp extends AppCompatActivity implements SignupContract.ViewInterface {
     ImageView profileImage;
     String userName;
@@ -58,7 +60,7 @@ public class SignUp extends AppCompatActivity implements SignupContract.ViewInte
         email = etEmail.getText().toString();
         if (!TextUtils.isEmpty(userName) && !TextUtils.isEmpty(email) && !TextUtils.isEmpty(phoneNumber) && !TextUtils.isEmpty(password) && !TextUtils.isEmpty(repassword)) {
             model.setName(userName);
-            model.setPhone("+2"+phoneNumber);
+            model.setPhone("+2" + phoneNumber);
             model.setPassWord(password);
             if (imageUri != null)
                 model.setImageUrl(imageUri.toString());
@@ -102,7 +104,7 @@ public class SignUp extends AppCompatActivity implements SignupContract.ViewInte
     @Override
     public void changeActivity() {
         Intent goSignIn = new Intent(this, SigninActivity.class);
-        goSignIn.putExtra("email", email);
+        goSignIn.putExtra(EMAIL_ARG, email);
         goSignIn.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(goSignIn);
         finish();

@@ -28,13 +28,16 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
+import com.iti.intake40.tripista.OnTripsLoaded;
 import com.iti.intake40.tripista.R;
 import com.iti.intake40.tripista.core.model.Trip;
 import com.iti.intake40.tripista.core.model.UserModel;
 import com.iti.intake40.tripista.features.auth.home.HomeContract;
 import com.iti.intake40.tripista.features.auth.signin.SigninContract;
 import com.iti.intake40.tripista.features.auth.signup.SignupContract;
+import com.iti.intake40.tripista.features.auth.splash.SplashContract;
 
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import static androidx.constraintlayout.widget.Constraints.TAG;
@@ -42,6 +45,10 @@ import static androidx.constraintlayout.widget.Constraints.TAG;
 public class FireBaseCore {
     //make singletone class
     public static FireBaseCore core;
+    /*
+    remon
+     */
+    ArrayList<Trip> recievedTrips = new ArrayList<>();
     private DatabaseReference rootDB;
     private StorageReference rootStorage;
     private FirebaseUser currentUser;
@@ -57,6 +64,28 @@ public class FireBaseCore {
     private String id;
     private String verificationId;
     private DataSnapshot dataSnapshot;
+    private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallBack = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+        @Override
+        public void onCodeSent(String s, PhoneAuthProvider.ForceResendingToken forceResendingToken) {
+            super.onCodeSent(s, forceResendingToken);
+            verificationId = s;
+        }
+
+        /** get the code sent by sms automatically **/
+        @Override
+        public void onVerificationCompleted(PhoneAuthCredential phoneAuthCredential) {
+            String code = phoneAuthCredential.getSmsCode();
+            if (code != null) {
+                verifyCode(code);
+            }
+        }
+
+        @Override
+        public void onVerificationFailed(FirebaseException e) {
+
+
+        }
+    };
 
     private FireBaseCore() {
         auth = FirebaseAuth.getInstance();
@@ -262,9 +291,10 @@ public class FireBaseCore {
             }
         });
     }
+
     //get user info by phone
     // get info for user
-    public void getUserInfoByPhone(HomeContract.PresenterInterface home ,String number) {
+    public void getUserInfoByPhone(HomeContract.PresenterInterface home, String number) {
         homePresenter = home;
         DataSnapshot getId = checkPhoneExisit(number);
         id = getId.getValue().toString();
@@ -311,17 +341,17 @@ public class FireBaseCore {
     }
 
     public void sendVerificationCode(String number, SigninContract.PresenterInterface presenter) {
-       dataSnapshot = checkPhoneExisit(number);
-       if(dataSnapshot!=null) {
-           signinPresenter = presenter;
-           PhoneAuthProvider.getInstance().verifyPhoneNumber(
-                   number,
-                   60,
-                   TimeUnit.SECONDS,
-                   TaskExecutors.MAIN_THREAD,
-                   mCallBack
-           );
-       }
+        dataSnapshot = checkPhoneExisit(number);
+        if (dataSnapshot != null) {
+            signinPresenter = presenter;
+            PhoneAuthProvider.getInstance().verifyPhoneNumber(
+                    number,
+                    60,
+                    TimeUnit.SECONDS,
+                    TaskExecutors.MAIN_THREAD,
+                    mCallBack
+            );
+        }
 
     }
 
@@ -330,11 +360,10 @@ public class FireBaseCore {
         profilePath.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot data) {
-                if(data.getValue() !=null) {
+                if (data.getValue() != null) {
                     dataSnapshot = data;
-                }
-                else
-                    dataSnapshot =null;
+                } else
+                    dataSnapshot = null;
             }
 
             @Override
@@ -342,31 +371,8 @@ public class FireBaseCore {
 
             }
         });
-        return  dataSnapshot;
+        return dataSnapshot;
     }
-
-    private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallBack = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
-        @Override
-        public void onCodeSent(String s, PhoneAuthProvider.ForceResendingToken forceResendingToken) {
-            super.onCodeSent(s, forceResendingToken);
-            verificationId = s;
-        }
-
-        /** get the code sent by sms automatically **/
-        @Override
-        public void onVerificationCompleted(PhoneAuthCredential phoneAuthCredential) {
-            String code = phoneAuthCredential.getSmsCode();
-            if (code != null) {
-                verifyCode(code);
-            }
-        }
-
-        @Override
-        public void onVerificationFailed(FirebaseException e) {
-
-
-        }
-    };
 
     /*
     shrouq
@@ -377,12 +383,10 @@ public class FireBaseCore {
         //to add trips we should take snapshot from this path
         final String key = profilePath.push().getKey();
         trip.setTripId(key);
-
         profilePath.child(key).setValue(trip).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                if(task.isSuccessful())
-                {
+                if (task.isSuccessful()) {
 
                 }
             }
@@ -390,29 +394,38 @@ public class FireBaseCore {
 
     }
 
-//    public String getStrTime() {
-//        rootDB.child("users")
-//                .child("trips")
-//                .child("strTime")
-//                .child(auth.getCurrentUser().getUid()
-//                )
-//                .addValueEventListener(new ValueEventListener() {
-//                    @Override
-//                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                        for (DataSnapshot tripSnapShot : dataSnapshot.getChildren()) {
-////                            Trip trip =  tripSnapShot.getValue(Trip.class);
-////                            addTrip(trip);
-//                            Trip trip= dataSnapshot.getValue(Trip.class);
-//                            System.out.println(trip);
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//                    }
-//                });
-//        return null;
-//    }
+    public void checkCurrentUser(SplashContract.PresenterInterface splashInterface) {
+        currentUser = auth.getCurrentUser();
+        if (currentUser != null) {
+            splashInterface.replayByChangeActivty(true);
+        } else {
+            splashInterface.replayByChangeActivty(false);
+        }
+    }
+
+    private void addTripToList(Trip t) {
+        recievedTrips.add(t);
+    }
+
+    public void getTripsForCurrentUser(final OnTripsLoaded onTripsLoaded) {
+        rootDB.child("users")
+                .child("trips")
+                .child(auth.getCurrentUser().getUid())
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        for (DataSnapshot tripSnapShot : dataSnapshot.getChildren()) {
+                            addTripToList(tripSnapShot.getValue(Trip.class));
+                        }
+                        onTripsLoaded.onTripsLoaded(recievedTrips);
+                        Log.d("firebase", "onDataChange: \n" + recievedTrips);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+    }
 
 }

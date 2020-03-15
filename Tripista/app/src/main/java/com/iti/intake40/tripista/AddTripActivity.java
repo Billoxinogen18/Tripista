@@ -1,8 +1,5 @@
 package com.iti.intake40.tripista;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.AlarmManager;
 import android.app.DatePickerDialog;
 import android.app.PendingIntent;
@@ -10,11 +7,8 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -23,6 +17,9 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.common.api.Status;
 import com.google.android.libraries.places.api.Places;
@@ -35,35 +32,13 @@ import com.iti.intake40.tripista.core.model.Trip;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Date;
 
-public class AddTripActivity extends AppCompatActivity{
-    private TextView info;
-    private TextView text;
-    private Button addTripBtn;
-    private FireBaseCore core;
-    private String name;
-    private Button timeBtn;
-    private Button dateBtn;
-    public Trip tripModel;
-    DatePickerDialog datePicker;
-    DatePickerDialog datePicker2;
-    TimePickerDialog timePicker;
-    TimePickerDialog timePicker2;
-
-    private int mYear, mMonth, mDay, hour, min, sec;
-    private int mYear2, mMonth2, mDay2, hour2, minute2, sec2;
-
-    Calendar cal;
-    Calendar cal2;
-    Calendar now;
-    Calendar current;
+public class AddTripActivity extends AppCompatActivity {
     final static int RQS_1 = 1;
-    public int RQS ;
-    String TAG = "place";
+    public Trip tripModel;
+    public int RQS;
     public String startPlace;
     public String endPlace;
     public String backStartPlace;
@@ -74,24 +49,38 @@ public class AddTripActivity extends AppCompatActivity{
     public String strTime;
     public String backStrDate;
     public String backStrTime;
-    String[] routes;
     public Spinner mSpinner;
-    private ArrayAdapter mAdapter;
+    public String coordinates;
+    DatePickerDialog datePicker;
+    DatePickerDialog datePicker2;
+    TimePickerDialog timePicker;
+    TimePickerDialog timePicker2;
+    Calendar cal;
+    Calendar cal2;
+    Calendar now;
+    Calendar current;
+    String TAG = "place";
+    String[] routes;
     Button backDateBtn;
     Button backTimeBtn;
     AutocompleteSupportFragment startAutoCompleteFragment;
     AutocompleteSupportFragment endAutoCompleteFragment;
     String flag;
-
-
+    private TextView info;
+    private TextView text;
+    private Button addTripBtn;
+    private FireBaseCore core;
+    private String name;
+    private Button timeBtn;
+    private Button dateBtn;
+    private int mYear, mMonth, mDay, hour, min, sec;
+    private int mYear2, mMonth2, mDay2, hour2, minute2, sec2;
+    private ArrayAdapter mAdapter;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)  {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        this.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON|
-//                WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD|
-//                WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED|
-//                WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+
         tripModel = new Trip();
         cal = Calendar.getInstance();
         cal2 = Calendar.getInstance();
@@ -157,113 +146,112 @@ public class AddTripActivity extends AppCompatActivity{
 
     }
 
-    public void setViews(){
-    setContentView(R.layout.activity_add_trip);
-    addTripBtn = findViewById(R.id.addTrip);
-    text = findViewById(R.id.Name);
+    public void setViews() {
+        setContentView(R.layout.activity_add_trip);
+        addTripBtn = findViewById(R.id.addTrip);
+        text = findViewById(R.id.Name);
         info = findViewById(R.id.info);
-    dateBtn = findViewById(R.id.dateBtn);
-    backDateBtn = findViewById(R.id.backDate);
-    backTimeBtn = findViewById(R.id.backTime);
-    startAutoCompleteFragment = (AutocompleteSupportFragment)
-            getSupportFragmentManager().findFragmentById(R.id.startfragment);
+        dateBtn = findViewById(R.id.dateBtn);
+        backDateBtn = findViewById(R.id.backDate);
+        backTimeBtn = findViewById(R.id.backTime);
+        startAutoCompleteFragment = (AutocompleteSupportFragment)
+                getSupportFragmentManager().findFragmentById(R.id.startfragment);
 
-    endAutoCompleteFragment = (AutocompleteSupportFragment)
-            getSupportFragmentManager().findFragmentById(R.id.endfragment);
-    backDateBtn.setVisibility(View.GONE);
-    backTimeBtn.setVisibility(View.GONE);
+        endAutoCompleteFragment = (AutocompleteSupportFragment)
+                getSupportFragmentManager().findFragmentById(R.id.endfragment);
+        backDateBtn.setVisibility(View.GONE);
+        backTimeBtn.setVisibility(View.GONE);
 
 
-}
+    }
 
-    public void setmSpinner(){
-    Spinner s1 = (Spinner) findViewById(R.id.routeSpinner);
-    routes = getResources().getStringArray(R.array.routes_array);
+    public void setmSpinner() {
+        Spinner s1 = (Spinner) findViewById(R.id.routeSpinner);
+        routes = getResources().getStringArray(R.array.routes_array);
 
-    ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-            android.R.layout.select_dialog_multichoice, routes);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                android.R.layout.select_dialog_multichoice, routes);
 
-    s1.setAdapter(adapter);
-    s1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-        @Override
-        public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-            String text = arg0.getSelectedItem().toString();
-            if (text.equalsIgnoreCase("round trip")) {
-                flag = "round";
-                backDateBtn.setVisibility(View.VISIBLE);
-                backTimeBtn.setVisibility(View.VISIBLE);
-            } else {
-                flag = "oneWay";
-                backDateBtn.setVisibility(View.GONE);
-                backTimeBtn.setVisibility(View.GONE);
+        s1.setAdapter(adapter);
+        s1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+                String text = arg0.getSelectedItem().toString();
+                if (text.equalsIgnoreCase("round trip")) {
+                    flag = "round";
+                    backDateBtn.setVisibility(View.VISIBLE);
+                    backTimeBtn.setVisibility(View.VISIBLE);
+                } else {
+                    flag = "oneWay";
+                    backDateBtn.setVisibility(View.GONE);
+                    backTimeBtn.setVisibility(View.GONE);
+                }
+
             }
 
-        }
+            @Override
+            public void onNothingSelected(AdapterView<?> arg0) {
+            }
+        });
 
-        @Override
-        public void onNothingSelected(AdapterView<?> arg0) {
-        }
-    });
-
-}
-
-    public void getPlaces(){
-    // Initialize Places.
-    String apiKey = "AIzaSyDIHrWWuzN2st31DRm6G9KnULCEKSpcV-A";
-    Places.initialize(getApplicationContext(), apiKey);
-    // Create a new Places client instance.
-    PlacesClient placesClient = Places.createClient(this);
-
-    if (!Places.isInitialized()) {
-        Places.initialize(getApplicationContext(), "YOUR_API_KEY");
     }
+
+    public void getPlaces() {
+        // Initialize Places.
+        String apiKey = "AIzaSyDIHrWWuzN2st31DRm6G9KnULCEKSpcV-A";
+        Places.initialize(getApplicationContext(), apiKey);
+        // Create a new Places client instance.
+        PlacesClient placesClient = Places.createClient(this);
+
+        if (!Places.isInitialized()) {
+            Places.initialize(getApplicationContext(), "YOUR_API_KEY");
+        }
 
 
 //StartAutoComplete
-    startAutoCompleteFragment.setPlaceFields(Arrays.asList(com.google.android.libraries.places.api.model.Place.Field.ID.ID, com.google.android.libraries.places.api.model.Place.Field.NAME));
-    startAutoCompleteFragment.setCountry("Eg");
-    startAutoCompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
-        @Override
-        public void onPlaceSelected(@NonNull Place place) {
-            System.out.println(place.getName());
+        startAutoCompleteFragment.setPlaceFields(Arrays.asList(com.google.android.libraries.places.api.model.Place.Field.ID.ID, com.google.android.libraries.places.api.model.Place.Field.NAME));
+        startAutoCompleteFragment.setCountry("Eg");
+        startAutoCompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(@NonNull Place place) {
+                System.out.println(place.getName());
 
-            Log.i(TAG, "Place: " + place.getName() + ", " + place.getId());
-            startPlace = place.getName();
-            backEndPlace = startPlace;
+                Log.i(TAG, "Place: " + place.getName() + ", " + place.getId());
+                startPlace = place.getName();
+                backEndPlace = startPlace;
 
-        }
+            }
 
-        @Override
-        public void onError(@NonNull Status status) {
-            Log.i(TAG, "An error occurred: " + status);
-        }
-    });
+            @Override
+            public void onError(@NonNull Status status) {
+                Log.i(TAG, "An error occurred: " + status);
+            }
+        });
 
 //EndAutoComplete
-    endAutoCompleteFragment.setPlaceFields(Arrays.asList(com.google.android.libraries.places.api.model.Place.Field.ID.ID, com.google.android.libraries.places.api.model.Place.Field.NAME));
-    endAutoCompleteFragment.setCountry("Eg");
-    endAutoCompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
-        @Override
-        public void onPlaceSelected(@NonNull Place place) {
-            System.out.println(place.getName());
-            Log.i(TAG, "Place: " + place.getName() + ", " + place.getId());
-            endPlace = place.getName();
-            backStartPlace = endPlace;
+        endAutoCompleteFragment.setPlaceFields(Arrays.asList(com.google.android.libraries.places.api.model.Place.Field.ID.ID, com.google.android.libraries.places.api.model.Place.Field.NAME));
+        endAutoCompleteFragment.setCountry("Eg");
+        endAutoCompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(@NonNull Place place) {
+                System.out.println(place.getName());
+                Log.i(TAG, "Place: " + place.getName() + ", " + place.getId());
+                endPlace = place.getName();
+                backStartPlace = endPlace;
+            }
 
-        }
-
-        @Override
-        public void onError(@NonNull Status status) {
-            Log.i(TAG, "An error occurred: " + status);
+            @Override
+            public void onError(@NonNull Status status) {
+                Log.i(TAG, "An error occurred: " + status);
 
 
-        }
-    });
-}
+            }
+        });
+    }
 
     public void setBackDate(View view) {
-   backTripDate();
-           }
+        backTripDate();
+    }
 
     public void setbackTime(View view) {
         backTripTime();
@@ -271,7 +259,7 @@ public class AddTripActivity extends AppCompatActivity{
     }
 
     public void setDate(View view) {
-    tripDate();
+        tripDate();
     }
 
     public void setTime(View view) {
@@ -280,35 +268,35 @@ public class AddTripActivity extends AppCompatActivity{
 
     public void addTrip(View view) {
         name = text.getText().toString();
-    if(flag == "round") {
-    setRoundTrip();
-        }else{
-   setOneWayTrip();
+        if (flag == "round") {
+            setRoundTrip();
+        } else {
+            setOneWayTrip();
 
-            }
+        }
     }
 
     public void setOneWayTrip() {
-        if (cal.compareTo(current) <= 0 || strDate == null || strTime == null||name == null || startPlace == null || endPlace == null) {
+        if (cal.compareTo(current) <= 0 || strDate == null || strTime == null || name == null || startPlace == null || endPlace == null) {
             Toast.makeText(getApplicationContext(),
                     "Invalid Data",
                     Toast.LENGTH_LONG).show();
 
         } else if (cal.compareTo(current) > 0 && strDate != null && strTime != null && name != null && startPlace != null && endPlace != null) {
 
-          addTripToFirebase();
+            addTripToFirebase();
             core.addTrip(tripModel);
 
         }
     }
 
-    public void setRoundTrip(){
-            if (cal.compareTo(current) <= 0 || cal2.compareTo(current) <= 0 || cal2.compareTo(cal) <= 0 ||name == null || startPlace == null || endPlace == null || strDate == null || strTime == null || backStrDate == null || backStrTime == null || cal2.compareTo(cal) == 0) {
+    public void setRoundTrip() {
+        if (cal.compareTo(current) <= 0 || cal2.compareTo(current) <= 0 || cal2.compareTo(cal) <= 0 || name == null || startPlace == null || endPlace == null || strDate == null || strTime == null || backStrDate == null || backStrTime == null || cal2.compareTo(cal) == 0) {
             Toast.makeText(getApplicationContext(),
                     "Invalid Data"
-                    ,Toast.LENGTH_LONG).show();
+                    , Toast.LENGTH_LONG).show();
 
-        } else if (cal.compareTo(current) > 0 && cal2.compareTo(current) > 0 && strDate != null  && strTime != null && backStrTime != null && backStrDate != null && cal2.compareTo(cal) > 0 && name != null && startPlace != null && endPlace != null) {
+        } else if (cal.compareTo(current) > 0 && cal2.compareTo(current) > 0 && strDate != null && strTime != null && backStrTime != null && backStrDate != null && cal2.compareTo(cal) > 0 && name != null && startPlace != null && endPlace != null) {
 
             addTripToFirebase();
             tripModel.setBackDate(backStrDate);
@@ -316,10 +304,10 @@ public class AddTripActivity extends AppCompatActivity{
             tripModel.setBackStartPoint(backStartPlace);
             tripModel.setBackEndPoint(backEndPlace);
             setAlarm(cal2);
-                core.addTrip(tripModel);
+            core.addTrip(tripModel);
 
         }
-}
+    }
 
     public void backTripTime() {
         hour2 = cal2.get(Calendar.HOUR_OF_DAY);
@@ -369,21 +357,20 @@ public class AddTripActivity extends AppCompatActivity{
 
     }
 
-    public void addTripToFirebase(){
-     core = FireBaseCore.getInstance();
-     tripModel.setTitle(name);
-     tripModel.setStartPoint(startPlace);
-     tripModel.setEndPoint(endPlace);
-     tripModel.setDate(strDate);
-     tripModel.setTime(strTime);
+    public void addTripToFirebase() {
+        core = FireBaseCore.getInstance();
+        tripModel.setTitle(name);
+        tripModel.setStartPoint(startPlace);
+        tripModel.setEndPoint(endPlace);
+        tripModel.setDate(strDate);
+        tripModel.setTime(strTime);
 
-     Toast.makeText(getApplicationContext(),
-             "valid Date/Time",
-             Toast.LENGTH_LONG).show();
-     setAlarm(cal);
+        Toast.makeText(getApplicationContext(),
+                "valid Date/Time",
+                Toast.LENGTH_LONG).show();
+        setAlarm(cal);
 
-       }
-
+    }
 
 
 }

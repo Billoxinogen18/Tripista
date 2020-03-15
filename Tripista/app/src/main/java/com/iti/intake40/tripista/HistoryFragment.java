@@ -6,12 +6,24 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.iti.intake40.tripista.core.model.Trip;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class HistoryFragment extends Fragment {
+
+    private RecyclerView historyRecyclerView;
+    private RecyclerView.Adapter adapter;
+    private RecyclerView.LayoutManager layoutManager;
+    private List<Trip> tripList = new ArrayList<>();
 
     public HistoryFragment() {
         // Required empty public constructor
@@ -22,6 +34,19 @@ public class HistoryFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_history, container, false);
+        final View rootView = inflater.inflate(R.layout.fragment_history, container, false);
+        //test data
+        for (int i = 10; i < 20; i++) {
+            Trip t = new Trip("date" + i, "time" + i);
+            tripList.add(t);
+        }
+        historyRecyclerView = rootView.findViewById(R.id.history_rc);
+        historyRecyclerView.setHasFixedSize(true);
+        layoutManager = new LinearLayoutManager(getContext());
+        historyRecyclerView.setLayoutManager(layoutManager);
+        adapter = new UpcommingTripAdapter(getContext(), tripList);
+        historyRecyclerView.setAdapter(adapter);
+
+        return rootView;
     }
 }

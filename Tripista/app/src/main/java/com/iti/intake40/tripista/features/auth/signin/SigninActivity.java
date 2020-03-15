@@ -2,25 +2,15 @@ package com.iti.intake40.tripista.features.auth.signin;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.preference.SwitchPreference;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.google.android.gms.tasks.TaskExecutors;
-import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.PhoneAuthCredential;
-import com.google.firebase.auth.PhoneAuthProvider;
 import com.iti.intake40.tripista.R;
 import com.iti.intake40.tripista.core.FireBaseCore;
-import com.iti.intake40.tripista.features.auth.home.HomeActivity;
-
-import java.util.concurrent.TimeUnit;
 
 public class SigninActivity extends AppCompatActivity implements Delegate {
     public final static String EMAIL_ARG = "Email";
@@ -38,22 +28,12 @@ public class SigninActivity extends AppCompatActivity implements Delegate {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
         core = FireBaseCore.getInstance();
-        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
-        if (currentUser != null) {
-            Intent gotoHomeIntent = new Intent(SigninActivity.this, HomeActivity.class);
-            gotoHomeIntent.putExtra("user", currentUser);
-            startActivity(gotoHomeIntent);
-            finish();
-        } else {
-            mgr = getSupportFragmentManager();
-            trns = mgr.beginTransaction();
-            signIn = new SignInFragment();
-            trns.replace(R.id.container, signIn, "signFragment");
-            trns.commit();
-        }
+        mgr = getSupportFragmentManager();
+        trns = mgr.beginTransaction();
+        signIn = new SignInFragment();
+        trns.replace(R.id.container, signIn, "signFragment");
+        trns.commit();
     }
-
 
     @Override
     public void setData(String data) {

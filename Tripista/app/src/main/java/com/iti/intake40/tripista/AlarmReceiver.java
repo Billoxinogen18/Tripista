@@ -12,20 +12,13 @@ import androidx.annotation.RequiresApi;
 
 import com.iti.intake40.tripista.core.FireBaseCore;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
-
-import static android.content.Context.ALARM_SERVICE;
-import static com.iti.intake40.tripista.AddTripActivity.RQS_1;
 
 public class AlarmReceiver extends BroadcastReceiver {
     int RQS;
-    private FireBaseCore core;
     Date date;
+    private FireBaseCore core;
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
@@ -33,11 +26,11 @@ public class AlarmReceiver extends BroadcastReceiver {
         if (Intent.ACTION_BOOT_COMPLETED.equals(arg1.getAction())) {
 
             Calendar myAlarmDate = Calendar.getInstance();
-            myAlarmDate.set(2020, 2, 15, 16 , 21
-                    ,0);
-            AlarmManager tripAlarmManager =(AlarmManager)arg0.getSystemService(Context.ALARM_SERVICE);
+            myAlarmDate.set(2020, 2, 15, 16, 21
+                    , 0);
+            AlarmManager tripAlarmManager = (AlarmManager) arg0.getSystemService(Context.ALARM_SERVICE);
             Intent tripAlarmIntent = new Intent(arg0, AlertActivity.class);
-            PendingIntent tripAlarmPendingIntent = PendingIntent.getActivity(arg0, 0,tripAlarmIntent, 0);
+            PendingIntent tripAlarmPendingIntent = PendingIntent.getActivity(arg0, 0, tripAlarmIntent, 0);
             tripAlarmManager.setExact(AlarmManager.RTC_WAKEUP, myAlarmDate.getTimeInMillis(), tripAlarmPendingIntent);
             Toast.makeText(arg0,
                     "Invalid Date/Time",
@@ -51,8 +44,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         }
 
 
-
     }
 
-    }
+}
 }

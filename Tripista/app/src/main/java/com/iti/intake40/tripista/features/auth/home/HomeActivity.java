@@ -1,6 +1,7 @@
 package com.iti.intake40.tripista.features.auth.home;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,19 +18,27 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.bumptech.glide.Glide;
 import com.facebook.login.LoginManager;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
+import com.iti.intake40.tripista.AddTripActivity;
 import com.iti.intake40.tripista.HistoryFragment;
 import com.iti.intake40.tripista.R;
 import com.iti.intake40.tripista.UpcommingFragment;
 import com.iti.intake40.tripista.core.FireBaseCore;
+import com.iti.intake40.tripista.core.model.Trip;
 import com.iti.intake40.tripista.core.model.UserModel;
 import com.iti.intake40.tripista.features.auth.signin.SigninActivity;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
+import static com.iti.intake40.tripista.features.auth.signin.PhoneVerficiation.PREF_NAME;
 import static com.iti.intake40.tripista.features.auth.signin.SigninActivity.PHONE_ARG;
 
-public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, HomeContract.ViewInterface {
+public class HomeActivity extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener,
+        HomeContract.ViewInterface {
 
     private static final String TAG = "Home";
     private Toolbar toolbar;
@@ -42,6 +51,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private URL img_value = null;
     private FireBaseCore core;
     private HomeContract.PresenterInterface homePresenter;
+    private FloatingActionButton goToAddTrip;
+    private List<Trip> trips = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +68,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         profilePictureView = header.findViewById(R.id.nav_profile_image);
         userNameTextView = header.findViewById(R.id.nav_header_userName);
         emailTextView = header.findViewById(R.id.nav_header_email);
-
+        goToAddTrip = findViewById(R.id.floatingActionButton);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar,
                 R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         //handle toggle button click
@@ -76,13 +87,27 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         //set prsenter and firebase core
         core = FireBaseCore.getInstance();
         homePresenter = new HomePresenter(core, this);
-        Intent intent = getIntent();
-        if ( intent.getStringExtra(PHONE_ARG)!= null) {
-            String phone = intent.getStringExtra(PHONE_ARG);
+        SharedPreferences preferences = getSharedPreferences(PREF_NAME, 0);
+        String phone = preferences.getString(PHONE_ARG, "");
+        if (!phone.equals("")) {
             homePresenter.fetchUserInfoByPhone(phone);
         } else {
             homePresenter.fetchUserInFo();
         }
+
+        goToAddTrip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(HomeActivity.this, AddTripActivity.class);
+                startActivity(intent);
+            }
+        });
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
 
     }
 
@@ -93,36 +118,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         } else {
             super.onBackPressed();
         }
-
-        /*
-        int count = getSupportFragmentManager().getBackStackEntryCount();
-
-        if (count == 0) {
-            super.onBackPressed();
-            //additional code
-            AlertDialog signout = new AlertDialog.Builder(this)
-                    .setTitle("sign out")
-                    .setMessage("Are you sure you want to sign out ?")
-
-                    // Specifying a listener allows you to take an action before dismissing the dialog.
-                    // The dialog is automatically dismissed when a dialog button is clicked.
-                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            // Continue with delete operation
-                        }
-                    })
-
-                    // A null listener allows the button to dismiss the dialog and take no further action.
-                    .setNegativeButton(android.R.string.no, null)
-                    .setIcon(android.R.drawable.ic_dialog_alert)
-                    .show();
-        } else {
-            getSupportFragmentManager().popBackStack();
-        }
-
-         */
     }
-
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
@@ -144,6 +140,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 //go to signin screen
                 homePresenter.signOut();
                 LoginManager.getInstance().logOut();
+                SharedPreferences preferences = getSharedPreferences(PREF_NAME, 0);
+                preferences.edit().clear().commit();
                 Intent signoutIntent = new Intent(this, SigninActivity.class);
                 startActivity(signoutIntent);
                 finish();
