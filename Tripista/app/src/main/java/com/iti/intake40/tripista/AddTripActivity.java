@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -19,6 +20,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.common.api.Status;
@@ -93,12 +95,13 @@ public class AddTripActivity extends AppCompatActivity {
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void setAlarm(Calendar targetCal) {
         Intent intent = new Intent(getBaseContext(), AlarmReceiver.class);
         final int id = (int) System.currentTimeMillis();
         PendingIntent pendingIntent = PendingIntent.getBroadcast(getBaseContext(), id, intent, 0);
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        alarmManager.set(AlarmManager.RTC_WAKEUP, targetCal.getTimeInMillis(), pendingIntent);
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, targetCal.getTimeInMillis(), pendingIntent);
 
 
     }
@@ -204,7 +207,7 @@ public class AddTripActivity extends AppCompatActivity {
         PlacesClient placesClient = Places.createClient(this);
 
         if (!Places.isInitialized()) {
-            Places.initialize(getApplicationContext(), "YOUR_API_KEY");
+            Places.initialize(getApplicationContext(), "AIzaSyDIHrWWuzN2st31DRm6G9KnULCEKSpcV-A");
         }
 
 
@@ -266,16 +269,20 @@ public class AddTripActivity extends AppCompatActivity {
         tripTime();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public void addTrip(View view) {
         name = text.getText().toString();
         if (flag == "round") {
+            setOneWayTrip();
             setRoundTrip();
+
         } else {
             setOneWayTrip();
 
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public void setOneWayTrip() {
         if (cal.compareTo(current) <= 0 || strDate == null || strTime == null || name == null || startPlace == null || endPlace == null) {
             Toast.makeText(getApplicationContext(),
@@ -286,10 +293,11 @@ public class AddTripActivity extends AppCompatActivity {
 
             addTripToFirebase();
             core.addTrip(tripModel);
-
+          setAlarm(cal);
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public void setRoundTrip() {
         if (cal.compareTo(current) <= 0 || cal2.compareTo(current) <= 0 || cal2.compareTo(cal) <= 0 || name == null || startPlace == null || endPlace == null || strDate == null || strTime == null || backStrDate == null || backStrTime == null || cal2.compareTo(cal) == 0) {
             Toast.makeText(getApplicationContext(),
@@ -303,9 +311,8 @@ public class AddTripActivity extends AppCompatActivity {
             tripModel.setBackTime(backStrTime);
             tripModel.setBackStartPoint(backStartPlace);
             tripModel.setBackEndPoint(backEndPlace);
-            setAlarm(cal2);
             core.addTrip(tripModel);
-
+            setAlarm(cal2);
         }
     }
 
@@ -368,7 +375,6 @@ public class AddTripActivity extends AppCompatActivity {
         Toast.makeText(getApplicationContext(),
                 "valid Date/Time",
                 Toast.LENGTH_LONG).show();
-        setAlarm(cal);
 
     }
 

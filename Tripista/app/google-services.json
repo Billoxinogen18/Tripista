@@ -1,43 +1,48 @@
-package com.iti.intake40.tripista;
-
-import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
-import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
-
-
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link EndAutoCompleteFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class EndAutoCompleteFragment extends AutocompleteSupportFragment {
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private static final String ARG_PARAM1 = "param1";
-private static final String ARG_PARAM2 = "param2";
-
-// TODO: Rename and change types of parameters
-private String mParam1;
-private String mParam2;
-
-public EndAutoCompleteFragment() {
-// Required empty public constructor
+{
+  "project_info": {
+    "project_number": "33020784417",
+    "firebase_url": "https://tripista-74c85.firebaseio.com",
+    "project_id": "tripista-74c85",
+    "storage_bucket": "tripista-74c85.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:33020784417:android:0641e5a7fa54cc5e6dd860",
+        "android_client_info": {
+          "package_name": "com.iti.intake40.tripista"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "33020784417-bibvkeg06jd7ml1c4gv6vnc2ipglfjlg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.iti.intake40.tripista",
+            "certificate_hash": "0b441e8dcf8b00a99b8c598b5c740ae84c6113b4"
+          }
+        },
+        {
+          "client_id": "33020784417-0d1rfpsj77tvreokredie239ua0mculi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDE9fxP7sernImHPGVNjI6JimiKG5GgpB0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "33020784417-0d1rfpsj77tvreokredie239ua0mculi.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
 }
-
-/**
- * Use this factory method to create a new instance of
- * this fragment using the provided parameters.
- *
- * @param param1 Parameter 1.
- * @param param2 Parameter 2.
- * @return A new instance of fragment EndAutoCompleteFragment.
- */
-// TODO: Rename and change types and number of parameters
-public static EndAutoCompleteFragment newInstance(String param1, String param2) {
-E
