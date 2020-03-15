@@ -405,19 +405,19 @@ public class FireBaseCore {
      */
     ArrayList<Trip> recievedTrips = new ArrayList<>();
 
-    private void addTripToList(Trip t) {
-        recievedTrips.add(t);
-    }
-
     public void getTripsForCurrentUser(final OnTripsLoaded onTripsLoaded) {
         rootDB.child("users")
                 .child("trips")
                 .child(auth.getCurrentUser().getUid())
+                //check that title is equal to test3
+                .orderByChild("title")
+                .equalTo("test3")
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        recievedTrips.clear();
                         for (DataSnapshot tripSnapShot : dataSnapshot.getChildren()) {
-                            addTripToList(tripSnapShot.getValue(Trip.class));
+                            recievedTrips.add(tripSnapShot.getValue(Trip.class));
                         }
                         onTripsLoaded.onTripsLoaded(recievedTrips);
                         Log.d("firebase", "onDataChange: \n" + recievedTrips);
@@ -429,5 +429,5 @@ public class FireBaseCore {
                     }
                 });
     }
-    
+
 }
