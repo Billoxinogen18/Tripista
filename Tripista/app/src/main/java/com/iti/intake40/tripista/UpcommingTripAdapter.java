@@ -43,6 +43,10 @@ public class UpcommingTripAdapter extends RecyclerView.Adapter<UpcommingTripAdap
         this.currentTrip = this.trips.get(position);
         holder.tripDate.setText(currentTrip.getDate());
         holder.tripTime.setText(currentTrip.getTime());
+        holder.tripTitle.setText(currentTrip.getTitle());
+        holder.tripType.setText(currentTrip.getType());
+        holder.startPoint.setText(currentTrip.getStartPoint());
+        holder.endPoint.setText(currentTrip.getEndPoint());
 
         holder.rootLayout.setOnClickListener(new View.OnClickListener() {
             @Override
