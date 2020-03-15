@@ -22,13 +22,12 @@ import java.util.List;
  */
 public class UpcommingFragment extends Fragment {
 
+    private static final String TAG = "upcomming";
     private RecyclerView upcommingRecyclerView;
     private RecyclerView.Adapter adapter;
     private RecyclerView.LayoutManager layoutManager;
     private List<Trip> tripList = new ArrayList<>();
-
     private FireBaseCore core = FireBaseCore.getInstance();
-    private static final String TAG = "upcomming";
 
     public UpcommingFragment() {
         // Required empty public constructor

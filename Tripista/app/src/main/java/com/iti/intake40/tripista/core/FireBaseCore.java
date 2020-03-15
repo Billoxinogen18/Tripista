@@ -48,6 +48,10 @@ import static androidx.constraintlayout.widget.Constraints.TAG;
 public class FireBaseCore {
     //make singletone class
     public static FireBaseCore core;
+    /*
+    remon
+     */
+    ArrayList<Trip> recievedTrips = new ArrayList<>();
     private DatabaseReference rootDB;
     private StorageReference rootStorage;
     private FirebaseUser currentUser;

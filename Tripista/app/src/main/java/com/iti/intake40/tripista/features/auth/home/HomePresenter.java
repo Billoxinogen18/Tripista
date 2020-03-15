@@ -12,9 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HomePresenter implements HomeContract.PresenterInterface {
-    FireBaseCore core;
-    private HomeContract.ViewInterface home;
     private static final String TAG = "HomePresenter";
+    FireBaseCore core;
+    List<Trip> myTrips = new ArrayList<>();
+    private HomeContract.ViewInterface home;
 
     public HomePresenter(FireBaseCore core, HomeActivity home) {
         this.core = core;
@@ -61,9 +62,7 @@ public class HomePresenter implements HomeContract.PresenterInterface {
         core.getUserInfoByPhone(this, number);
     }
 
-    List<Trip> myTrips = new ArrayList<>();
-
-    public List<Trip> getUserTrips(){
+    public List<Trip> getUserTrips() {
         core.getTripsForCurrentUser(new OnTripsLoaded() {
             @Override
             public void onTripsLoaded(List<Trip> trips) {
