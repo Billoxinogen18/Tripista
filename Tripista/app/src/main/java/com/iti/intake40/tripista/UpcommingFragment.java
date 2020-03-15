@@ -1,6 +1,7 @@
 package com.iti.intake40.tripista;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,7 +10,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.iti.intake40.tripista.core.FireBaseCore;
 import com.iti.intake40.tripista.core.model.Trip;
 
 import java.util.ArrayList;
@@ -26,7 +27,8 @@ public class UpcommingFragment extends Fragment {
     private RecyclerView.LayoutManager layoutManager;
     private List<Trip> tripList = new ArrayList<>();
 
-    private FloatingActionButton addButton;
+    private FireBaseCore core = FireBaseCore.getInstance();
+    private static final String TAG = "upcomming";
 
     public UpcommingFragment() {
         // Required empty public constructor
@@ -38,11 +40,7 @@ public class UpcommingFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         final View rootView = inflater.inflate(R.layout.fragment_upcomming, container, false);
-        //test data
-        for (int i = 0; i < 10; i++) {
-            Trip t = new Trip("date" + i, "time" + i);
-            tripList.add(t);
-        }
+
         upcommingRecyclerView = rootView.findViewById(R.id.upcommming_rc);
         upcommingRecyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getContext());
@@ -50,19 +48,16 @@ public class UpcommingFragment extends Fragment {
         adapter = new UpcommingTripAdapter(getContext(), tripList);
         upcommingRecyclerView.setAdapter(adapter);
 
+        List<Trip> recTrips = new ArrayList<>();
+        core.getTripsForCurrentUser(new OnTripsLoaded() {
+            @Override
+            public void onTripsLoaded(List<Trip> trips) {
+                tripList.addAll(trips);
+                adapter.notifyDataSetChanged();
+                Log.d(TAG, "onTripsLoaded: " + trips.toString());
+            }
+        });
 
-//        addButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-////                getActivity().getSupportFragmentManager()
-////                        .beginTransaction()
-////                        .replace(R.id.fragment_container, new AddTripFragment())
-////                        .addToBackStack("add_trip")
-////                        .commit();
-//                Intent intent = new Intent(getContext(),AddTripActivity.class);
-//                startActivity(intent);
-//            }
-//        });
         return rootView;
     }
 
