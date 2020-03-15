@@ -37,7 +37,10 @@ import com.iti.intake40.tripista.features.auth.signin.SigninContract;
 import com.iti.intake40.tripista.features.auth.signup.SignupContract;
 import com.iti.intake40.tripista.features.auth.splash.SplashContract;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 import static androidx.constraintlayout.widget.Constraints.TAG;
@@ -403,7 +406,8 @@ public class FireBaseCore {
     remon
 
      */
-    ArrayList<Trip> recievedTrips = new ArrayList<>();
+    ArrayList<Trip> upcommingTrips = new ArrayList<>();
+    ArrayList<Trip> historyTrips = new ArrayList<>();
 
     public void getTripsForCurrentUser(final OnTripsLoaded onTripsLoaded) {
         rootDB.child("users")
@@ -415,12 +419,38 @@ public class FireBaseCore {
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        recievedTrips.clear();
+                        upcommingTrips.clear();
                         for (DataSnapshot tripSnapShot : dataSnapshot.getChildren()) {
-                            recievedTrips.add(tripSnapShot.getValue(Trip.class));
+                            upcommingTrips.add(tripSnapShot.getValue(Trip.class));
                         }
-                        onTripsLoaded.onTripsLoaded(recievedTrips);
-                        Log.d("firebase", "onDataChange: \n" + recievedTrips);
+                        onTripsLoaded.onTripsLoaded(upcommingTrips);
+                        Log.d("firebase", "onDataChange: \n" + upcommingTrips);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+    }
+
+    public void getHistoryTripsForCurrentUser(final OnTripsLoaded onTripsLoaded){
+        Date c = Calendar.getInstance().getTime();
+        SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
+        String formattedDate = df.format(c);
+
+        rootDB.child("users")
+                .child("trips")
+                .child(auth.getCurrentUser().getUid())
+                .endAt(formattedDate)
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        historyTrips.clear();
+                        for (DataSnapshot tripSnapShot : dataSnapshot.getChildren()) {
+                            historyTrips.add(tripSnapShot.getValue(Trip.class));
+                        }
+                        onTripsLoaded.onTripsLoaded(historyTrips);
                     }
 
                     @Override
