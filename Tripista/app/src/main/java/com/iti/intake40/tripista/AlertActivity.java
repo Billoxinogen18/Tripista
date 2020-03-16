@@ -12,12 +12,8 @@ import android.content.Intent;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
-import android.view.View;
-import android.widget.Toast;
-
+import android.view.WindowManager;
 import androidx.appcompat.app.AlertDialog;
 
 
@@ -26,10 +22,24 @@ public class AlertActivity extends Activity {
     int notificationId = 0;
     Ringtone r;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // setContentView(R.layout.activity_alert);
+
+        getWindow().setFlags(
+                WindowManager.LayoutParams.FLAG_FULLSCREEN |
+                        WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
+                        WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
+                        WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON |
+                        WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY|
+                        WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN |
+                        WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
+                        WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
+                        WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON |
+                        WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
         notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
         r = RingtoneManager.getRingtone(this.getApplicationContext(), notification);
         r.play();
@@ -40,6 +50,12 @@ public class AlertActivity extends Activity {
     protected void onRestart() {
         super.onRestart();
         r.play();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
     }
 
     private void displayAlert() {
@@ -61,18 +77,30 @@ public class AlertActivity extends Activity {
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
 
-                        dialog.cancel();
+
                         r.stop();
                         NotificationManager notificationManager = (NotificationManager)
                                 getSystemService(Context.
                                         NOTIFICATION_SERVICE);
                         //   notificationManager.cancelAll();
                         notificationManager.cancel(notificationId);
+                       dialog.cancel();
+                        android.os.Process.killProcess(android.os.Process.myPid());
                         finish();
+
+
                     }
-                });
+                }).setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                dialog.cancel();
+            }
+        });
         AlertDialog alert = builder.create();
+//        alert.setCanceledOnTouchOutside(false);
         alert.show();
+
+
     }
 
 
@@ -154,10 +182,11 @@ public class AlertActivity extends Activity {
 //        }
 //    }
     @Override
-    protected void onPause() {
-        super.onPause();
+    protected void onStop() {
+        super.onStop();
         r.stop();
     }
+
 
 
 }
