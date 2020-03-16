@@ -2,6 +2,7 @@ package com.iti.intake40.tripista;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,6 +24,7 @@ import java.util.List;
 
 public class UpcommingTripAdapter extends RecyclerView.Adapter<UpcommingTripAdapter.ViewHolder> {
 
+    private static final String TAG = "adapter";
     private final Context context;
     private List<Trip> trips;
     private Trip currentTrip;
@@ -45,10 +47,11 @@ public class UpcommingTripAdapter extends RecyclerView.Adapter<UpcommingTripAdap
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         this.currentTrip = this.trips.get(position);
+        Log.d(TAG, "onBindViewHolder: " + currentTrip.toString());
         holder.tripDate.setText(currentTrip.getDate());
         holder.tripTime.setText(currentTrip.getTime());
         holder.tripTitle.setText(currentTrip.getTitle());
-       // holder.tripType.setText(currentTrip.getType().toString());
+        holder.tripStatus.setText(currentTrip.getStatus().toString());
         holder.startPoint.setText(currentTrip.getStartPoint());
         holder.endPoint.setText(currentTrip.getEndPoint());
 
@@ -69,7 +72,7 @@ public class UpcommingTripAdapter extends RecyclerView.Adapter<UpcommingTripAdap
         private TextView tripDate;
         private TextView tripTime;
         private TextView tripTitle;
-        private TextView tripType;
+        private TextView tripStatus;
         private TextView startPoint;
         private TextView endPoint;
         private TextView distance;
@@ -82,7 +85,7 @@ public class UpcommingTripAdapter extends RecyclerView.Adapter<UpcommingTripAdap
             tripDate = itemView.findViewById(R.id.txt_trip_date);
             tripTime = itemView.findViewById(R.id.txt_trip_time);
             tripTitle = itemView.findViewById(R.id.txt_trip_title);
-            tripType = itemView.findViewById(R.id.txt_trip_type);
+            tripStatus = itemView.findViewById(R.id.txt_upcommingTrip_status);
             startPoint = itemView.findViewById(R.id.txt_start_pont);
             endPoint = itemView.findViewById(R.id.txt_end_point);
             distance = itemView.findViewById(R.id.txt_distance);

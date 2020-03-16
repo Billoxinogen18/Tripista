@@ -377,6 +377,8 @@ public class AddTripActivity extends AppCompatActivity {
         tripModel.setDate(strDate);
         tripModel.setTime(strTime);
         //set trip type to upcoming
+        tripModel.setStatus(Trip.Status.UPCOMMING);
+        //set trip type to round or one way
         Toast.makeText(getApplicationContext(),
                 "Trip added!",
                 Toast.LENGTH_LONG).show();
