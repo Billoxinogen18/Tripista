@@ -372,11 +372,12 @@ public class AddTripActivity extends AppCompatActivity {
         tripModel.setEndPoint(endPlace);
         tripModel.setDate(strDate);
         tripModel.setTime(strTime);
-
+        //set trip type to upcoming
         Toast.makeText(getApplicationContext(),
-                "valid Date/Time",
+                "Trip added!",
                 Toast.LENGTH_LONG).show();
-
+        //after the trip is added finish the activity
+            finish();
     }
 
 
