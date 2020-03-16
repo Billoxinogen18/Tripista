@@ -46,6 +46,10 @@
     <string name="three_dots"><![CDATA[&#8942;]]></string>
     <string name="wrong_code">Wrong Code</string>
     <string name="no_account_related">no account related for this mobile</string>
+    <string name="trip_title">Trip title</string>
+    <string name="from">From</string>
+    <string name="destination">Destination</string>
+    <string name="return_details">Return details</string>
 
     <string-array name="routes_array">
 

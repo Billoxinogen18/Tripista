@@ -14,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -63,8 +64,8 @@ public class AddTripActivity extends AppCompatActivity {
     Calendar current;
     String TAG = "place";
     String[] routes;
-    Button backDateBtn;
-    Button backTimeBtn;
+    ImageButton backDateBtn;
+    ImageButton backTimeBtn;
     AutocompleteSupportFragment startAutoCompleteFragment;
     AutocompleteSupportFragment endAutoCompleteFragment;
     String flag;
@@ -73,8 +74,8 @@ public class AddTripActivity extends AppCompatActivity {
     private Button addTripBtn;
     private FireBaseCore core;
     private String name;
-    private Button timeBtn;
-    private Button dateBtn;
+    private ImageButton timeBtn;
+    private ImageButton dateBtn;
     private int mYear, mMonth, mDay, hour, min, sec;
     private int mYear2, mMonth2, mDay2, hour2, minute2, sec2;
     private ArrayAdapter mAdapter;
@@ -168,7 +169,7 @@ public class AddTripActivity extends AppCompatActivity {
 
     }
 
-    public void setmSpinner() {
+   public void setmSpinner() {
         Spinner s1 = (Spinner) findViewById(R.id.routeSpinner);
         routes = getResources().getStringArray(R.array.routes_array);
 
