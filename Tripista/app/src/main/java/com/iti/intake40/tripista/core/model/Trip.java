@@ -16,8 +16,8 @@ public class Trip {
     private String endPoint;
     private String backStartPoint;
     private String backEndPoint;
-    private int status; //upcomming / done / cancelled
-    private int type; //one way / round trip
+    private Status status; //upcomming / done / cancelled
+    private Type type; //one way / round trip
     private String latLng;
     private String backTime;
     private String backDate;
@@ -44,7 +44,7 @@ public class Trip {
     public Trip() {
     }
 
-    public Trip(String tripId, String title, String date, String time, String startPoint, String endPoint, String backStartPoint, String backEndPoint, int status, int type, String latLng, String backTime, String backDate, List<Note> notes) {
+    public Trip(String tripId, String title, String date, String time, String startPoint, String endPoint, String backStartPoint, String backEndPoint, Status status, Type type, String latLng, String backTime, String backDate, List<Note> notes) {
         this.tripId = tripId;
         this.title = title;
         this.date = date;
@@ -129,19 +129,19 @@ public class Trip {
         this.backEndPoint = backEndPoint;
     }
 
-    public int getStatus() {
+    public Status getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 
-    public int getType() {
+    public Type getType() {
         return type;
     }
 
-    public void setType(int type) {
+    public void setType(Type type) {
         this.type = type;
     }
 
