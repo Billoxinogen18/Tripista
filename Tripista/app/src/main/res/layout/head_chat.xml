@@ -37,16 +37,23 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="#a0c3d7"
-            android:orientation="vertical"
+            android:orientation="horizontal"
             android:layout_toRightOf="@id/layoutCollapsed"
-            android:visibility="gone">
+            android:visibility="gone"
+            >
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycle"
                 android:layout_width="300dp"
                 android:layout_height="300dp"
-                >
-            </androidx.recyclerview.widget.RecyclerView>
+                />
 
+            <ImageView
+                android:id="@+id/buttonClose"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginLeft="50dp"
+                android:src="@drawable/close"
+                />
 
         </LinearLayout>
 

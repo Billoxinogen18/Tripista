@@ -64,8 +64,15 @@ public class AlertActivity extends Activity {
                 false).setPositiveButton("Start", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                startActivity(new Intent(AlertActivity.this,ShowMap.class));
-                finish();
+                if(getIntent()!= null) {
+                    String end =  getIntent().getExtras().getString("end");
+                    String start =  getIntent().getExtras().getString("start");
+                    Intent goMap = new Intent(AlertActivity.this, ShowMap.class);
+                    goMap.putExtra("end",end);
+                    goMap.putExtra("start",start);
+                    startActivity(goMap);
+                    finish();
+                }
             }
         }).setNeutralButton("Snooze",
                 new DialogInterface.OnClickListener() {

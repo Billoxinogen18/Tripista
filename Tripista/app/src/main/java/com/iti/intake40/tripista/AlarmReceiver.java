@@ -79,10 +79,15 @@ public class AlarmReceiver extends BroadcastReceiver {
 
 
         } else {
-
-            Intent alarmIntent = new Intent(arg0, AlertActivity.class);
-            alarmIntent.addFlags( Intent.FLAG_ACTIVITY_MULTIPLE_TASK|Intent.FLAG_ACTIVITY_NEW_TASK );
-            arg0.startActivity(alarmIntent);
+           if(arg1.getExtras().getString("end")!=null && arg1.getExtras().getString("start")!=null) {
+               String end = arg1.getExtras().getString("end");
+               String start = arg1.getExtras().getString("start");
+               Intent alarmIntent = new Intent(arg0, AlertActivity.class);
+               alarmIntent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+               alarmIntent.putExtra("start",start);
+               alarmIntent.putExtra("end",end);
+               arg0.startActivity(alarmIntent);
+           }
         }
 //| Intent.FLAG_ACTIVITY_MULTIPLE_TASK
     }

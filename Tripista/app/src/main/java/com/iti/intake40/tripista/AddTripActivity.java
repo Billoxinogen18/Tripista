@@ -99,6 +99,9 @@ public class AddTripActivity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void setAlarm(Calendar targetCal) {
         Intent intent = new Intent(getBaseContext(), AlarmReceiver.class);
+        intent.putExtra("start",startPlace);
+        intent.putExtra("end",endPlace);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         final int id = (int) System.currentTimeMillis();
         PendingIntent pendingIntent = PendingIntent.getBroadcast(getBaseContext(), id, intent, 0);
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
