@@ -70,23 +70,33 @@ public class FloatingWidgetService extends Service implements View.OnClickListen
         //Inflate the removing view layout we created
         removeFloatingWidgetView = inflater.inflate(R.layout.close_layout, null);
 
+        WindowManager.LayoutParams params;
         //Add the view to the window.
-        WindowManager.LayoutParams paramRemove = new WindowManager.LayoutParams(
-                WindowManager.LayoutParams.WRAP_CONTENT,
-                WindowManager.LayoutParams.WRAP_CONTENT,
-                WindowManager.LayoutParams.TYPE_PHONE,
-                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
-                PixelFormat.TRANSLUCENT);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            params = new WindowManager.LayoutParams(
+                    WindowManager.LayoutParams.WRAP_CONTENT,
+                    WindowManager.LayoutParams.WRAP_CONTENT,
+                    WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
+                    WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+                    PixelFormat.TRANSLUCENT);
+        } else {
+            params  = new WindowManager.LayoutParams(
+                    WindowManager.LayoutParams.WRAP_CONTENT,
+                    WindowManager.LayoutParams.WRAP_CONTENT,
+                    WindowManager.LayoutParams.TYPE_PHONE,
+                    WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+                    PixelFormat.TRANSLUCENT);
+        }
 
         //Specify the view position
-        paramRemove.gravity = Gravity.TOP | Gravity.LEFT;
+        params.gravity = Gravity.TOP | Gravity.LEFT;
 
         //Initially the Removing widget view is not visible, so set visibility to GONE
         removeFloatingWidgetView.setVisibility(View.GONE);
         remove_image_view =  removeFloatingWidgetView.findViewById(R.id.remove_image);
 
         //Add the view to the window
-        mWindowManager.addView(removeFloatingWidgetView, paramRemove);
+        mWindowManager.addView(removeFloatingWidgetView, params);
         return remove_image_view;
     }
 
@@ -94,14 +104,23 @@ public class FloatingWidgetService extends Service implements View.OnClickListen
     private void addFloatingWidgetView(LayoutInflater inflater) {
         //Inflate the floating view layout we created
         mFloatingWidgetView = inflater.inflate(R.layout.head_chat, null);
-
+        WindowManager.LayoutParams params;
         //Add the view to the window.
-        final WindowManager.LayoutParams params = new WindowManager.LayoutParams(
-                WindowManager.LayoutParams.WRAP_CONTENT,
-                WindowManager.LayoutParams.WRAP_CONTENT,
-                WindowManager.LayoutParams.TYPE_PHONE,
-                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
-                PixelFormat.TRANSLUCENT);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+          params = new WindowManager.LayoutParams(
+                    WindowManager.LayoutParams.WRAP_CONTENT,
+                    WindowManager.LayoutParams.WRAP_CONTENT,
+                    WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
+                    WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+                    PixelFormat.TRANSLUCENT);
+        } else {
+             params  = new WindowManager.LayoutParams(
+                    WindowManager.LayoutParams.WRAP_CONTENT,
+                    WindowManager.LayoutParams.WRAP_CONTENT,
+                    WindowManager.LayoutParams.TYPE_PHONE,
+                    WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+                    PixelFormat.TRANSLUCENT);
+        }
 
         //Specify the view position
         params.gravity = Gravity.TOP | Gravity.LEFT;
