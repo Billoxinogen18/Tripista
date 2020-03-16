@@ -3,6 +3,7 @@ package com.iti.intake40.tripista.core;
 
 import android.content.Context;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -416,8 +417,8 @@ public class FireBaseCore {
                 .child("trips")
                 .child(auth.getCurrentUser().getUid())
                 //check that title is equal to test3
-                //.orderByChild("title")
-                //.equalTo("test3")
+                .orderByChild("status")
+                .equalTo(String.valueOf(Trip.Status.UPCOMMING))
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

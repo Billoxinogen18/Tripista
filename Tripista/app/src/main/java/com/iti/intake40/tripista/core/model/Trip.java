@@ -176,4 +176,24 @@ public class Trip {
     public void setNotes(List<Note> notes) {
         this.notes = notes;
     }
+
+    @Override
+    public String toString() {
+        return "Trip{" +
+                "tripId='" + tripId + '\'' +
+                ", title='" + title + '\'' +
+                ", date='" + date + '\'' +
+                ", time='" + time + '\'' +
+                ", startPoint='" + startPoint + '\'' +
+                ", endPoint='" + endPoint + '\'' +
+                ", backStartPoint='" + backStartPoint + '\'' +
+                ", backEndPoint='" + backEndPoint + '\'' +
+                ", status=" + status +
+                ", type=" + type +
+                ", latLng='" + latLng + '\'' +
+                ", backTime='" + backTime + '\'' +
+                ", backDate='" + backDate + '\'' +
+                ", notes=" + notes +
+                '}';
+    }
 }
