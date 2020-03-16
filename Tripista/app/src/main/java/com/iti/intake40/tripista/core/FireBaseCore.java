@@ -3,7 +3,6 @@ package com.iti.intake40.tripista.core;
 
 import android.content.Context;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -473,6 +472,19 @@ public class FireBaseCore {
                     public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
                         Log.d(TAG, "onComplete: deleted " + tripId);
                         Toast.makeText(context, "Trip Deleted!", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    public void updateTrip(final Trip updatedTrip) {
+        rootDB.child("users")
+                .child("trips")
+                .child(auth.getCurrentUser().getUid())
+                .child(updatedTrip.getTripId())
+                .setValue(updatedTrip, new DatabaseReference.CompletionListener() {
+                    @Override
+                    public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
+                        homePresenter.replyByMessage(R.string.updated_successfuly);
                     }
                 });
     }

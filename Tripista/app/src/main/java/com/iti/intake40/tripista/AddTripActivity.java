@@ -62,7 +62,7 @@ public class AddTripActivity extends AppCompatActivity {
     Calendar cal2;
     Calendar now;
     Calendar current;
-    String TAG = "place";
+    String TAG = "addTripActivity";
     String[] routes;
     ImageButton backDateBtn;
     ImageButton backTimeBtn;
@@ -94,6 +94,12 @@ public class AddTripActivity extends AppCompatActivity {
         setmSpinner();
         getPlaces();
 
+        //check if this is to edit trip
+        Intent update = getIntent();
+        if (update != null) {
+            String tripId = update.getStringExtra("tripId");
+            Log.d(TAG, "onCreate: " + tripId);
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -169,7 +175,7 @@ public class AddTripActivity extends AppCompatActivity {
 
     }
 
-   public void setmSpinner() {
+    public void setmSpinner() {
         Spinner s1 = (Spinner) findViewById(R.id.routeSpinner);
         routes = getResources().getStringArray(R.array.routes_array);
 
@@ -260,7 +266,6 @@ public class AddTripActivity extends AppCompatActivity {
 
     public void setbackTime(View view) {
         backTripTime();
-
     }
 
     public void setDate(View view) {
@@ -295,7 +300,7 @@ public class AddTripActivity extends AppCompatActivity {
 
             addTripToFirebase();
             core.addTrip(tripModel);
-          setAlarm(cal);
+            setAlarm(cal);
         }
     }
 
@@ -380,8 +385,6 @@ public class AddTripActivity extends AppCompatActivity {
                 "Trip added!",
                 Toast.LENGTH_LONG).show();
         //after the trip is added finish the activity
-            finish();
+        finish();
     }
-
-
 }

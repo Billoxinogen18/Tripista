@@ -50,11 +50,10 @@
     <string name="from">From</string>
     <string name="destination">Destination</string>
     <string name="return_details">Return details</string>
+    <string name="updated_successfuly">Trip updated sucessfully</string>
 
     <string-array name="routes_array">
-
         <item>One way</item>
         <item>Round trip</item>
-
     </string-array>
 </resources>

@@ -2,6 +2,7 @@ package com.iti.intake40.tripista;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -106,6 +107,7 @@ public class UpcommingTripAdapter extends RecyclerView.Adapter<UpcommingTripAdap
                                     break;
                                 case R.id.edit:
                                     Toast.makeText(context, "edit", Toast.LENGTH_SHORT).show();
+                                    gotoEditTrip(getAdapterPosition());
                                     break;
                                 case R.id.delete:
                                     deleteTrip(getAdapterPosition());
@@ -145,6 +147,15 @@ public class UpcommingTripAdapter extends RecyclerView.Adapter<UpcommingTripAdap
 
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
+    }
+
+    private void gotoEditTrip(final int tripPos) {
+        Trip updatedTrip = trips.get(tripPos);
+        Intent editIntent = new Intent(context,AddTripActivity.class);
+        //get trip values and send it to the edit activity
+        editIntent.putExtra("tripId",updatedTrip.getTripId());
+
+        context.startActivity(editIntent);
     }
 }
 
