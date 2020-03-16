@@ -110,17 +110,17 @@ public class HomeActivity extends AppCompatActivity
     @Override
     protected void onStart() {
         super.onStart();
-        List<Trip> recTrips = new ArrayList<>();
+        List<Trip> recTrips ;
         //trips = homePresenter.getUserTrips();
-        core.getTripsForCurrentUser(new OnTripsLoaded() {
-            @Override
-            public void onTripsLoaded(List<Trip> trips) {
-                //set adapter
-                //recTrips = trips;
-                Log.d(TAG, "onTripsLoaded: " + trips.toString());
-            }
-        });
-        Log.d(TAG, "onStart: " + trips.toString());
+//     //   core.getTripsForCurrentUser(new OnTripsLoaded() {
+//            @Override
+//            public void onTripsLoaded(final List<Trip> trips) {
+//                //set adapter
+//                //recTrips = trips;
+//                Log.d(TAG, "onTripsLoaded: " + trips.toString());
+//            }
+//        });
+//        Log.d(TAG, "onStart: " + trips.toString());
     }
 
     @Override

@@ -383,12 +383,9 @@ public class FireBaseCore {
         profilePath.child(key).setValue(trip).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful()) {
 
-                }
             }
         });
-
     }
 
     public void checkCurrentUser(SplashContract.PresenterInterface splashInterface) {
@@ -403,31 +400,32 @@ public class FireBaseCore {
     /*
     remon
 
-     */
-    ArrayList<Trip> recievedTrips = new ArrayList<>();
+//     */
+//    ArrayList<Trip> recievedTrips = new ArrayList<>();
+//
+//    private void addTripToList(Trip t) {
+//        recievedTrips.add(t);
+//    }
 
-    private void addTripToList(Trip t) {
-        recievedTrips.add(t);
-    }
-
-    public void getTripsForCurrentUser(final OnTripsLoaded onTripsLoaded) {
-        rootDB.child("users")
-                .child("trips")
-                .child(auth.getCurrentUser().getUid())
-                .addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        for (DataSnapshot tripSnapShot : dataSnapshot.getChildren()) {
-                            addTripToList(tripSnapShot.getValue(Trip.class));
-                        }
-                        onTripsLoaded.onTripsLoaded(recievedTrips);
-                        Log.d("firebase", "onDataChange: \n" + recievedTrips);
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
-    }
+//    public void getTripsForCurrentUser(final OnTripsLoaded onTripsLoaded) {
+//        rootDB.child("users")
+//                .child("trips")
+//                .child(auth.getCurrentUser().getUid())
+//                .addValueEventListener(new ValueEventListener() {
+//                    @Override
+//                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                        for (DataSnapshot tripSnapShot : dataSnapshot.getChildren()) {
+//                           Trip trip =  tripSnapShot.getValue(Trip.class);
+//                           addTrip(trip);
+//                        }
+//                        onTripsLoaded.onTripsLoaded(recievedTrips);
+//                        Log.d("firebase", "onDataChange: \n" + recievedTrips);
+//                    }
+//
+//                    @Override
+//                    public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//                    }
+//                });
+//    }
 }

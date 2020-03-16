@@ -146,7 +146,7 @@ public class AddTripActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Date date = Calendar.getInstance().getTime();
-                DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd");
+                DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
                 strDate = dateFormat.format(date);
                 mYear = cal.get(Calendar.YEAR);
                 mMonth = cal.get(Calendar.MONTH);

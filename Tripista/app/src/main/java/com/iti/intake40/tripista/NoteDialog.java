@@ -1,4 +1,4 @@
-package com.iti.intake40.tripista.features.auth;
+package com.iti.intake40.tripista;
 
 import androidx.appcompat.app.AppCompatActivity;
 

@@ -1,6 +1,7 @@
 package com.iti.intake40.tripista;
 
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.os.Bundle;
 
 public class NotesActivity extends AppCompatActivity {
@@ -10,4 +11,6 @@ public class NotesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notes);
     }
+
+
 }

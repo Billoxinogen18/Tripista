@@ -1,7 +1,6 @@
 package com.iti.intake40.tripista;
 
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -15,8 +14,10 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.view.View;
+import android.widget.Toast;
 
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 
 
@@ -44,7 +45,13 @@ public class AlertActivity extends Activity {
     private void displayAlert() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("Your Trip ").setCancelable(
-                false).setPositiveButton("Snooze",
+                false).setPositiveButton("Start", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                startActivity(new Intent(AlertActivity.this,ShowMap.class));
+                finish();
+            }
+        }).setNeutralButton("Snooze",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         show_Notification();
@@ -68,36 +75,88 @@ public class AlertActivity extends Activity {
         alert.show();
     }
 
-    @TargetApi(Build.VERSION_CODES.O)
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
 
     public void show_Notification() {
         Intent intent = new Intent(getApplicationContext(), AlertActivity.class);
         String CHANNEL_ID = "MYCHANNEL";
-        NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_ID, "name", NotificationManager.IMPORTANCE_LOW);
-        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 1, intent, 0);
-        Notification notification = new Notification.Builder(getApplicationContext(), CHANNEL_ID)
-                .setContentText("You are waiting for your trip")
-                .setContentTitle("Trip away")
-                .setContentIntent(pendingIntent)
-                .setChannelId(CHANNEL_ID)
-                .setSmallIcon(android.R.drawable.sym_action_chat)
-                .setOngoing(true)
-                .build();
+        NotificationChannel notificationChannel = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            notificationChannel = new NotificationChannel(CHANNEL_ID, "name", NotificationManager.IMPORTANCE_LOW);
+            PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 1, intent, 0);
+            Notification notification = new Notification.Builder(getApplicationContext(), CHANNEL_ID)
+                    .setContentText("You are waiting for your trip")
+                    .setContentTitle("Trip away")
+                    .setContentIntent(pendingIntent)
+                    .setChannelId(CHANNEL_ID)
+                    .setSmallIcon(android.R.drawable.sym_action_chat)
+                    .setOngoing(true)
+                    .build();
 
-        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.createNotificationChannel(notificationChannel);
-        notificationManager.notify(notificationId, notification);
+            NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            notificationManager.createNotificationChannel(notificationChannel);
+            notificationManager.notify(notificationId, notification);
+        }else
+        {
+            PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 1, intent, 0);
+            Notification notification = new Notification.Builder(getApplicationContext())
+                    .setContentText("You are waiting for your trip")
+                    .setContentTitle("Trip away")
+                    .setContentIntent(pendingIntent)
+                    .setSmallIcon(android.R.drawable.sym_action_chat)
+                    .setOngoing(true)
+                    .build();
+
+            NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            notificationManager.notify(notificationId, notification);
+        }
         finish();
 
     }
 
+//    /*  start floating widget service  */
+//    public void createFloatingWidget(View view) {
+//        //Check if the application has draw over other apps permission or not?
+//        //This permission is by default available for API<23. But for API > 23
+//        //you have to ask for the permission in runtime.
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(this)) {
+//            //If the draw over permission is not available open the settings screen
+//            //to grant the permission.
+//            Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+//                    Uri.parse("package:" + getPackageName()));
+//            startActivityForResult(intent, 100);
+//        } else
+//            //If permission is granted start floating widget service
+//            startFloatingWidgetService();
+//
+//    }
+//
+//    /*  Start Floating widget service and finish current activity */
+//    private void startFloatingWidgetService() {
+//        startService(new Intent(AlertActivity.this, FloatingWidgetService.class));
+//        finish();
+//    }
+//
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        if (requestCode == 100) {
+//            //Check if the permission is granted or not.
+//            if (resultCode == RESULT_OK)
+//                //If permission granted start floating widget service
+//                startFloatingWidgetService();
+//            else
+//                //Permission is not available then display toast
+//                Toast.makeText(this,
+//                        "denied",
+//                        Toast.LENGTH_SHORT).show();
+//
+//        } else {
+//            super.onActivityResult(requestCode, resultCode, data);
+//        }
+//    }
     @Override
     protected void onPause() {
         super.onPause();
         r.stop();
-
-
     }
 
 

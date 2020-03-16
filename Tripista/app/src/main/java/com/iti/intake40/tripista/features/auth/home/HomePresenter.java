@@ -61,17 +61,21 @@ public class HomePresenter implements HomeContract.PresenterInterface {
         core.getUserInfoByPhone(this, number);
     }
 
-    List<Trip> myTrips = new ArrayList<>();
-
-    public List<Trip> getUserTrips(){
-        core.getTripsForCurrentUser(new OnTripsLoaded() {
-            @Override
-            public void onTripsLoaded(List<Trip> trips) {
-                myTrips = trips;
-                Log.d(TAG, "onTripsLoaded: " + trips.toString());
-            }
-        });
-        return myTrips;
+    @Override
+    public List<Trip> getUserTrips() {
+        return null;
     }
+
+    //    List<Trip> myTrips = new ArrayList<>();
+//
+//    public List<Trip> getUserTrips(){
+//        core.getTripsForCurrentUser(new OnTripsLoaded() {
+//            @Override
+//            public void onTripsLoaded(List<Trip> trips) {
+//               // myTrips = trips;
+//                Log.d(TAG, "onTripsLoaded: " + trips.toString());
+//            }
+//        return myTrips;
+//    }
 
 }
