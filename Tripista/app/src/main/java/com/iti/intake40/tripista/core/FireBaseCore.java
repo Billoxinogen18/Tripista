@@ -1,10 +1,13 @@
 package com.iti.intake40.tripista.core;
 
 
+import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentActivity;
 
 import com.facebook.AccessToken;
@@ -43,15 +46,13 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
-import static androidx.constraintlayout.widget.Constraints.TAG;
-
 public class FireBaseCore {
+    private static final String TAG = "firebase";
     //make singletone class
     public static FireBaseCore core;
     /*
     remon
      */
-    ArrayList<Trip> recievedTrips = new ArrayList<>();
     private DatabaseReference rootDB;
     private StorageReference rootStorage;
     private FirebaseUser currentUser;
@@ -418,8 +419,8 @@ public class FireBaseCore {
                 .child("trips")
                 .child(auth.getCurrentUser().getUid())
                 //check that title is equal to test3
-                .orderByChild("title")
-                .equalTo("test3")
+                //.orderByChild("title")
+                //.equalTo("test3")
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -438,7 +439,7 @@ public class FireBaseCore {
                 });
     }
 
-    public void getHistoryTripsForCurrentUser(final OnTripsLoaded onTripsLoaded){
+    public void getHistoryTripsForCurrentUser(final OnTripsLoaded onTripsLoaded) {
         Date c = Calendar.getInstance().getTime();
         SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
         String formattedDate = df.format(c);
@@ -460,6 +461,20 @@ public class FireBaseCore {
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
 
+                    }
+                });
+    }
+
+    public void deleteTrip(final String tripId, final Context context) {
+        rootDB.child("users")
+                .child("trips")
+                .child(auth.getCurrentUser().getUid())
+                .child(tripId)
+                .removeValue(new DatabaseReference.CompletionListener() {
+                    @Override
+                    public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
+                        Log.d(TAG, "onComplete: deleted " + tripId);
+                        Toast.makeText(context, "Trip Deleted!", Toast.LENGTH_SHORT).show();
                     }
                 });
     }

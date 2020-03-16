@@ -1,6 +1,7 @@
 package com.iti.intake40.tripista;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -11,9 +12,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.iti.intake40.tripista.core.FireBaseCore;
 import com.iti.intake40.tripista.core.model.Trip;
 
 import java.util.List;
@@ -23,6 +26,7 @@ public class UpcommingTripAdapter extends RecyclerView.Adapter<UpcommingTripAdap
     private final Context context;
     private List<Trip> trips;
     private Trip currentTrip;
+    FireBaseCore core = FireBaseCore.getInstance();
 
     public UpcommingTripAdapter(Context context, List<Trip> trips) {
         this.context = context;
@@ -90,19 +94,18 @@ public class UpcommingTripAdapter extends RecyclerView.Adapter<UpcommingTripAdap
                 public void onClick(View v) {
                     PopupMenu menu = new PopupMenu(context, optionsButton);
                     menu.inflate(R.menu.trip_menu);
-
                     menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                         @Override
                         public boolean onMenuItemClick(MenuItem item) {
                             switch (item.getItemId()) {
                                 case R.id.notes:
-                                    Toast.makeText(context, "notes", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(context, "notes" + getAdapterPosition(), Toast.LENGTH_SHORT).show();
                                     break;
                                 case R.id.edit:
                                     Toast.makeText(context, "edit", Toast.LENGTH_SHORT).show();
                                     break;
                                 case R.id.delete:
-                                    Toast.makeText(context, "delete", Toast.LENGTH_SHORT).show();
+                                    deleteTrip(getAdapterPosition());
                                     break;
                                 case R.id.cancel:
                                     Toast.makeText(context, "cancel", Toast.LENGTH_SHORT).show();
@@ -117,6 +120,28 @@ public class UpcommingTripAdapter extends RecyclerView.Adapter<UpcommingTripAdap
             });
         }
 
+    }
+
+    private void deleteTrip(final int tripPos) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context)
+                .setTitle("Delete Trip")
+                .setMessage("Are you sure you want to delete this trip?")
+                .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String tripId = trips.get(tripPos).getTripId();
+                        core.deleteTrip(tripId, context);
+                    }
+                });
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 }
 
