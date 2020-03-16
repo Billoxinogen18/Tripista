@@ -20,7 +20,8 @@ public class ShowMap extends AppCompatActivity {
         if (getIntent() != null) {
             end = getIntent().getExtras().getString("end");
             start = getIntent().getExtras().getString("start");
-            Intent mapIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://maps.google.com/maps?saddr="+start+"&daddr="+end));
+            //"http://maps.google.com/maps?saddr="+start+"&daddr="+end)
+            Intent mapIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:q="+end)).setPackage("com.google.android.apps.maps");
             startActivity(mapIntent);
         }
 
