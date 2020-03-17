@@ -34,17 +34,21 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.iti.intake40.tripista.OnTripsLoaded;
 import com.iti.intake40.tripista.R;
+import com.iti.intake40.tripista.core.model.Note;
 import com.iti.intake40.tripista.core.model.Trip;
 import com.iti.intake40.tripista.core.model.UserModel;
 import com.iti.intake40.tripista.features.auth.home.HomeContract;
 import com.iti.intake40.tripista.features.auth.signin.SigninContract;
 import com.iti.intake40.tripista.features.auth.signup.SignupContract;
 import com.iti.intake40.tripista.features.auth.splash.SplashContract;
+import com.iti.intake40.tripista.note.AddNoteContract;
+import com.iti.intake40.tripista.note.AddNotePrsenter;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 public class FireBaseCore {
@@ -66,6 +70,7 @@ public class FireBaseCore {
     private SigninContract.PresenterInterface signinPresenter;
     private SignupContract.PresenterInterface signupPresenter;
     private HomeContract.PresenterInterface homePresenter;
+    private AddNoteContract.PresenterInterface addNote;
     private String id;
     private String verificationId;
     private DataSnapshot dataSnapshot;
@@ -409,7 +414,6 @@ public class FireBaseCore {
     remon
 
      */
-    ArrayList<Trip> upcommingTrips = new ArrayList<>();
     ArrayList<Trip> historyTrips = new ArrayList<>();
 
     public void getTripsForCurrentUser(final OnTripsLoaded onTripsLoaded) {
@@ -422,7 +426,7 @@ public class FireBaseCore {
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        upcommingTrips.clear();
+                        ArrayList<Trip> upcommingTrips = new ArrayList<Trip>();
                         for (DataSnapshot tripSnapShot : dataSnapshot.getChildren()) {
                             upcommingTrips.add(tripSnapShot.getValue(Trip.class));
                         }
@@ -476,5 +480,47 @@ public class FireBaseCore {
                     }
                 });
     }
+
+    public void addNote(Note note , String tripID, AddNotePrsenter addNotePrsenter)
+    {
+        addNote = addNotePrsenter;
+        profilePath = rootDB.child("users").child("trips").child(id).child(tripID);
+        final String key = profilePath.push().getKey();
+        note.setNoteID(key);
+        profilePath.child("notes").child(key).setValue(note).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+               if(task.isSuccessful())
+               {
+                addNote.replyByMessage(R.string.note_added_successfully);
+               }
+               else
+               {
+               addNote.replyByError(R.string.note_didnt_added);
+               }
+            }
+        });
+
+    }
+
+    public void getSpecificTrip(String tripID) {
+        rootDB.child("users")
+                .child("trips")
+                .child(auth.getCurrentUser().getUid())
+                .child(tripID)
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                       Trip trip = dataSnapshot.getValue(Trip.class);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+    }
+
+
 
 }

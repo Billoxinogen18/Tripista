@@ -1,6 +1,7 @@
 package com.iti.intake40.tripista.core.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class Trip {
@@ -21,7 +22,7 @@ public class Trip {
     private String latLng;
     private String backTime;
     private String backDate;
-    private List<Note> notes = new ArrayList<>();
+    private HashMap<String,Note> notes ;
 
     /*
     enums
@@ -44,7 +45,7 @@ public class Trip {
     public Trip() {
     }
 
-    public Trip(String tripId, String title, String date, String time, String startPoint, String endPoint, String backStartPoint, String backEndPoint, Status status, Type type, String latLng, String backTime, String backDate, List<Note> notes) {
+    public Trip(String tripId, String title, String date, String time, String startPoint, String endPoint, String backStartPoint, String backEndPoint, Status status, Type type, String latLng, String backTime, String backDate, HashMap<String,Note> notes) {
         this.tripId = tripId;
         this.title = title;
         this.date = date;
@@ -169,11 +170,11 @@ public class Trip {
         this.backDate = backDate;
     }
 
-    public List<Note> getNotes() {
+    public HashMap<String, Note> getNotes() {
         return notes;
     }
 
-    public void setNotes(List<Note> notes) {
+    public void setNotes(HashMap<String, Note> notes) {
         this.notes = notes;
     }
 
