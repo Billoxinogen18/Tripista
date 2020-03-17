@@ -39,43 +39,44 @@ import java.util.Arrays;
 import java.util.Calendar;
 
 public class AddTripActivity extends AppCompatActivity {
-    final static int RQS_1 = 1;
-    public Trip tripModel;
-    public int RQS;
-    public String startPlace;
-    public String endPlace;
-    public String backStartPlace;
-    public String backEndPlace;
-    public String time;
-    public String date;
-    public String strDate;
-    public String strTime;
-    public String backStrDate;
-    public String backStrTime;
-    public Spinner mSpinner;
-    public String coordinates;
-    DatePickerDialog datePicker;
-    DatePickerDialog datePicker2;
-    TimePickerDialog timePicker;
-    TimePickerDialog timePicker2;
-    Calendar cal;
-    Calendar cal2;
-    Calendar now;
-    Calendar current;
     String TAG = "addTripActivity";
-    String[] routes;
-    ImageButton backDateBtn;
-    ImageButton backTimeBtn;
-    AutocompleteSupportFragment startAutoCompleteFragment;
-    AutocompleteSupportFragment endAutoCompleteFragment;
-    String flag;
+    //UI items
+    private ImageButton backDateBtn;
+    private ImageButton backTimeBtn;
+    private AutocompleteSupportFragment startAutoCompleteFragment;
+    private AutocompleteSupportFragment endAutoCompleteFragment;
     private TextView info;
-    private TextView text;
+    private TextView titleTextView;
     private Button addTripBtn;
-    private FireBaseCore core;
-    private String name;
     private ImageButton timeBtn;
     private ImageButton dateBtn;
+
+    //global variables
+    private FireBaseCore core;
+    private Trip tripModel;
+
+    private String startPlace;
+    private String endPlace;
+    private String backStartPlace;
+    private String backEndPlace;
+    private String strDate;
+    private String strTime;
+    private String backStrDate;
+    private String backStrTime;
+    private DatePickerDialog datePicker;
+    private DatePickerDialog datePicker2;
+    private TimePickerDialog timePicker;
+    private TimePickerDialog timePicker2;
+    private Calendar cal;
+    private Calendar cal2;
+    private Calendar now;
+    private Calendar current;
+    private String[] routes;
+
+    String flag;
+
+    private String tripTitle;
+
     private int mYear, mMonth, mDay, hour, min, sec;
     private int mYear2, mMonth2, mDay2, hour2, minute2, sec2;
     private ArrayAdapter mAdapter;
@@ -87,25 +88,28 @@ public class AddTripActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        setViews();
+        setmSpinner();
+        getPlaces();
+
+        core = FireBaseCore.getInstance();
         tripModel = new Trip();
         cal = Calendar.getInstance();
         cal2 = Calendar.getInstance();
         now = Calendar.getInstance();
         current = Calendar.getInstance();
 
-        setViews();
-        setmSpinner();
-        getPlaces();
 
         //check if this is to edit trip
         updateIntent = getIntent();
         if (updateIntent.getStringExtra(UpcommingTripAdapter.IntentKeys.ID) != null) {
             isUpdate = true;
             addTripBtn.setText(R.string.update_trip);
-            text.setText(updateIntent.getStringExtra(UpcommingTripAdapter.IntentKeys.TITLE));
-        } else
+            titleTextView.setText(updateIntent.getStringExtra(UpcommingTripAdapter.IntentKeys.TITLE));
+        } else {
             isUpdate = false;
-        addTripBtn.setText(R.string.add_trip);
+            addTripBtn.setText(R.string.add_trip);
+        }
     }
 
 
@@ -169,7 +173,7 @@ public class AddTripActivity extends AppCompatActivity {
     public void setViews() {
         setContentView(R.layout.activity_add_trip);
         addTripBtn = findViewById(R.id.addTrip);
-        text = findViewById(R.id.title);
+        titleTextView = findViewById(R.id.title);
         info = findViewById(R.id.info);
         dateBtn = findViewById(R.id.dateBtn);
         backDateBtn = findViewById(R.id.backDate);
@@ -286,12 +290,13 @@ public class AddTripActivity extends AppCompatActivity {
         tripTime();
     }
 
+    //onClickAddTripButton
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public void addTrip(View view) {
         if (isUpdate) {
             updateTrip();
         } else {
-            name = text.getText().toString();
+            tripTitle = titleTextView.getText().toString();
             if (flag == "round") {
                 setOneWayTrip();
                 setRoundTrip();
@@ -305,12 +310,12 @@ public class AddTripActivity extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public void setOneWayTrip() {
-        if (cal.compareTo(current) <= 0 || strDate == null || strTime == null || name == null || startPlace == null || endPlace == null) {
+        if (cal.compareTo(current) <= 0 || strDate == null || strTime == null || tripTitle == null || startPlace == null || endPlace == null) {
             Toast.makeText(getApplicationContext(),
                     "Invalid Data",
                     Toast.LENGTH_LONG).show();
 
-        } else if (cal.compareTo(current) > 0 && strDate != null && strTime != null && name != null && startPlace != null && endPlace != null) {
+        } else if (cal.compareTo(current) > 0 && strDate != null && strTime != null && tripTitle != null && startPlace != null && endPlace != null) {
 
             addTripToFirebase();
             core.addTrip(tripModel);
@@ -320,12 +325,12 @@ public class AddTripActivity extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public void setRoundTrip() {
-        if (cal.compareTo(current) <= 0 || cal2.compareTo(current) <= 0 || cal2.compareTo(cal) <= 0 || name == null || startPlace == null || endPlace == null || strDate == null || strTime == null || backStrDate == null || backStrTime == null || cal2.compareTo(cal) == 0) {
+        if (cal.compareTo(current) <= 0 || cal2.compareTo(current) <= 0 || cal2.compareTo(cal) <= 0 || tripTitle == null || startPlace == null || endPlace == null || strDate == null || strTime == null || backStrDate == null || backStrTime == null || cal2.compareTo(cal) == 0) {
             Toast.makeText(getApplicationContext(),
                     "Invalid Data"
                     , Toast.LENGTH_LONG).show();
 
-        } else if (cal.compareTo(current) > 0 && cal2.compareTo(current) > 0 && strDate != null && strTime != null && backStrTime != null && backStrDate != null && cal2.compareTo(cal) > 0 && name != null && startPlace != null && endPlace != null) {
+        } else if (cal.compareTo(current) > 0 && cal2.compareTo(current) > 0 && strDate != null && strTime != null && backStrTime != null && backStrDate != null && cal2.compareTo(cal) > 0 && tripTitle != null && startPlace != null && endPlace != null) {
 
             addTripToFirebase();
             tripModel.setBackDate(backStrDate);
@@ -387,7 +392,7 @@ public class AddTripActivity extends AppCompatActivity {
 
     public void addTripToFirebase() {
         core = FireBaseCore.getInstance();
-        tripModel.setTitle(name);
+        tripModel.setTitle(tripTitle);
         tripModel.setStartPoint(startPlace);
         tripModel.setEndPoint(endPlace);
         tripModel.setDate(strDate);
@@ -402,10 +407,18 @@ public class AddTripActivity extends AppCompatActivity {
         finish();
     }
 
+    private void addTrip() {
+        Trip trip = new Trip();
+
+        core.addTrip(trip);
+        //after the trip is added finish the activity
+        finish();
+    }
+
     private void updateTrip() {
         Trip trip = new Trip();
         trip.setTripId(updateIntent.getStringExtra(UpcommingTripAdapter.IntentKeys.ID));
-        trip.setTitle(name);
+        trip.setTitle(tripTitle);
         trip.setDate(strDate);
         trip.setTime(strTime);
 
@@ -421,5 +434,13 @@ public class AddTripActivity extends AppCompatActivity {
         }
 
         core.updateTrip(trip);
+        // after updating the trip finish the activity
+        finish();
+    }
+
+    private Trip createTripFromInput(){
+        Trip trip = new Trip();
+        
+        return trip;
     }
 }
