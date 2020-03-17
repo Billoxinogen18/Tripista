@@ -79,6 +79,9 @@ public class AddTripActivity extends AppCompatActivity {
     private int mYear, mMonth, mDay, hour, min, sec;
     private int mYear2, mMonth2, mDay2, hour2, minute2, sec2;
     private ArrayAdapter mAdapter;
+    private Intent updateIntent;
+    private boolean isUpdate;
+    private boolean isRoundTrip;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,18 +98,22 @@ public class AddTripActivity extends AppCompatActivity {
         getPlaces();
 
         //check if this is to edit trip
-        Intent update = getIntent();
-        if (update != null) {
-            String tripId = update.getStringExtra("tripId");
-            Log.d(TAG, "onCreate: " + tripId);
-        }
+        updateIntent = getIntent();
+        if (updateIntent.getStringExtra(UpcommingTripAdapter.IntentKeys.ID) != null) {
+            isUpdate = true;
+            addTripBtn.setText(R.string.update_trip);
+            text.setText(updateIntent.getStringExtra(UpcommingTripAdapter.IntentKeys.TITLE));
+        } else
+            isUpdate = false;
+        addTripBtn.setText(R.string.add_trip);
     }
+
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void setAlarm(Calendar targetCal) {
         Intent intent = new Intent(getBaseContext(), AlarmReceiver.class);
-        intent.putExtra("start",startPlace);
-        intent.putExtra("end",endPlace);
+        intent.putExtra("start", startPlace);
+        intent.putExtra("end", endPlace);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         final int id = (int) System.currentTimeMillis();
         PendingIntent pendingIntent = PendingIntent.getBroadcast(getBaseContext(), id, intent, 0);
@@ -162,7 +169,7 @@ public class AddTripActivity extends AppCompatActivity {
     public void setViews() {
         setContentView(R.layout.activity_add_trip);
         addTripBtn = findViewById(R.id.addTrip);
-        text = findViewById(R.id.Name);
+        text = findViewById(R.id.title);
         info = findViewById(R.id.info);
         dateBtn = findViewById(R.id.dateBtn);
         backDateBtn = findViewById(R.id.backDate);
@@ -281,14 +288,18 @@ public class AddTripActivity extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public void addTrip(View view) {
-        name = text.getText().toString();
-        if (flag == "round") {
-            setOneWayTrip();
-            setRoundTrip();
-
+        if (isUpdate) {
+            updateTrip();
         } else {
-            setOneWayTrip();
+            name = text.getText().toString();
+            if (flag == "round") {
+                setOneWayTrip();
+                setRoundTrip();
 
+            } else {
+                setOneWayTrip();
+
+            }
         }
     }
 
@@ -389,5 +400,26 @@ public class AddTripActivity extends AppCompatActivity {
                 Toast.LENGTH_LONG).show();
         //after the trip is added finish the activity
         finish();
+    }
+
+    private void updateTrip() {
+        Trip trip = new Trip();
+        trip.setTripId(updateIntent.getStringExtra(UpcommingTripAdapter.IntentKeys.ID));
+        trip.setTitle(name);
+        trip.setDate(strDate);
+        trip.setTime(strTime);
+
+        //trip.setStatus();
+        if (isRoundTrip) {
+            trip.setType(Trip.Type.ROUND_TRIP);
+            trip.setBackDate(backStrDate);
+            trip.setBackTime(backStrTime);
+            trip.setBackStartPoint(backStartPlace);
+            trip.setBackEndPoint(backEndPlace);
+        } else {
+            trip.setType(Trip.Type.ONE_WAY);
+        }
+
+        core.updateTrip(trip);
     }
 }

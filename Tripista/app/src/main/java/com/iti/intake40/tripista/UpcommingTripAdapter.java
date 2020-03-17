@@ -151,11 +151,37 @@ public class UpcommingTripAdapter extends RecyclerView.Adapter<UpcommingTripAdap
 
     private void gotoEditTrip(final int tripPos) {
         Trip updatedTrip = trips.get(tripPos);
-        Intent editIntent = new Intent(context,AddTripActivity.class);
+        Intent editIntent = new Intent(context, AddTripActivity.class);
         //get trip values and send it to the edit activity
-        editIntent.putExtra("tripId",updatedTrip.getTripId());
-
+        editIntent.putExtra(IntentKeys.ID, updatedTrip.getTripId());
+        editIntent.putExtra(IntentKeys.TITLE, updatedTrip.getTitle());
+        editIntent.putExtra(IntentKeys.DATE, updatedTrip.getDate());
+        editIntent.putExtra(IntentKeys.TIME, updatedTrip.getTime());
+        editIntent.putExtra(IntentKeys.START_POINT, updatedTrip.getStartPoint());
+        editIntent.putExtra(IntentKeys.END_POINT, updatedTrip.getEndPoint());
+        editIntent.putExtra(IntentKeys.BACK_DATE, updatedTrip.getBackDate());
+        editIntent.putExtra(IntentKeys.BACK_TIME, updatedTrip.getBackTime());
+        editIntent.putExtra(IntentKeys.BACK_START_POINT, updatedTrip.getBackStartPoint());
+        editIntent.putExtra(IntentKeys.BACK_END_POINT, updatedTrip.getBackEndPoint());
+        editIntent.putExtra(IntentKeys.STATUS, updatedTrip.getStatus());
+        editIntent.putExtra(IntentKeys.TYPE, updatedTrip.getType());
         context.startActivity(editIntent);
+    }
+
+    public class IntentKeys {
+        public static final String ID = "tripId";
+        public static final String TITLE = "title";
+        public static final String DATE = "date";
+        public static final String TIME = "time";
+        public static final String START_POINT = "startPoint";
+        public static final String END_POINT = "endPoint";
+        public static final String BACK_DATE = "back_Date";
+        public static final String BACK_TIME = "back_Time";
+        public static final String BACK_START_POINT = "back_startPoint";
+        public static final String BACK_END_POINT = "back_endPoint";
+        public static final String STATUS = "status";
+        public static final String TYPE = "type";
+        public static final String LATLANG = "lat_lang";
     }
 }
 

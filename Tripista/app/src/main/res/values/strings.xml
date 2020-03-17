@@ -51,7 +51,7 @@
     <string name="destination">Destination</string>
     <string name="return_details">Return details</string>
     <string name="updated_successfuly">Trip updated sucessfully</string>
-
+    <string name="update_trip">Update trip</string>
     <string-array name="routes_array">
         <item>One way</item>
         <item>Round trip</item>

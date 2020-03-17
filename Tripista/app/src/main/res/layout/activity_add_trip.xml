@@ -7,7 +7,7 @@
     tools:context=".AddTripActivity">
 
     <EditText
-        android:id="@+id/Name"
+        android:id="@+id/title"
         android:layout_width="278dp"
         android:layout_height="46dp"
         android:layout_marginStart="24dp"
@@ -77,7 +77,7 @@
         android:layout_marginTop="16dp"
         android:text="@string/from"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Name" />
+        app:layout_constraintTop_toBottomOf="@+id/title" />
 
     <TextView
         android:id="@+id/textView4"
