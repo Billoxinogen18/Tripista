@@ -15,14 +15,14 @@ public class Trip {
     private String time;
     private String startPoint;
     private String endPoint;
+    private String backDate;
+    private String backTime;
     private String backStartPoint;
     private String backEndPoint;
     private Status status; //upcomming / done / cancelled
     private Type type; //one way / round trip
-    private String latLng;
-    private String backTime;
-    private String backDate;
     private HashMap<String,Note> notes ;
+
 
     /*
     enums
@@ -45,21 +45,54 @@ public class Trip {
     public Trip() {
     }
 
-    public Trip(String tripId, String title, String date, String time, String startPoint, String endPoint, String backStartPoint, String backEndPoint, Status status, Type type, String latLng, String backTime, String backDate, HashMap<String,Note> notes) {
+
+    public Trip(String tripId, String title, String date, String time, String startPoint, String endPoint, String backDate, String backTime, String backStartPoint, String backEndPoint, Status status, Type type, HashMap<String, Note> notes) {
         this.tripId = tripId;
         this.title = title;
         this.date = date;
         this.time = time;
         this.startPoint = startPoint;
         this.endPoint = endPoint;
+        this.backDate = backDate;
+        this.backTime = backTime;
         this.backStartPoint = backStartPoint;
         this.backEndPoint = backEndPoint;
         this.status = status;
         this.type = type;
-        this.latLng = latLng;
-        this.backTime = backTime;
-        this.backDate = backDate;
         this.notes = notes;
+    }
+
+    // one way trip without notes
+    public Trip(String tripId, String title,
+                String date, String time, String startPoint, String endPoint,
+                Status status, Type type) {
+        this.tripId = tripId;
+        this.title = title;
+        this.date = date;
+        this.time = time;
+        this.startPoint = startPoint;
+        this.endPoint = endPoint;
+        this.status = status;
+        this.type = type;
+    }
+
+    //round trip without notes
+    public Trip(String tripId, String title,
+                String date, String time, String startPoint, String endPoint,
+                String backDate, String backTime, String backStartPoint, String backEndPoint,
+                Status status, Type type) {
+        this.tripId = tripId;
+        this.title = title;
+        this.date = date;
+        this.time = time;
+        this.startPoint = startPoint;
+        this.endPoint = endPoint;
+        this.backDate = backDate;
+        this.backTime = backTime;
+        this.backStartPoint = backStartPoint;
+        this.backEndPoint = backEndPoint;
+        this.status = status;
+        this.type = type;
     }
 
     /*
@@ -146,14 +179,6 @@ public class Trip {
         this.type = type;
     }
 
-    public String getLatLng() {
-        return latLng;
-    }
-
-    public void setLatLng(String latLng) {
-        this.latLng = latLng;
-    }
-
     public String getBackTime() {
         return backTime;
     }
@@ -191,7 +216,6 @@ public class Trip {
                 ", backEndPoint='" + backEndPoint + '\'' +
                 ", status=" + status +
                 ", type=" + type +
-                ", latLng='" + latLng + '\'' +
                 ", backTime='" + backTime + '\'' +
                 ", backDate='" + backDate + '\'' +
                 ", notes=" + notes +

@@ -514,8 +514,8 @@ public class FireBaseCore {
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                       Trip trip = dataSnapshot.getValue(Trip.class);
-                       service.setTripData(trip);
+                        Trip trip = dataSnapshot.getValue(Trip.class);
+                        service.setTripData(trip);
                     }
 
                     @Override
@@ -525,6 +525,17 @@ public class FireBaseCore {
                 });
     }
 
-
+    public void updateTrip(final Trip updatedTrip) {
+        rootDB.child("users")
+                .child("trips")
+                .child(auth.getCurrentUser().getUid())
+                .child(updatedTrip.getTripId())
+                .setValue(updatedTrip, new DatabaseReference.CompletionListener() {
+                    @Override
+                    public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
+                        homePresenter.replyByMessage(R.string.updated_successfuly);
+                    }
+                });
+    }
 
 }
