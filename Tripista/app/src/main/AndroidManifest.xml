@@ -18,12 +18,12 @@
         android:theme="@style/AppTheme">
         <activity android:name=".note.AddNote"
             android:theme="@style/NoActionBarForDialog"/>
-        <activity android:name=".ShowMap" />
+        <activity android:name=".map.ShowMap" />
         <activity
             android:name=".AlertActivity"
             android:theme="@style/Theme.AppCompat.Dialog" />
         <activity
-            android:name=".AddTripActivity"
+            android:name=".trip.AddTripActivity"
             android:showOnLockScreen="true" />
         <activity android:name=".features.auth.splash.SplashScreen">
             <intent-filter>

@@ -1,4 +1,4 @@
-package com.iti.intake40.tripista;
+package com.iti.intake40.tripista.trip;
 
 import android.app.AlarmManager;
 import android.app.DatePickerDialog;
@@ -30,6 +30,8 @@ import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
+import com.iti.intake40.tripista.AlarmReceiver;
+import com.iti.intake40.tripista.R;
 import com.iti.intake40.tripista.core.FireBaseCore;
 import com.iti.intake40.tripista.core.model.Trip;
 
@@ -38,7 +40,7 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 
-public class AddTripActivity extends AppCompatActivity {
+public class AddTripActivity extends AppCompatActivity implements AddTripContract.ViewInterface {
     final static int RQS_1 = 1;
     public Trip tripModel;
     public int RQS;
@@ -79,7 +81,7 @@ public class AddTripActivity extends AppCompatActivity {
     private int mYear, mMonth, mDay, hour, min, sec;
     private int mYear2, mMonth2, mDay2, hour2, minute2, sec2;
     private ArrayAdapter mAdapter;
-
+    private AddTripContract.PresenterInterface addTripPresenter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,26 +91,15 @@ public class AddTripActivity extends AppCompatActivity {
         cal2 = Calendar.getInstance();
         now = Calendar.getInstance();
         current = Calendar.getInstance();
-
+        core = FireBaseCore.getInstance();
+        addTripPresenter = new AddTripPresenter(core,this);
         setViews();
         setmSpinner();
         getPlaces();
 
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    private void setAlarm(Calendar targetCal) {
-        Intent intent = new Intent(getBaseContext(), AlarmReceiver.class);
-        intent.putExtra("start",startPlace);
-        intent.putExtra("end",endPlace);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        final int id = (int) System.currentTimeMillis();
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(getBaseContext(), id, intent, 0);
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP, targetCal.getTimeInMillis(), pendingIntent);
 
-
-    }
 
     public void tripDate() {
         mYear = cal.get(Calendar.YEAR);
@@ -297,8 +288,7 @@ public class AddTripActivity extends AppCompatActivity {
         } else if (cal.compareTo(current) > 0 && strDate != null && strTime != null && name != null && startPlace != null && endPlace != null) {
 
             addTripToFirebase();
-            core.addTrip(tripModel);
-          setAlarm(cal);
+            addTripPresenter.addTrip(tripModel,cal);
         }
     }
 
@@ -316,8 +306,8 @@ public class AddTripActivity extends AppCompatActivity {
             tripModel.setBackTime(backStrTime);
             tripModel.setBackStartPoint(backStartPlace);
             tripModel.setBackEndPoint(backEndPlace);
-            core.addTrip(tripModel);
-            setAlarm(cal2);
+            addTripPresenter.addTrip(tripModel,cal2);
+
         }
     }
 
@@ -387,4 +377,25 @@ public class AddTripActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public void sentMessage(int message) {
+
+    }
+
+    @Override
+    public void sentError(int message) {
+
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    @Override
+    public void setAlarm(Trip trip, Calendar calendar) {
+        Intent intent = new Intent(getBaseContext(), AlarmReceiver.class);
+        intent.putExtra("id",trip.getTripId());
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        final int id = (int) System.currentTimeMillis();
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getBaseContext(), id, intent, 0);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+    }
 }

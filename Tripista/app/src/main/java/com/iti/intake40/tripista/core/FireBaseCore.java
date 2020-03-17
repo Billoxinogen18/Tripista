@@ -3,7 +3,6 @@ package com.iti.intake40.tripista.core;
 
 import android.content.Context;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -41,14 +40,15 @@ import com.iti.intake40.tripista.features.auth.home.HomeContract;
 import com.iti.intake40.tripista.features.auth.signin.SigninContract;
 import com.iti.intake40.tripista.features.auth.signup.SignupContract;
 import com.iti.intake40.tripista.features.auth.splash.SplashContract;
+import com.iti.intake40.tripista.map.MapContract;
 import com.iti.intake40.tripista.note.AddNoteContract;
 import com.iti.intake40.tripista.note.AddNotePrsenter;
+import com.iti.intake40.tripista.trip.AddTripPresenter;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 public class FireBaseCore {
@@ -387,7 +387,7 @@ public class FireBaseCore {
     /*
     shrouq
      */
-    public void addTrip(final Trip trip) {
+    public void addTrip(final Trip trip, final AddTripPresenter addTripPresenter) {
         //here we just only refer to path
         profilePath = rootDB.child("users").child("trips").child(id);
         //to add trips we should take snapshot from this path
@@ -396,7 +396,10 @@ public class FireBaseCore {
         profilePath.child(key).setValue(trip).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-
+               if(task.isSuccessful())
+               {
+               addTripPresenter.setData(trip);
+               }
             }
         });
     }
@@ -503,7 +506,7 @@ public class FireBaseCore {
 
     }
 
-    public void getSpecificTrip(String tripID) {
+    public void getSpecificTrip(String tripID, final MapContract.ViewInterface service) {
         rootDB.child("users")
                 .child("trips")
                 .child(auth.getCurrentUser().getUid())
@@ -512,6 +515,7 @@ public class FireBaseCore {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                        Trip trip = dataSnapshot.getValue(Trip.class);
+                       service.setTripData(trip);
                     }
 
                     @Override
