@@ -16,6 +16,8 @@ import android.os.Bundle;
 import android.view.WindowManager;
 import androidx.appcompat.app.AlertDialog;
 
+import com.iti.intake40.tripista.map.ShowMap;
+
 
 public class AlertActivity extends Activity {
     Uri notification;
@@ -65,11 +67,9 @@ public class AlertActivity extends Activity {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 if(getIntent()!= null) {
-                    String end =  getIntent().getExtras().getString("end");
-                    String start =  getIntent().getExtras().getString("start");
+                    String id =  getIntent().getExtras().getString("id");
                     Intent goMap = new Intent(AlertActivity.this, ShowMap.class);
-                    goMap.putExtra("end",end);
-                    goMap.putExtra("start",start);
+                    goMap.putExtra("id",id);
                     startActivity(goMap);
                     finish();
                 }

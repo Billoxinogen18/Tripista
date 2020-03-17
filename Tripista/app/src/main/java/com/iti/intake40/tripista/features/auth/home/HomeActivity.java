@@ -20,7 +20,7 @@ import com.bumptech.glide.Glide;
 import com.facebook.login.LoginManager;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
-import com.iti.intake40.tripista.AddTripActivity;
+import com.iti.intake40.tripista.trip.AddTripActivity;
 import com.iti.intake40.tripista.HistoryFragment;
 import com.iti.intake40.tripista.R;
 import com.iti.intake40.tripista.UpcommingFragment;

@@ -33,12 +33,17 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.iti.intake40.tripista.OnTripsLoaded;
 import com.iti.intake40.tripista.R;
+import com.iti.intake40.tripista.core.model.Note;
 import com.iti.intake40.tripista.core.model.Trip;
 import com.iti.intake40.tripista.core.model.UserModel;
 import com.iti.intake40.tripista.features.auth.home.HomeContract;
 import com.iti.intake40.tripista.features.auth.signin.SigninContract;
 import com.iti.intake40.tripista.features.auth.signup.SignupContract;
 import com.iti.intake40.tripista.features.auth.splash.SplashContract;
+import com.iti.intake40.tripista.map.MapContract;
+import com.iti.intake40.tripista.note.AddNoteContract;
+import com.iti.intake40.tripista.note.AddNotePrsenter;
+import com.iti.intake40.tripista.trip.AddTripPresenter;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -65,6 +70,7 @@ public class FireBaseCore {
     private SigninContract.PresenterInterface signinPresenter;
     private SignupContract.PresenterInterface signupPresenter;
     private HomeContract.PresenterInterface homePresenter;
+    private AddNoteContract.PresenterInterface addNote;
     private String id;
     private String verificationId;
     private DataSnapshot dataSnapshot;
@@ -381,7 +387,7 @@ public class FireBaseCore {
     /*
     shrouq
      */
-    public void addTrip(final Trip trip) {
+    public void addTrip(final Trip trip, final AddTripPresenter addTripPresenter) {
         //here we just only refer to path
         profilePath = rootDB.child("users").child("trips").child(id);
         //to add trips we should take snapshot from this path
@@ -390,7 +396,10 @@ public class FireBaseCore {
         profilePath.child(key).setValue(trip).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-
+               if(task.isSuccessful())
+               {
+               addTripPresenter.setData(trip);
+               }
             }
         });
     }
@@ -408,7 +417,6 @@ public class FireBaseCore {
     remon
 
      */
-    ArrayList<Trip> upcommingTrips = new ArrayList<>();
     ArrayList<Trip> historyTrips = new ArrayList<>();
 
     public void getTripsForCurrentUser(final OnTripsLoaded onTripsLoaded) {
@@ -421,7 +429,7 @@ public class FireBaseCore {
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        upcommingTrips.clear();
+                        ArrayList<Trip> upcommingTrips = new ArrayList<Trip>();
                         for (DataSnapshot tripSnapShot : dataSnapshot.getChildren()) {
                             upcommingTrips.add(tripSnapShot.getValue(Trip.class));
                         }
@@ -472,6 +480,47 @@ public class FireBaseCore {
                     public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
                         Log.d(TAG, "onComplete: deleted " + tripId);
                         Toast.makeText(context, "Trip Deleted!", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    public void addNote(Note note , String tripID, AddNotePrsenter addNotePrsenter)
+    {
+        addNote = addNotePrsenter;
+        profilePath = rootDB.child("users").child("trips").child(id).child(tripID);
+        final String key = profilePath.push().getKey();
+        note.setNoteID(key);
+        profilePath.child("notes").child(key).setValue(note).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+               if(task.isSuccessful())
+               {
+                addNote.replyByMessage(R.string.note_added_successfully);
+               }
+               else
+               {
+               addNote.replyByError(R.string.note_didnt_added);
+               }
+            }
+        });
+
+    }
+
+    public void getSpecificTrip(String tripID, final MapContract.ViewInterface service) {
+        rootDB.child("users")
+                .child("trips")
+                .child(auth.getCurrentUser().getUid())
+                .child(tripID)
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        Trip trip = dataSnapshot.getValue(Trip.class);
+                        service.setTripData(trip);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
                     }
                 });
     }

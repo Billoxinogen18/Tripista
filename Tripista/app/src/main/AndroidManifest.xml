@@ -16,15 +16,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".NoteDialog"></activity>
-        <activity android:name=".ShowMap" />
-        <activity android:name=".NotesActivity"
+        <activity android:name=".note.AddNote"
             android:theme="@style/NoActionBarForDialog"/>
+        <activity android:name=".map.ShowMap" />
         <activity
             android:name=".AlertActivity"
-            android:theme="@style/Theme.AppCompat.Dialog"></activity>
+            android:theme="@style/Theme.AppCompat.Dialog" />
         <activity
-            android:name=".AddTripActivity"
+            android:name=".trip.AddTripActivity"
             android:showOnLockScreen="true" />
         <activity android:name=".features.auth.splash.SplashScreen">
             <intent-filter>
@@ -33,7 +32,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
 
         <receiver
             android:name=".AlarmReceiver"

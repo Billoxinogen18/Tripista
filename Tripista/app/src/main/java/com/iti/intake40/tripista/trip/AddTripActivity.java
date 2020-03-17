@@ -1,4 +1,4 @@
-package com.iti.intake40.tripista;
+package com.iti.intake40.tripista.trip;
 
 import android.app.AlarmManager;
 import android.app.DatePickerDialog;
@@ -30,6 +30,9 @@ import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
+import com.iti.intake40.tripista.AlarmReceiver;
+import com.iti.intake40.tripista.R;
+import com.iti.intake40.tripista.UpcommingTripAdapter;
 import com.iti.intake40.tripista.core.FireBaseCore;
 import com.iti.intake40.tripista.core.model.Trip;
 
@@ -38,13 +41,38 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 
-public class AddTripActivity extends AppCompatActivity {
+public class AddTripActivity extends AppCompatActivity implements AddTripContract.ViewInterface {
+    final static int RQS_1 = 1;
+    public Trip tripModel;
+    public int RQS;
+    public String startPlace;
+    public String endPlace;
+    public String backStartPlace;
+    public String backEndPlace;
+    public String time;
+    public String date;
+    public String strDate;
+    public String strTime;
+    public String backStrDate;
+    public String backStrTime;
+    public Spinner mSpinner;
+    public String coordinates;
+    DatePickerDialog datePicker;
+    DatePickerDialog datePicker2;
+    TimePickerDialog timePicker;
+    TimePickerDialog timePicker2;
+    Calendar cal;
+    Calendar cal2;
+    Calendar now;
+    Calendar current;
+    String TAGPLACE = "place";
+    String[] routes;
+    ImageButton backDateBtn;
+    ImageButton backTimeBtn;
+    AutocompleteSupportFragment startAutoCompleteFragment;
+    AutocompleteSupportFragment endAutoCompleteFragment;
+    String flag;
     String TAG = "addTripActivity";
-    //UI items
-    private ImageButton backDateBtn;
-    private ImageButton backTimeBtn;
-    private AutocompleteSupportFragment startAutoCompleteFragment;
-    private AutocompleteSupportFragment endAutoCompleteFragment;
     private TextView info;
     private TextView titleTextView;
     private Button addTripBtn;
@@ -53,33 +81,13 @@ public class AddTripActivity extends AppCompatActivity {
 
     //global variables
     private FireBaseCore core;
-    private Trip tripModel;
-
-    private String startPlace;
-    private String endPlace;
-    private String backStartPlace;
-    private String backEndPlace;
-    private String strDate;
-    private String strTime;
-    private String backStrDate;
-    private String backStrTime;
-    private DatePickerDialog datePicker;
-    private DatePickerDialog datePicker2;
-    private TimePickerDialog timePicker;
-    private TimePickerDialog timePicker2;
-    private Calendar cal;
-    private Calendar cal2;
-    private Calendar now;
-    private Calendar current;
-    private String[] routes;
-
-    String flag;
 
     private String tripTitle;
 
     private int mYear, mMonth, mDay, hour, min, sec;
     private int mYear2, mMonth2, mDay2, hour2, minute2, sec2;
     private ArrayAdapter mAdapter;
+    private AddTripContract.PresenterInterface addTripPresenter;
     private Intent updateIntent;
     private boolean isUpdate;
     private boolean isRoundTrip;
@@ -87,19 +95,17 @@ public class AddTripActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        setViews();
-        setmSpinner();
-        getPlaces();
-
         core = FireBaseCore.getInstance();
         tripModel = new Trip();
         cal = Calendar.getInstance();
         cal2 = Calendar.getInstance();
         now = Calendar.getInstance();
         current = Calendar.getInstance();
-
-
+        core = FireBaseCore.getInstance();
+        addTripPresenter = new AddTripPresenter(core,this);
+        setViews();
+        setmSpinner();
+        getPlaces();
         //check if this is to edit trip
         updateIntent = getIntent();
         if (updateIntent.getStringExtra(UpcommingTripAdapter.IntentKeys.ID) != null) {
@@ -123,8 +129,6 @@ public class AddTripActivity extends AppCompatActivity {
         PendingIntent pendingIntent = PendingIntent.getBroadcast(getBaseContext(), id, intent, 0);
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         alarmManager.setExact(AlarmManager.RTC_WAKEUP, targetCal.getTimeInMillis(), pendingIntent);
-
-
     }
 
     public void tripDate() {
@@ -240,7 +244,7 @@ public class AddTripActivity extends AppCompatActivity {
             public void onPlaceSelected(@NonNull Place place) {
                 System.out.println(place.getName());
 
-                Log.i(TAG, "Place: " + place.getName() + ", " + place.getId());
+                Log.i(TAGPLACE, "Place: " + place.getName() + ", " + place.getId());
                 startPlace = place.getName();
                 backEndPlace = startPlace;
 
@@ -248,7 +252,7 @@ public class AddTripActivity extends AppCompatActivity {
 
             @Override
             public void onError(@NonNull Status status) {
-                Log.i(TAG, "An error occurred: " + status);
+                Log.i(TAGPLACE, "An error occurred: " + status);
             }
         });
 
@@ -259,14 +263,14 @@ public class AddTripActivity extends AppCompatActivity {
             @Override
             public void onPlaceSelected(@NonNull Place place) {
                 System.out.println(place.getName());
-                Log.i(TAG, "Place: " + place.getName() + ", " + place.getId());
+                Log.i(TAGPLACE, "Place: " + place.getName() + ", " + place.getId());
                 endPlace = place.getName();
                 backStartPlace = endPlace;
             }
 
             @Override
             public void onError(@NonNull Status status) {
-                Log.i(TAG, "An error occurred: " + status);
+                Log.i(TAGPLACE, "An error occurred: " + status);
 
 
             }
@@ -318,8 +322,7 @@ public class AddTripActivity extends AppCompatActivity {
         } else if (cal.compareTo(current) > 0 && strDate != null && strTime != null && tripTitle != null && startPlace != null && endPlace != null) {
 
             addTripToFirebase();
-            core.addTrip(tripModel);
-            setAlarm(cal);
+            addTripPresenter.addTrip(tripModel,cal);
         }
     }
 
@@ -337,8 +340,8 @@ public class AddTripActivity extends AppCompatActivity {
             tripModel.setBackTime(backStrTime);
             tripModel.setBackStartPoint(backStartPlace);
             tripModel.setBackEndPoint(backEndPlace);
-            core.addTrip(tripModel);
-            setAlarm(cal2);
+            addTripPresenter.addTrip(tripModel,cal2);
+
         }
     }
 
@@ -407,13 +410,6 @@ public class AddTripActivity extends AppCompatActivity {
         finish();
     }
 
-    private void addTrip() {
-        Trip trip = new Trip();
-
-        core.addTrip(trip);
-        //after the trip is added finish the activity
-        finish();
-    }
 
     private void updateTrip() {
         Trip trip = new Trip();
@@ -438,6 +434,27 @@ public class AddTripActivity extends AppCompatActivity {
         finish();
     }
 
+    @Override
+    public void sentMessage(int message) {
+
+    }
+
+    @Override
+    public void sentError(int message) {
+
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    @Override
+    public void setAlarm(Trip trip, Calendar calendar) {
+        Intent intent = new Intent(getBaseContext(), AlarmReceiver.class);
+        intent.putExtra("id", trip.getTripId());
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        final int id = (int) System.currentTimeMillis();
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getBaseContext(), id, intent, 0);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+    }
     private Trip createTripFromInput(){
         Trip trip = new Trip();
         

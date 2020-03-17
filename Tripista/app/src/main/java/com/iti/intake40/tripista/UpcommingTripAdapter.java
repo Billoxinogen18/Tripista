@@ -20,6 +20,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.iti.intake40.tripista.core.FireBaseCore;
 import com.iti.intake40.tripista.core.model.Trip;
+import com.iti.intake40.tripista.note.AddNote;
+import com.iti.intake40.tripista.trip.AddTripActivity;
 
 import java.util.List;
 
@@ -103,7 +105,10 @@ public class UpcommingTripAdapter extends RecyclerView.Adapter<UpcommingTripAdap
                         public boolean onMenuItemClick(MenuItem item) {
                             switch (item.getItemId()) {
                                 case R.id.notes:
-                                    Toast.makeText(context, "notes" + getAdapterPosition(), Toast.LENGTH_SHORT).show();
+                                    Intent addNote = new Intent(context, AddNote.class);
+                                    String tripId = trips.get(getAdapterPosition()).getTripId();
+                                    addNote.putExtra("ID",tripId);
+                                   context.startActivity(addNote);
                                     break;
                                 case R.id.edit:
                                     Toast.makeText(context, "edit", Toast.LENGTH_SHORT).show();

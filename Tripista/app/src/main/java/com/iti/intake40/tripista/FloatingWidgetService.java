@@ -1,7 +1,6 @@
 package com.iti.intake40.tripista;
 
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.PixelFormat;
@@ -18,13 +17,16 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.iti.intake40.tripista.core.FireBaseCore;
+import com.iti.intake40.tripista.core.model.Note;
+import com.iti.intake40.tripista.core.model.Trip;
+import com.iti.intake40.tripista.map.MapContract;
+import com.iti.intake40.tripista.map.MapPresenter;
 
-public class FloatingWidgetService extends Service implements View.OnClickListener {
+import java.util.HashMap;
+
+public class FloatingWidgetService extends Service implements View.OnClickListener, MapContract.ViewInterface {
     private WindowManager mWindowManager;
     private View mFloatingWidgetView, collapsedView, expandedView;
     private ImageView remove_image_view;
@@ -32,7 +34,8 @@ public class FloatingWidgetService extends Service implements View.OnClickListen
     private View removeFloatingWidgetView;
     private boolean isExpanded = false;
     private int x_init_cord, y_init_cord, x_init_margin, y_init_margin;
-
+    private MapContract.PresenterInterface presenterInterface;
+    private FireBaseCore core;
     //Variable to check if the Floating widget view is on left side or in right side
     // initially we are displaying Floating widget view to Left side so set it to true
     private boolean isLeft = true;
@@ -49,7 +52,6 @@ public class FloatingWidgetService extends Service implements View.OnClickListen
     @Override
     public void onCreate() {
         super.onCreate();
-
         //init WindowManager
         mWindowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
 
@@ -485,4 +487,23 @@ public class FloatingWidgetService extends Service implements View.OnClickListen
 
     }
 
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+         super.onStartCommand(intent, flags, startId);
+         String id ;
+         if(intent!=null) {
+             id = intent.getExtras().getString("id");
+             core = FireBaseCore.getInstance();
+             presenterInterface = new MapPresenter(core,this);
+             presenterInterface.getTripById(id);
+         }
+         return START_STICKY;
+    }
+
+    @Override
+    public void setTripData(Trip trip) {
+        HashMap<String, Note> notes = trip.getNotes();
+        if(notes != null)
+        System.out.println("notes count "+notes.size());
+    }
 }
