@@ -186,7 +186,6 @@ public class UpcommingTripAdapter extends RecyclerView.Adapter<UpcommingTripAdap
         public static final String BACK_END_POINT = "back_endPoint";
         public static final String STATUS = "status";
         public static final String TYPE = "type";
-        public static final String LATLANG = "lat_lang";
     }
 }
 

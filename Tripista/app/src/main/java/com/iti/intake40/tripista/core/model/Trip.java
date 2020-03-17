@@ -25,7 +25,7 @@ public class Trip {
     private int cancelID;
     private int backCancelID;
     private HashMap<String,Note> notes ;
-    
+
     /*
     enums
      */
