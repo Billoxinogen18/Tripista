@@ -125,11 +125,11 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
             String t = updateIntent.getStringExtra(UpcommingTripAdapter.IntentKeys.TYPE);
             if (t == Trip.Type.ONE_WAY.toString()) {
                 //make one way selected
+                setRoundTripVisability(View.GONE);
             } else {
                 //make round trip selected
-
                 //show back date and time buttons
-
+                setRoundTripVisability(View.VISIBLE);
             }
         } else {
             isUpdate = false;
@@ -235,12 +235,9 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
         startAutoCompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(@NonNull Place place) {
-                System.out.println(place.getName());
-
                 Log.i(TAG, "Place: " + place.getName() + ", " + place.getId());
                 startPlace = place.getName();
                 backEndPlace = startPlace;
-
             }
 
             @Override
@@ -396,6 +393,7 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
         //set trip type to upcoming
         tripModel.setStatus(Trip.Status.UPCOMMING);
         //set trip type to round or one way
+
         Toast.makeText(getApplicationContext(),
                 "Trip added!",
                 Toast.LENGTH_LONG).show();
@@ -470,20 +468,22 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 switch (checkedId) {
                     case R.id.one_way_trip:
-                        returnDetails.setVisibility(View.GONE);
-                        backDateBtn.setVisibility(View.GONE);
-                        backTimeBtn.setVisibility(View.GONE);
-                        isRoundTrip = false;
+                        setRoundTripVisability((View.GONE));
+                        isRoundTrip = true;
                         break;
 
                     case R.id.round_trip:
-                        returnDetails.setVisibility(View.VISIBLE);
-                        backDateBtn.setVisibility(View.VISIBLE);
-                        backTimeBtn.setVisibility(View.VISIBLE);
-                        isRoundTrip = true;
+                        setRoundTripVisability((View.VISIBLE));
+                        isRoundTrip = false;
                         break;
                 }
             }
         });
+    }
+
+    private void setRoundTripVisability(int visability) {
+        returnDetails.setVisibility(visability);
+        backDateBtn.setVisibility(visability);
+        backTimeBtn.setVisibility(visability);
     }
 }
