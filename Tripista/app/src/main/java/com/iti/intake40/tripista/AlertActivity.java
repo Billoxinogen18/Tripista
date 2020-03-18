@@ -9,22 +9,28 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.WindowManager;
 import androidx.appcompat.app.AlertDialog;
-
 import com.iti.intake40.tripista.core.FireBaseCore;
 import com.iti.intake40.tripista.map.ShowMap;
+import java.util.Random;
+import java.util.UUID;
 
 
 public class AlertActivity extends Activity {
+    NotificationManager notificationManager;
     Uri notification;
-    int notificationId = 0;
-    Ringtone r;
+    Ringtone ringtone;
+    Intent intent;
+    String intentExtra;
+    public int notificationId = new Random().nextInt(10000);
     private FireBaseCore core;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,23 +43,26 @@ public class AlertActivity extends Activity {
                         WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
                         WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
                         WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON |
-                        WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY|
+                        WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY |
                         WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN |
                         WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
                         WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
                         WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON |
                         WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+
+        intent = getIntent();
+        intentExtra = intent.getStringExtra("title");
         notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
-        r = RingtoneManager.getRingtone(this.getApplicationContext(), notification);
-        r.play();
+        ringtone = RingtoneManager.getRingtone(this.getApplicationContext(), notification);
+        ringtone.play();
         displayAlert();
     }
 
     @Override
     protected void onRestart() {
         super.onRestart();
-        r.play();
+        ringtone.play();
     }
 
     @Override
@@ -63,16 +72,17 @@ public class AlertActivity extends Activity {
     }
 
     private void displayAlert() {
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("Your Trip ").setCancelable(
                 false).setPositiveButton("Start", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                if(getIntent()!= null) {
-                    String id =  getIntent().getExtras().getString("id");
-                    core.changeStateOfTrip("DONE",id);
+                if (getIntent() != null) {
+                    String id = getIntent().getExtras().getString("id");
+                    core.changeStateOfTrip("DONE", id);
                     Intent goMap = new Intent(AlertActivity.this, ShowMap.class);
-                    goMap.putExtra("id",id);
+                    goMap.putExtra("id", id);
                     startActivity(goMap);
                     finish();
                 }
@@ -80,24 +90,23 @@ public class AlertActivity extends Activity {
         }).setNeutralButton("Snooze",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
+                        id = notificationId;
                         show_Notification();
-                        r.stop();
+                        ringtone.stop();
                     }
+
+
                 }).setNegativeButton("Stop",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-
-
-                        r.stop();
+                        id = notificationId;
                         NotificationManager notificationManager = (NotificationManager)
                                 getSystemService(Context.
                                         NOTIFICATION_SERVICE);
-                        //   notificationManager.cancelAll();
-                        notificationManager.cancel(notificationId);
-                       dialog.cancel();
-                        android.os.Process.killProcess(android.os.Process.myPid());
+                        notificationManager.cancel(id);
+                        dialog.cancel();
+                        ringtone.stop();
                         finish();
-
 
                     }
                 }).setOnCancelListener(new DialogInterface.OnCancelListener() {
@@ -107,96 +116,62 @@ public class AlertActivity extends Activity {
             }
         });
         AlertDialog alert = builder.create();
-//        alert.setCanceledOnTouchOutside(false);
+        alert.setCanceledOnTouchOutside(false);
         alert.show();
-
 
     }
 
 
     public void show_Notification() {
-        Intent intent = new Intent(getApplicationContext(), AlertActivity.class);
-        String CHANNEL_ID = "MYCHANNEL";
-        NotificationChannel notificationChannel = null;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            notificationChannel = new NotificationChannel(CHANNEL_ID, "name", NotificationManager.IMPORTANCE_LOW);
-            PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 1, intent, 0);
+            Intent intent = new Intent(getApplicationContext(), AlertActivity.class);
+            String CHANNEL_ID = generateString();
+            NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_ID, "name", NotificationManager.IMPORTANCE_LOW);
+            PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), notificationId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
             Notification notification = new Notification.Builder(getApplicationContext(), CHANNEL_ID)
                     .setContentText("You are waiting for your trip")
-                    .setContentTitle("Trip away")
+                    .setContentTitle(intentExtra)
                     .setContentIntent(pendingIntent)
+                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setLargeIcon((BitmapFactory.decodeResource(this.getResources(),
+                            R.mipmap.ic_launcher_foreground)))
                     .setChannelId(CHANNEL_ID)
-                    .setSmallIcon(android.R.drawable.sym_action_chat)
                     .setOngoing(true)
+                    .setAutoCancel(true)
                     .build();
 
-            NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
             notificationManager.createNotificationChannel(notificationChannel);
             notificationManager.notify(notificationId, notification);
-        }else
-        {
-            PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 1, intent, 0);
+        } else {
+            PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), notificationId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
             Notification notification = new Notification.Builder(getApplicationContext())
                     .setContentText("You are waiting for your trip")
-                    .setContentTitle("Trip away")
+                    .setContentTitle(intentExtra)
                     .setContentIntent(pendingIntent)
-                    .setSmallIcon(android.R.drawable.sym_action_chat)
+                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setLargeIcon((BitmapFactory.decodeResource(this.getResources(),
+                            R.mipmap.ic_launcher_foreground)))
                     .setOngoing(true)
+                    .setAutoCancel(true)
                     .build();
-
             NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
             notificationManager.notify(notificationId, notification);
         }
         finish();
-
     }
 
-//    /*  start floating widget service  */
-//    public void createFloatingWidget(View view) {
-//        //Check if the application has draw over other apps permission or not?
-//        //This permission is by default available for API<23. But for API > 23
-//        //you have to ask for the permission in runtime.
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(this)) {
-//            //If the draw over permission is not available open the settings screen
-//            //to grant the permission.
-//            Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-//                    Uri.parse("package:" + getPackageName()));
-//            startActivityForResult(intent, 100);
-//        } else
-//            //If permission is granted start floating widget service
-//            startFloatingWidgetService();
-//
-//    }
-//
-//    /*  Start Floating widget service and finish current activity */
-//    private void startFloatingWidgetService() {
-//        startService(new Intent(AlertActivity.this, FloatingWidgetService.class));
-//        finish();
-//    }
-//
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        if (requestCode == 100) {
-//            //Check if the permission is granted or not.
-//            if (resultCode == RESULT_OK)
-//                //If permission granted start floating widget service
-//                startFloatingWidgetService();
-//            else
-//                //Permission is not available then display toast
-//                Toast.makeText(this,
-//                        "denied",
-//                        Toast.LENGTH_SHORT).show();
-//
-//        } else {
-//            super.onActivityResult(requestCode, resultCode, data);
-//        }
-//    }
     @Override
     protected void onStop() {
         super.onStop();
-        r.stop();
+        ringtone.stop();
+//        finish();
     }
 
-
-
+    public static String generateString() {
+        String uuid = UUID.randomUUID().toString();
+        return "uuid = " + uuid;
+    }
 }
+
+

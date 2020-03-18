@@ -74,6 +74,8 @@ public class FireBaseCore {
     private String id;
     private String verificationId;
     private DataSnapshot dataSnapshot;
+    private int cancelId;
+    private int backCancelId;
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallBack = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
         @Override
         public void onCodeSent(String s, PhoneAuthProvider.ForceResendingToken forceResendingToken) {
@@ -81,7 +83,7 @@ public class FireBaseCore {
             verificationId = s;
         }
 
-        /** get the code sent by sms automatically **/
+        /* get the code sent by sms automatically */
         @Override
         public void onVerificationCompleted(PhoneAuthCredential phoneAuthCredential) {
             String code = phoneAuthCredential.getSmsCode();
@@ -346,7 +348,7 @@ public class FireBaseCore {
 //send phone
     public void verifyCode(String code) {
         PhoneAuthCredential phoneAuthCredential = PhoneAuthProvider.getCredential(verificationId, code);
-        /** sign in method **/
+        /* sign in method */
         signInWithCredential(phoneAuthCredential);
     }
 
@@ -541,5 +543,13 @@ public class FireBaseCore {
     {
         profilePath = rootDB.child("users").child("trips").child(id).child(tripId).child("status");
         profilePath.setValue(state);
+    }
+    public int getTripBackCancelID(Trip t) {
+        backCancelId = (int) t.getBackCancelID();
+        return backCancelId;
+    }
+    public int getTripCancelID(Trip t) {
+        cancelId = (int) t.getCancelID();
+        return cancelId;
     }
 }

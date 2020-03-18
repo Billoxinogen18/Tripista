@@ -1,5 +1,7 @@
 package com.iti.intake40.tripista;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -25,15 +27,23 @@ import com.iti.intake40.tripista.map.ShowMap;
 import com.iti.intake40.tripista.note.AddNote;
 import com.iti.intake40.tripista.trip.AddTripActivity;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import static android.content.Context.ALARM_SERVICE;
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 public class UpcommingTripAdapter extends RecyclerView.Adapter<UpcommingTripAdapter.ViewHolder> {
 
+    public static int cancelOneWayTripId;
+    public static int cancelRoundWayTripId;
     private static final String TAG = "adapter";
     private final Context context;
+    public Trip currentTrip;
+    private FireBaseCore core = FireBaseCore.getInstance();
     private List<Trip> trips;
-    private Trip currentTrip;
-    FireBaseCore core = FireBaseCore.getInstance();
+    private List<Trip> tripList = new ArrayList<>();
+
 
     public UpcommingTripAdapter(Context context, List<Trip> trips) {
         this.context = context;
@@ -74,6 +84,7 @@ public class UpcommingTripAdapter extends RecyclerView.Adapter<UpcommingTripAdap
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
+        int r;
         private TextView tripDate;
         private TextView tripTime;
         private TextView tripTitle;
@@ -84,6 +95,7 @@ public class UpcommingTripAdapter extends RecyclerView.Adapter<UpcommingTripAdap
         private ConstraintLayout rootLayout;
         private ImageButton optionsButton;
         private Button startTrip;
+
 
         ViewHolder(final View itemView) {
             super(itemView);
@@ -122,7 +134,17 @@ public class UpcommingTripAdapter extends RecyclerView.Adapter<UpcommingTripAdap
                                     break;
                                 case R.id.cancel:
                                     Toast.makeText(context, "cancel", Toast.LENGTH_SHORT).show();
+                                    cancelOneWayTripId = core.getTripCancelID(currentTrip);
+                                    cancelRoundWayTripId = core.getTripBackCancelID(currentTrip);
+                                    if (currentTrip.getType() == Trip.Type.ROUND_TRIP && currentTrip.getStatus() == Trip.Status.UPCOMMING) {
+                                        cancelAlarm(cancelOneWayTripId);
+                                        cancelAlarm(cancelRoundWayTripId);
+                                    } else {
+                                        cancelAlarm(cancelOneWayTripId);
+                                    }
+
                                     break;
+
                             }
                             return false;
                         }
@@ -142,7 +164,13 @@ public class UpcommingTripAdapter extends RecyclerView.Adapter<UpcommingTripAdap
                 }
             });
         }
+    }
 
+    public void cancelAlarm(int id) {
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(ALARM_SERVICE);
+        Intent intent = new Intent(getApplicationContext(), AlarmReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), id, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        alarmManager.cancel(pendingIntent);
     }
 
     private void deleteTrip(final int tripPos) {

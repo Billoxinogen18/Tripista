@@ -16,6 +16,7 @@ import android.widget.DatePicker;
 import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -40,9 +41,23 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Random;
 
 public class AddTripActivity extends AppCompatActivity implements AddTripContract.ViewInterface {
-
+    final static int RQS_1 = 1;
+    public int RQS;
+    public String time;
+    public String date;
+    public Spinner mSpinner;
+    public String coordinates;
+    public String name;
+    public int id = new Random().nextInt(10000);
+    public int secId = new Random().nextInt(20000) + 1;
+    String placeTAG = "place";
+    //    Button backDateBtn;
+//    Button backTimeBtn;
+    String flag;
+    Intent intent;
     String TAG = "addTripActivity";
     //UI items
     private ImageButton backDateBtn;
@@ -52,17 +67,18 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
     private TextView info;
     private TextView titleTextView;
     private Button addTripBtn;
+    private FireBaseCore core = FireBaseCore.getInstance();
+    //    private Button timeBtn;
+//    private Button dateBtn;
+    Status status;
     private ImageButton timeBtn;
     private ImageButton dateBtn;
     private TextView returnDetails;
     private RadioGroup tripType;
     private RadioButton oneWayTrip;
     private RadioButton roundTrip;
-
     //global variables
-    private FireBaseCore core;
     private Trip tripModel;
-
     private String startPlace;
     private String endPlace;
     private String backStartPlace;
@@ -80,12 +96,7 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
     private Calendar now;
     private Calendar current;
     private String[] routes;
-
-
-    String flag;
-
     private String tripTitle;
-
     private int mYear, mMonth, mDay, hour, min, sec;
     private int mYear2, mMonth2, mDay2, hour2, minute2, sec2;
     private ArrayAdapter mAdapter;
@@ -125,7 +136,7 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
             startAutoCompleteFragment.setText(updateIntent.getStringExtra(UpcommingTripAdapter.IntentKeys.START_POINT));
             endAutoCompleteFragment.setText(updateIntent.getStringExtra(UpcommingTripAdapter.IntentKeys.END_POINT));
             String t = updateIntent.getStringExtra(UpcommingTripAdapter.IntentKeys.TYPE);
-            Log.d(TAG, "onStart: " + t);
+            Log.d(placeTAG, "onStart: " + t);
             if (t.equals(Trip.Type.ONE_WAY.toString())) {
                 //make one way selected
                 setRoundTripVisability(View.GONE);
@@ -144,12 +155,18 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void setAlarm(Calendar targetCal) {
-        Intent intent = new Intent(getBaseContext(), AlarmReceiver.class);
-        intent.putExtra("start", startPlace);
-        intent.putExtra("end", endPlace);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        final int id = (int) System.currentTimeMillis();
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(getBaseContext(), id, intent, 0);
+        intent = new Intent(this, AlarmReceiver.class);
+        intent.putExtra("title", name);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, id, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, targetCal.getTimeInMillis(), pendingIntent);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    private void setSecAlarm(Calendar targetCal) {
+        Intent intent = new Intent(this, AlarmReceiver.class);
+        intent.putExtra("title", name);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, secId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         alarmManager.setExact(AlarmManager.RTC_WAKEUP, targetCal.getTimeInMillis(), pendingIntent);
     }
@@ -240,14 +257,14 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
         startAutoCompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(@NonNull Place place) {
-                Log.i(TAG, "Place: " + place.getName() + ", " + place.getId());
+                Log.i(placeTAG, "Place: " + place.getName() + ", " + place.getId());
                 startPlace = place.getName();
                 backEndPlace = startPlace;
             }
 
             @Override
             public void onError(@NonNull Status status) {
-                Log.i(TAG, "An error occurred: " + status);
+                Log.i(placeTAG, "An error occurred: " + status);
             }
         });
 
@@ -258,14 +275,14 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
             @Override
             public void onPlaceSelected(@NonNull Place place) {
                 System.out.println(place.getName());
-                Log.i(TAG, "Place: " + place.getName() + ", " + place.getId());
+                Log.i(placeTAG, "Place: " + place.getName() + ", " + place.getId());
                 endPlace = place.getName();
                 backStartPlace = endPlace;
             }
 
             @Override
             public void onError(@NonNull Status status) {
-                Log.i(TAG, "An error occurred: " + status);
+                Log.i(placeTAG, "An error occurred: " + status);
 
 
             }
@@ -302,7 +319,6 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
 
             } else {
                 setOneWayTrip();
-
             }
         }
     }
@@ -315,8 +331,9 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
                     Toast.LENGTH_LONG).show();
 
         } else if (cal.compareTo(current) > 0 && strDate != null && strTime != null && tripTitle != null && startPlace != null && endPlace != null) {
-
             addTripToFirebase();
+            tripModel.setCancelID(id);
+            setAlarm(cal);
             addTripPresenter.addTrip(tripModel, cal);
         }
     }
@@ -329,14 +346,14 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
                     , Toast.LENGTH_LONG).show();
 
         } else if (cal.compareTo(current) > 0 && cal2.compareTo(current) > 0 && strDate != null && strTime != null && backStrTime != null && backStrDate != null && cal2.compareTo(cal) > 0 && tripTitle != null && startPlace != null && endPlace != null) {
-
             addTripToFirebase();
+            tripModel.setBackCancelID(secId);
             tripModel.setBackDate(backStrDate);
             tripModel.setBackTime(backStrTime);
             tripModel.setBackStartPoint(backStartPlace);
             tripModel.setBackEndPoint(backEndPlace);
+            setSecAlarm(cal2);
             addTripPresenter.addTrip(tripModel, cal2);
-
         }
     }
 
@@ -350,13 +367,11 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
                     @Override
                     public void onTimeSet(TimePicker view, int hourOfDay,
                                           int minute) {
-
                         cal2.set(Calendar.HOUR_OF_DAY, hourOfDay);
                         cal2.set(Calendar.MINUTE, minute);
                         cal2.set(Calendar.SECOND, 0);
                         DateFormat dateFormat = new SimpleDateFormat("hh:mm:00");
                         backStrTime = dateFormat.format(cal2.getTime());
-
                     }
                 }, hour2, minute2, false);
         timePicker2.show();
@@ -370,22 +385,16 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
                 new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-//                        cal2.set(year, month, dayOfMonth);
                         cal2.set(Calendar.YEAR, year);
                         cal2.set(Calendar.MONTH, month);
                         cal2.set(Calendar.DAY_OF_MONTH, dayOfMonth);
                         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
                         backStrDate = dateFormat.format(cal2.getTime());
-                        info.setText(dayOfMonth + "-" + (month + 1) + "-" + year);
-
-
                     }
                 }, mYear2, mMonth2, mDay2);
         //disable past date
         datePicker2.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
         datePicker2.show();
-
-
     }
 
     public void addTripToFirebase() {
@@ -395,6 +404,8 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
         tripModel.setEndPoint(endPlace);
         tripModel.setDate(strDate);
         tripModel.setTime(strTime);
+//        tripModel.setCancelID(id);
+//        tripModel.setStatus(status);
         //set trip type to upcoming
         tripModel.setStatus(Trip.Status.UPCOMMING);
         //set trip type to round or one way
