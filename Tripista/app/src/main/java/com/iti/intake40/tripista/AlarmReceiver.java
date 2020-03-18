@@ -54,14 +54,14 @@ public class AlarmReceiver extends BroadcastReceiver {
             });
 
         } else {
-
-            String tripTitle = arg1.getStringExtra("title");
-            int tripNotificationId = arg1.getExtras().getInt("s");
-            String tripId = arg1.getStringExtra("tripId");
-            Intent alarmIntent = new Intent(arg0, AlertActivity.class);
-            alarmIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
-            alarmIntent.putExtra("title", tripTitle);
-            arg0.startActivity(alarmIntent);
+           if(arg1.getExtras().getString("id")!=null) {
+               String tripTitle = arg1.getStringExtra("title");
+               String id = arg1.getExtras().getString("id");
+               Intent alarmIntent = new Intent(arg0, AlertActivity.class);
+               alarmIntent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+               alarmIntent.putExtra("id",id);
+               arg0.startActivity(alarmIntent);
+           }
         }
 
     }

@@ -1,6 +1,7 @@
 package com.iti.intake40.tripista.core.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class Trip {
@@ -20,10 +21,10 @@ public class Trip {
     private String backEndPoint;
     private Status status; //upcomming / done / cancelled
     private Type type; //one way / round trip
-    private List<Note> notes = new ArrayList<>();
     //ID's to cancel the alaram
     private int cancelID;
     private int backCancelID;
+    private HashMap<String,Note> notes ;
 
     /*
     enums
@@ -44,6 +45,23 @@ public class Trip {
      */
 
     public Trip() {
+    }
+
+
+    public Trip(String tripId, String title, String date, String time, String startPoint, String endPoint, String backDate, String backTime, String backStartPoint, String backEndPoint, Status status, Type type, HashMap<String, Note> notes) {
+        this.tripId = tripId;
+        this.title = title;
+        this.date = date;
+        this.time = time;
+        this.startPoint = startPoint;
+        this.endPoint = endPoint;
+        this.backDate = backDate;
+        this.backTime = backTime;
+        this.backStartPoint = backStartPoint;
+        this.backEndPoint = backEndPoint;
+        this.status = status;
+        this.type = type;
+        this.notes = notes;
     }
 
     // one way trip without notes
@@ -179,11 +197,11 @@ public class Trip {
         this.backDate = backDate;
     }
 
-    public List<Note> getNotes() {
+    public HashMap<String, Note> getNotes() {
         return notes;
     }
 
-    public void setNotes(List<Note> notes) {
+    public void setNotes(HashMap<String, Note> notes) {
         this.notes = notes;
     }
 
@@ -222,10 +240,5 @@ public class Trip {
                 ", cancelID=" + cancelID +
                 ", backCancelID=" + backCancelID +
                 '}';
-    }
-
-    public Trip(String date, String time) {
-        this.date = date;
-        this.time = time;
     }
 }

@@ -12,5 +12,12 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
+    <style name="NoActionBarForDialog" parent="Theme.AppCompat.Dialog">
+        <item name="actionBarTheme">@style/Theme.AppCompat.NoActionBar</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:backgroundDimEnabled">false</item>
 
+    </style>
 </resources>

@@ -62,6 +62,7 @@ public class HomePresenter implements HomeContract.PresenterInterface {
         core.getUserInfoByPhone(this, number);
     }
 
+
     public List<Trip> getUserTrips() {
         core.getTripsForCurrentUser(new OnTripsLoaded() {
             @Override
@@ -72,5 +73,17 @@ public class HomePresenter implements HomeContract.PresenterInterface {
         });
         return myTrips;
     }
+
+    //    List<Trip> myTrips = new ArrayList<>();
+//
+//    public List<Trip> getUserTrips(){
+//        core.getTripsForCurrentUser(new OnTripsLoaded() {
+//            @Override
+//            public void onTripsLoaded(List<Trip> trips) {
+//               // myTrips = trips;
+//                Log.d(TAG, "onTripsLoaded: " + trips.toString());
+//            }
+//        return myTrips;
+//    }
 
 }

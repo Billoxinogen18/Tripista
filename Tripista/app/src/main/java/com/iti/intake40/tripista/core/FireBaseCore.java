@@ -1,10 +1,13 @@
 package com.iti.intake40.tripista.core;
 
 
+import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentActivity;
 
 import com.facebook.AccessToken;
@@ -30,28 +33,31 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.iti.intake40.tripista.OnTripsLoaded;
 import com.iti.intake40.tripista.R;
+import com.iti.intake40.tripista.core.model.Note;
 import com.iti.intake40.tripista.core.model.Trip;
 import com.iti.intake40.tripista.core.model.UserModel;
 import com.iti.intake40.tripista.features.auth.home.HomeContract;
 import com.iti.intake40.tripista.features.auth.signin.SigninContract;
 import com.iti.intake40.tripista.features.auth.signup.SignupContract;
 import com.iti.intake40.tripista.features.auth.splash.SplashContract;
+import com.iti.intake40.tripista.map.MapContract;
+import com.iti.intake40.tripista.note.AddNoteContract;
+import com.iti.intake40.tripista.note.AddNotePrsenter;
+import com.iti.intake40.tripista.trip.AddTripPresenter;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
-import static androidx.constraintlayout.widget.Constraints.TAG;
-
 public class FireBaseCore {
-
+    private static final String TAG = "firebase";
     //make singletone class
     public static FireBaseCore core;
     /*
     remon
      */
-    ArrayList<Trip> recievedTrips = new ArrayList<>();
-    int cancelId;
-    int backCancelId;
     private DatabaseReference rootDB;
     private StorageReference rootStorage;
     private FirebaseUser currentUser;
@@ -64,9 +70,12 @@ public class FireBaseCore {
     private SigninContract.PresenterInterface signinPresenter;
     private SignupContract.PresenterInterface signupPresenter;
     private HomeContract.PresenterInterface homePresenter;
+    private AddNoteContract.PresenterInterface addNote;
     private String id;
     private String verificationId;
     private DataSnapshot dataSnapshot;
+    private int cancelId;
+    private int backCancelId;
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallBack = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
         @Override
         public void onCodeSent(String s, PhoneAuthProvider.ForceResendingToken forceResendingToken) {
@@ -74,7 +83,7 @@ public class FireBaseCore {
             verificationId = s;
         }
 
-        /** get the code sent by sms automatically **/
+        /* get the code sent by sms automatically */
         @Override
         public void onVerificationCompleted(PhoneAuthCredential phoneAuthCredential) {
             String code = phoneAuthCredential.getSmsCode();
@@ -339,7 +348,7 @@ public class FireBaseCore {
 //send phone
     public void verifyCode(String code) {
         PhoneAuthCredential phoneAuthCredential = PhoneAuthProvider.getCredential(verificationId, code);
-        /** sign in method **/
+        /* sign in method */
         signInWithCredential(phoneAuthCredential);
     }
 
@@ -380,20 +389,20 @@ public class FireBaseCore {
     /*
     shrouq
      */
-    public void addTrip(final Trip trip) {
+    public void addTrip(final Trip trip, final AddTripPresenter addTripPresenter) {
         //here we just only refer to path
         profilePath = rootDB.child("users").child("trips").child(id);
+        //to add trips we should take snapshot from this path
         final String key = profilePath.push().getKey();
         trip.setTripId(key);
         profilePath.child(key).setValue(trip).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
-
+                    addTripPresenter.setData(trip);
                 }
             }
         });
-
     }
 
     public void checkCurrentUser(SplashContract.PresenterInterface splashInterface) {
@@ -405,38 +414,26 @@ public class FireBaseCore {
         }
     }
 
-    private void addTripToList(Trip t) {
-        recievedTrips.add(t);
-        Log.d("fire", "onDataChange: \n" + t.getTitle());
+    /*
+    remon
 
-    }
-
-    public int getTripBackCancelID(Trip t) {
-        backCancelId = (int) t.getBackCancelID();
-        return backCancelId;
-    }
-    public int getTripCancelID(Trip t) {
-        cancelId = (int) t.getCancelID();
-        return cancelId;
-    }
+     */
     public void getTripsForCurrentUser(final OnTripsLoaded onTripsLoaded) {
         rootDB.child("users")
                 .child("trips")
-                .child(auth.getCurrentUser().getUid()
-
-                )
+                .child(auth.getCurrentUser().getUid())
+                //check that title is equal to test3
+                .orderByChild("status")
+                .equalTo(String.valueOf(Trip.Status.UPCOMMING))
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
+                        ArrayList<Trip> upcommingTrips = new ArrayList<Trip>();
                         for (DataSnapshot tripSnapShot : dataSnapshot.getChildren()) {
-                            addTripToList(tripSnapShot.getValue(Trip.class));
-//                            Log.d("firebase", "onDataChange: \n" + tripSnapShot.);
-
+                            upcommingTrips.add(tripSnapShot.getValue(Trip.class));
                         }
-                        onTripsLoaded.onTripsLoaded(recievedTrips);
-//                        Log.d("firebase", "onDataChange: \n" + recievedTrips);
-
+                        onTripsLoaded.onTripsLoaded(upcommingTrips);
+                        Log.d("firebase", "onDataChange: \n" + upcommingTrips);
                     }
 
                     @Override
@@ -446,4 +443,113 @@ public class FireBaseCore {
                 });
     }
 
+    public void getHistoryTripsForCurrentUser(final OnTripsLoaded onTripsLoaded) {
+        Date c = Calendar.getInstance().getTime();
+        SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
+        String formattedDate = df.format(c);
+
+        rootDB.child("users")
+                .child("trips")
+                .child(auth.getCurrentUser().getUid())
+                .endAt(formattedDate)
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        ArrayList<Trip> historyTrips = new ArrayList<>();
+                        //historyTrips.clear();
+                        for (DataSnapshot tripSnapShot : dataSnapshot.getChildren()) {
+                            historyTrips.add(tripSnapShot.getValue(Trip.class));
+                        }
+                        onTripsLoaded.onTripsLoaded(historyTrips);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+    }
+
+    public void deleteTrip(final String tripId, final Context context) {
+        rootDB.child("users")
+                .child("trips")
+                .child(auth.getCurrentUser().getUid())
+                .child(tripId)
+                .removeValue(new DatabaseReference.CompletionListener() {
+                    @Override
+                    public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
+                        Log.d(TAG, "onComplete: deleted " + tripId);
+                        Toast.makeText(context, "Trip Deleted!", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    public void addNote(Note note, String tripID, AddNotePrsenter addNotePrsenter) {
+        addNote = addNotePrsenter;
+        profilePath = rootDB.child("users").child("trips").child(id).child(tripID);
+        final String key = profilePath.push().getKey();
+        note.setNoteID(key);
+        profilePath.child("notes").child(key).setValue(note).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    addNote.replyByMessage(R.string.note_added_successfully);
+                } else {
+                    addNote.replyByError(R.string.note_didnt_added);
+                }
+            }
+        });
+
+    }
+
+    public void getSpecificTrip(String tripID, final MapContract.ViewInterface service) {
+        rootDB.child("users")
+                .child("trips")
+                .child(auth.getCurrentUser().getUid())
+                .child(tripID)
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        Trip trip = dataSnapshot.getValue(Trip.class);
+                        service.setTripData(trip);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+    }
+
+    public void updateTrip(final Trip updatedTrip) {
+        rootDB.child("users")
+                .child("trips")
+                .child(auth.getCurrentUser().getUid())
+                .child(updatedTrip.getTripId())
+                .setValue(updatedTrip, new DatabaseReference.CompletionListener() {
+                    @Override
+                    public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
+                        homePresenter.replyByMessage(R.string.updated_successfuly);
+                    }
+                });
+    }
+
+    public void  changeStateOfNote (int state , String noteID,String tripId)
+    {
+        profilePath = rootDB.child("users").child("trips").child(id).child(tripId).child("notes").child(noteID).child("noteState");
+        profilePath.setValue(state);
+    }
+    public void  changeStateOfTrip (String state , String tripId)
+    {
+        profilePath = rootDB.child("users").child("trips").child(id).child(tripId).child("status");
+        profilePath.setValue(state);
+    }
+    public int getTripBackCancelID(Trip t) {
+        backCancelId = (int) t.getBackCancelID();
+        return backCancelId;
+    }
+    public int getTripCancelID(Trip t) {
+        cancelId = (int) t.getCancelID();
+        return cancelId;
+    }
 }

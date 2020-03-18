@@ -40,6 +40,7 @@ public class UpcommingFragment extends Fragment {
 
         final View rootView = inflater.inflate(R.layout.fragment_upcomming, container, false);
 
+        getActivity().setTitle(R.string.upcomming_trips);
         upcommingRecyclerView = rootView.findViewById(R.id.upcommming_rc);
         upcommingRecyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getContext());
@@ -47,10 +48,10 @@ public class UpcommingFragment extends Fragment {
         adapter = new UpcommingTripAdapter(getContext(), tripList);
         upcommingRecyclerView.setAdapter(adapter);
 
-        List<Trip> recTrips = new ArrayList<>();
         core.getTripsForCurrentUser(new OnTripsLoaded() {
             @Override
             public void onTripsLoaded(List<Trip> trips) {
+                tripList.clear();
                 tripList.addAll(trips);
                 adapter.notifyDataSetChanged();
                 Log.d(TAG, "onTripsLoaded: " + trips.toString());
