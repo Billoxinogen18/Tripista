@@ -313,7 +313,7 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
             updateTrip();
         } else {
             tripTitle = titleTextView.getText().toString();
-            if (flag == "round") {
+            if (isRoundTrip) {
                 setOneWayTrip();
                 setRoundTrip();
 
@@ -471,7 +471,6 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
         intent.putExtra("id", trip.getTripId());
         intent.putExtra("title", trip.getTitle());
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        final int id = (int) System.currentTimeMillis();
         PendingIntent pendingIntent = PendingIntent.getBroadcast(getBaseContext(), id, intent, 0);
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
