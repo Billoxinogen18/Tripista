@@ -5,12 +5,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.iti.intake40.tripista.R;
+import com.iti.intake40.tripista.core.FireBaseCore;
 import com.iti.intake40.tripista.core.model.Note;
 
 import java.util.ArrayList;
@@ -22,12 +24,16 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
     private LayoutInflater inflater;
     private ArrayList<String> noteList ;
     private  Note note;
+    private String tripId;
+    private FireBaseCore core;
 
-    public NotesAdapter(HashMap<String, Note> notes, Context context) {
+    public NotesAdapter(HashMap<String, Note> notes, Context context, String tripId) {
         this.notes = notes;
         this.context = context;
         inflater = LayoutInflater.from(context);
         noteList = new ArrayList<>(notes.keySet());
+        this.tripId = tripId;
+        core = FireBaseCore.getInstance();
     }
 
     @NonNull
@@ -61,6 +67,21 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
             super(itemView);
             noteTitle = itemView.findViewById(R.id.note_title);
             state = itemView.findViewById(R.id.state);
+            state.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                    String noteKey =noteList.get(getAdapterPosition());
+                    if(state.isChecked())
+                    {
+                      core.changeStateOfNote(1,noteKey,tripId);
+                    }
+                    else
+                    {
+                        core.changeStateOfNote(0,noteKey,tripId);
+
+                    }
+                }
+            });
         }
     }
 }

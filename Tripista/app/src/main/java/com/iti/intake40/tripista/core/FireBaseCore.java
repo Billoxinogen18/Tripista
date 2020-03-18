@@ -532,4 +532,14 @@ public class FireBaseCore {
                 });
     }
 
+    public void  changeStateOfNote (int state , String noteID,String tripId)
+    {
+        profilePath = rootDB.child("users").child("trips").child(id).child(tripId).child("notes").child(noteID).child("noteState");
+        profilePath.setValue(state);
+    }
+    public void  changeStateOfTrip (String state , String tripId)
+    {
+        profilePath = rootDB.child("users").child("trips").child(id).child(tripId).child("status");
+        profilePath.setValue(state);
+    }
 }

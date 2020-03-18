@@ -508,7 +508,7 @@ public class FloatingWidgetService extends Service implements View.OnClickListen
     @Override
     public void setTripData(Trip trip) {
         HashMap<String, Note> notes = trip.getNotes();
-        NotesAdapter adapter = new NotesAdapter(notes,getBaseContext());
+        NotesAdapter adapter = new NotesAdapter(notes,getBaseContext(),trip.getTripId());
         notesList = mFloatingWidgetView.findViewById(R.id.recycle);
         notesList.setLayoutManager(new LinearLayoutManager(this));
         notesList.setAdapter(adapter);

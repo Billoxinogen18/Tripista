@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.view.WindowManager;
 import androidx.appcompat.app.AlertDialog;
 
+import com.iti.intake40.tripista.core.FireBaseCore;
 import com.iti.intake40.tripista.map.ShowMap;
 
 
@@ -23,12 +24,13 @@ public class AlertActivity extends Activity {
     Uri notification;
     int notificationId = 0;
     Ringtone r;
-
+    private FireBaseCore core;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // setContentView(R.layout.activity_alert);
+        core = FireBaseCore.getInstance();
 
         getWindow().setFlags(
                 WindowManager.LayoutParams.FLAG_FULLSCREEN |
@@ -68,6 +70,7 @@ public class AlertActivity extends Activity {
             public void onClick(DialogInterface dialogInterface, int i) {
                 if(getIntent()!= null) {
                     String id =  getIntent().getExtras().getString("id");
+                    core.changeStateOfTrip("DONE",id);
                     Intent goMap = new Intent(AlertActivity.this, ShowMap.class);
                     goMap.putExtra("id",id);
                     startActivity(goMap);
