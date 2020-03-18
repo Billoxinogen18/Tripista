@@ -10,12 +10,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ImageButton;
-import android.widget.Spinner;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -42,45 +42,47 @@ import java.util.Arrays;
 import java.util.Calendar;
 
 public class AddTripActivity extends AppCompatActivity implements AddTripContract.ViewInterface {
-    final static int RQS_1 = 1;
-    public Trip tripModel;
-    public int RQS;
-    public String startPlace;
-    public String endPlace;
-    public String backStartPlace;
-    public String backEndPlace;
-    public String time;
-    public String date;
-    public String strDate;
-    public String strTime;
-    public String backStrDate;
-    public String backStrTime;
-    public Spinner mSpinner;
-    public String coordinates;
-    DatePickerDialog datePicker;
-    DatePickerDialog datePicker2;
-    TimePickerDialog timePicker;
-    TimePickerDialog timePicker2;
-    Calendar cal;
-    Calendar cal2;
-    Calendar now;
-    Calendar current;
-    String TAGPLACE = "place";
-    String[] routes;
-    ImageButton backDateBtn;
-    ImageButton backTimeBtn;
-    AutocompleteSupportFragment startAutoCompleteFragment;
-    AutocompleteSupportFragment endAutoCompleteFragment;
-    String flag;
+
     String TAG = "addTripActivity";
+    //UI items
+    private ImageButton backDateBtn;
+    private ImageButton backTimeBtn;
+    private AutocompleteSupportFragment startAutoCompleteFragment;
+    private AutocompleteSupportFragment endAutoCompleteFragment;
     private TextView info;
     private TextView titleTextView;
     private Button addTripBtn;
     private ImageButton timeBtn;
     private ImageButton dateBtn;
+    private TextView returnDetails;
+    private RadioGroup tripType;
+    private RadioButton oneWayTrip;
+    private RadioButton roundTrip;
 
     //global variables
     private FireBaseCore core;
+    private Trip tripModel;
+
+    private String startPlace;
+    private String endPlace;
+    private String backStartPlace;
+    private String backEndPlace;
+    private String strDate;
+    private String strTime;
+    private String backStrDate;
+    private String backStrTime;
+    private DatePickerDialog datePicker;
+    private DatePickerDialog datePicker2;
+    private TimePickerDialog timePicker;
+    private TimePickerDialog timePicker2;
+    private Calendar cal;
+    private Calendar cal2;
+    private Calendar now;
+    private Calendar current;
+    private String[] routes;
+
+
+    String flag;
 
     private String tripTitle;
 
@@ -89,8 +91,8 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
     private ArrayAdapter mAdapter;
     private AddTripContract.PresenterInterface addTripPresenter;
     private Intent updateIntent;
-    private boolean isUpdate;
-    private boolean isRoundTrip;
+    private boolean isUpdate; // use the view to update or to ddd
+    private boolean isRoundTrip; // is round trip or one way
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,8 +106,14 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
         core = FireBaseCore.getInstance();
         addTripPresenter = new AddTripPresenter(core, this);
         setViews();
-        setmSpinner();
+        handleRadioButtons();
         getPlaces();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
         //check if this is to edit trip
         updateIntent = getIntent();
         if (updateIntent.getStringExtra(UpcommingTripAdapter.IntentKeys.ID) != null) {
@@ -115,7 +123,7 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
             startAutoCompleteFragment.setText(updateIntent.getStringExtra(UpcommingTripAdapter.IntentKeys.START_POINT));
             endAutoCompleteFragment.setText(updateIntent.getStringExtra(UpcommingTripAdapter.IntentKeys.END_POINT));
             String t = updateIntent.getStringExtra(UpcommingTripAdapter.IntentKeys.TYPE);
-            if(t == Trip.Type.ONE_WAY.toString()) {
+            if (t == Trip.Type.ONE_WAY.toString()) {
                 //make one way selected
             } else {
                 //make round trip selected
@@ -128,7 +136,6 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
             addTripBtn.setText(R.string.add_trip);
         }
     }
-
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void setAlarm(Calendar targetCal) {
@@ -198,40 +205,15 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
 
         endAutoCompleteFragment = (AutocompleteSupportFragment)
                 getSupportFragmentManager().findFragmentById(R.id.endfragment);
+        tripType = findViewById(R.id.trip_type);
+        oneWayTrip = findViewById(R.id.one_way_trip);
+        roundTrip = findViewById(R.id.round_trip);
+        returnDetails = findViewById(R.id.return_details);
+
+        returnDetails.setVisibility(View.GONE);
         backDateBtn.setVisibility(View.GONE);
         backTimeBtn.setVisibility(View.GONE);
 
-
-    }
-
-    public void setmSpinner() {
-        Spinner s1 = (Spinner) findViewById(R.id.routeSpinner);
-        routes = getResources().getStringArray(R.array.routes_array);
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                android.R.layout.select_dialog_multichoice, routes);
-
-        s1.setAdapter(adapter);
-        s1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-                String text = arg0.getSelectedItem().toString();
-                if (text.equalsIgnoreCase("round trip")) {
-                    flag = "round";
-                    backDateBtn.setVisibility(View.VISIBLE);
-                    backTimeBtn.setVisibility(View.VISIBLE);
-                } else {
-                    flag = "oneWay";
-                    backDateBtn.setVisibility(View.GONE);
-                    backTimeBtn.setVisibility(View.GONE);
-                }
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> arg0) {
-            }
-        });
 
     }
 
@@ -255,7 +237,7 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
             public void onPlaceSelected(@NonNull Place place) {
                 System.out.println(place.getName());
 
-                Log.i(TAGPLACE, "Place: " + place.getName() + ", " + place.getId());
+                Log.i(TAG, "Place: " + place.getName() + ", " + place.getId());
                 startPlace = place.getName();
                 backEndPlace = startPlace;
 
@@ -263,7 +245,7 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
 
             @Override
             public void onError(@NonNull Status status) {
-                Log.i(TAGPLACE, "An error occurred: " + status);
+                Log.i(TAG, "An error occurred: " + status);
             }
         });
 
@@ -274,14 +256,14 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
             @Override
             public void onPlaceSelected(@NonNull Place place) {
                 System.out.println(place.getName());
-                Log.i(TAGPLACE, "Place: " + place.getName() + ", " + place.getId());
+                Log.i(TAG, "Place: " + place.getName() + ", " + place.getId());
                 endPlace = place.getName();
                 backStartPlace = endPlace;
             }
 
             @Override
             public void onError(@NonNull Status status) {
-                Log.i(TAGPLACE, "An error occurred: " + status);
+                Log.i(TAG, "An error occurred: " + status);
 
 
             }
@@ -424,6 +406,8 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
 
     private void updateTrip() {
         Trip trip = new Trip();
+        tripDate();
+        tripTime();
         trip.setTripId(updateIntent.getStringExtra(UpcommingTripAdapter.IntentKeys.ID));
         trip.setTitle(titleTextView.getText().toString());
         trip.setDate(strDate);
@@ -431,11 +415,13 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
         trip.setStartPoint(startPlace);
         trip.setEndPoint(endPlace);
 
-        //trip.setStatus();
+        trip.setStatus(Trip.Status.UPCOMMING);
 
         //clear old alarms
 
         //add new alarms
+
+        //check trip type
         if (isRoundTrip) {
             trip.setType(Trip.Type.ROUND_TRIP);
             trip.setBackDate(backStrDate);
@@ -476,5 +462,28 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
         Trip trip = new Trip();
 
         return trip;
+    }
+
+    private void handleRadioButtons() {
+        tripType.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                switch (checkedId) {
+                    case R.id.one_way_trip:
+                        returnDetails.setVisibility(View.GONE);
+                        backDateBtn.setVisibility(View.GONE);
+                        backTimeBtn.setVisibility(View.GONE);
+                        isRoundTrip = false;
+                        break;
+
+                    case R.id.round_trip:
+                        returnDetails.setVisibility(View.VISIBLE);
+                        backDateBtn.setVisibility(View.VISIBLE);
+                        backTimeBtn.setVisibility(View.VISIBLE);
+                        isRoundTrip = true;
+                        break;
+                }
+            }
+        });
     }
 }

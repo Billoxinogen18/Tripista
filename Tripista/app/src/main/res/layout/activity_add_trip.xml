@@ -29,7 +29,7 @@
         android:layout_marginTop="24dp"
         android:text="@string/start_details"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider3" />
+        app:layout_constraintTop_toBottomOf="@+id/trip_type" />
 
     <Button
         android:id="@+id/addTrip"
@@ -37,21 +37,21 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="72dp"
         android:layout_marginLeft="72dp"
+        android:layout_marginTop="32dp"
         android:layout_marginEnd="72dp"
         android:layout_marginRight="72dp"
-        android:layout_marginBottom="32dp"
         android:background="@drawable/button_shape"
         android:onClick="addTrip"
         android:text="@string/add_trip"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.487"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider4" />
 
     <fragment
         android:id="@+id/startfragment"
         android:name="com.iti.intake40.tripista.StartAutoCompleteFragment"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="42dp"
         android:layout_marginTop="8dp"
         android:minWidth="300dp"
@@ -61,7 +61,7 @@
     <fragment
         android:id="@+id/endfragment"
         android:name="com.iti.intake40.tripista.EndAutoCompleteFragment"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="39dp"
         android:layout_marginTop="8dp"
         android:minWidth="300dp"
@@ -94,13 +94,12 @@
         android:layout_height="58dp"
         android:layout_marginStart="24dp"
         android:layout_marginLeft="24dp"
-        android:layout_marginTop="48dp"
         android:minWidth="48dp"
         android:minHeight="48dp"
         android:onClick="setDate"
         android:scaleType="centerCrop"
         app:layout_constraintStart_toEndOf="@+id/textView"
-        app:layout_constraintTop_toBottomOf="@+id/divider3"
+        app:layout_constraintTop_toBottomOf="@+id/textView"
         app:srcCompat="@drawable/ic_month" />
 
     <ImageButton
@@ -109,19 +108,18 @@
         android:layout_height="57dp"
         android:layout_marginStart="48dp"
         android:layout_marginLeft="48dp"
-        android:layout_marginTop="48dp"
         android:minWidth="48dp"
         android:minHeight="48dp"
         android:onClick="setTime"
         android:scaleType="centerCrop"
         app:layout_constraintStart_toEndOf="@+id/dateBtn"
-        app:layout_constraintTop_toBottomOf="@+id/divider3"
+        app:layout_constraintTop_toTopOf="@+id/dateBtn"
         app:srcCompat="@drawable/ic_clock" />
 
     <View
         android:id="@+id/divider3"
         android:layout_width="409dp"
-        android:layout_height="1dp"
+        android:layout_height="2dp"
         android:layout_marginTop="16dp"
         android:background="?android:attr/listDivider"
         app:layout_constraintEnd_toEndOf="parent"
@@ -147,35 +145,70 @@
         android:id="@+id/backDate"
         android:layout_width="57dp"
         android:layout_height="58dp"
-        android:layout_marginTop="28dp"
         android:minWidth="48dp"
         android:minHeight="48dp"
         android:onClick="setBackDate"
         android:scaleType="centerCrop"
         android:visibility="visible"
-        app:layout_constraintStart_toEndOf="@+id/textView5"
-        app:layout_constraintTop_toBottomOf="@+id/textView5"
+        app:layout_constraintStart_toStartOf="@+id/dateBtn"
+        app:layout_constraintTop_toBottomOf="@+id/return_details"
         app:srcCompat="@drawable/ic_month" />
 
     <TextView
-        android:id="@+id/textView5"
+        android:id="@+id/return_details"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginLeft="24dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="32dp"
         android:text="@string/return_details"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/routeSpinner" />
+        app:layout_constraintTop_toBottomOf="@+id/dateBtn" />
 
-    <Spinner
-        android:id="@+id/routeSpinner"
-        android:layout_width="324dp"
-        android:layout_height="31dp"
-        android:layout_marginTop="34dp"
-        android:layout_marginEnd="44dp"
-        android:layout_marginRight="44dp"
+    <RadioGroup
+        android:id="@+id/trip_type"
+        android:layout_width="356dp"
+        android:layout_height="45dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginRight="24dp"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/timeBtn" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider3">
+
+        <RadioButton
+            android:id="@+id/one_way_trip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:checked="true"
+            android:padding="8dp"
+            android:text="@string/one_way" />
+
+        <RadioButton
+            android:id="@+id/round_trip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="8dp"
+            android:text="@string/round_trip" />
+    </RadioGroup>
+
+    <View
+        android:id="@+id/divider4"
+        android:layout_width="409dp"
+        android:layout_height="2dp"
+        android:layout_marginStart="1dp"
+        android:layout_marginLeft="1dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="1dp"
+        android:layout_marginRight="1dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/backDate" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

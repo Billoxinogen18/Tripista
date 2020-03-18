@@ -396,10 +396,9 @@ public class FireBaseCore {
         profilePath.child(key).setValue(trip).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-               if(task.isSuccessful())
-               {
-               addTripPresenter.setData(trip);
-               }
+                if (task.isSuccessful()) {
+                    addTripPresenter.setData(trip);
+                }
             }
         });
     }
@@ -417,8 +416,6 @@ public class FireBaseCore {
     remon
 
      */
-    ArrayList<Trip> historyTrips = new ArrayList<>();
-
     public void getTripsForCurrentUser(final OnTripsLoaded onTripsLoaded) {
         rootDB.child("users")
                 .child("trips")
@@ -456,7 +453,8 @@ public class FireBaseCore {
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        historyTrips.clear();
+                        ArrayList<Trip> historyTrips = new ArrayList<>();
+                        //historyTrips.clear();
                         for (DataSnapshot tripSnapShot : dataSnapshot.getChildren()) {
                             historyTrips.add(tripSnapShot.getValue(Trip.class));
                         }
@@ -484,8 +482,7 @@ public class FireBaseCore {
                 });
     }
 
-    public void addNote(Note note , String tripID, AddNotePrsenter addNotePrsenter)
-    {
+    public void addNote(Note note, String tripID, AddNotePrsenter addNotePrsenter) {
         addNote = addNotePrsenter;
         profilePath = rootDB.child("users").child("trips").child(id).child(tripID);
         final String key = profilePath.push().getKey();
@@ -493,14 +490,11 @@ public class FireBaseCore {
         profilePath.child("notes").child(key).setValue(note).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-               if(task.isSuccessful())
-               {
-                addNote.replyByMessage(R.string.note_added_successfully);
-               }
-               else
-               {
-               addNote.replyByError(R.string.note_didnt_added);
-               }
+                if (task.isSuccessful()) {
+                    addNote.replyByMessage(R.string.note_added_successfully);
+                } else {
+                    addNote.replyByError(R.string.note_didnt_added);
+                }
             }
         });
 
