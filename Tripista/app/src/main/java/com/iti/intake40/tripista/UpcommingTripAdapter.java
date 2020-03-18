@@ -1,6 +1,9 @@
 package com.iti.intake40.tripista;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,15 +17,25 @@ import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.iti.intake40.tripista.core.FireBaseCore;
 import com.iti.intake40.tripista.core.model.Trip;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import static android.content.Context.ALARM_SERVICE;
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 public class UpcommingTripAdapter extends RecyclerView.Adapter<UpcommingTripAdapter.ViewHolder> {
 
+    public static int num;
     private final Context context;
+    public Trip currentTrip;
+    FireBaseCore core = FireBaseCore.getInstance();
+    String i;
     private List<Trip> trips;
-    private Trip currentTrip;
+    private List<Trip> tripList = new ArrayList<>();
+
 
     public UpcommingTripAdapter(Context context, List<Trip> trips) {
         this.context = context;
@@ -58,6 +71,7 @@ public class UpcommingTripAdapter extends RecyclerView.Adapter<UpcommingTripAdap
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
+        int r;
         private TextView tripDate;
         private TextView tripTime;
         private TextView tripTitle;
@@ -67,6 +81,7 @@ public class UpcommingTripAdapter extends RecyclerView.Adapter<UpcommingTripAdap
         private TextView distance;
         private ConstraintLayout rootLayout;
         private ImageButton optionsButton;
+
 
         ViewHolder(final View itemView) {
             super(itemView);
@@ -102,7 +117,15 @@ public class UpcommingTripAdapter extends RecyclerView.Adapter<UpcommingTripAdap
                                     break;
                                 case R.id.cancel:
                                     Toast.makeText(context, "cancel", Toast.LENGTH_SHORT).show();
+                                    AlarmManager alarmManager = (AlarmManager) context.getSystemService(ALARM_SERVICE);
+                                    Intent intent = new Intent(getApplicationContext(), AlarmReceiver.class);
+                                    PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), core.getTripCancelID(currentTrip), intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                                    alarmManager.cancel(pendingIntent);
+                                    num = core.getTripCancelID(currentTrip);
+                                    Toast.makeText(context, "HI" + core.getTripCancelID(currentTrip), Toast.LENGTH_SHORT).show();
+
                                     break;
+
                             }
                             return false;
                         }

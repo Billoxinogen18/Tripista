@@ -10,6 +10,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -18,22 +19,29 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.WindowManager;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 
+import java.util.Random;
+import java.util.UUID;
+
 
 public class AlertActivity extends Activity {
+    NotificationManager notificationManager;
     Uri notification;
-    int notificationId = 0;
-    Ringtone r;
+    Ringtone ringtone;
+    Intent intent;
+    String intentExtra;
+ public int strExtra = 0;
+ String tripIdExtra;
+    public int notificationId = new Random().nextInt(10000);
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // setContentView(R.layout.activity_alert);
-
         getWindow().setFlags(
                 WindowManager.LayoutParams.FLAG_FULLSCREEN |
                         WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
@@ -46,16 +54,23 @@ public class AlertActivity extends Activity {
                         WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
                         WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON |
                         WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+
+        intent = getIntent();
+//       strExtra = intent.getExtras().getInt("s");
+        intentExtra = intent.getStringExtra("title");
+//        tripIdExtra = intent.getStringExtra("tripId");
+
+
         notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
-        r = RingtoneManager.getRingtone(this.getApplicationContext(), notification);
-        r.play();
+        ringtone = RingtoneManager.getRingtone(this.getApplicationContext(), notification);
+        ringtone.play();
         displayAlert();
     }
 
     @Override
     protected void onRestart() {
         super.onRestart();
-        r.play();
+        ringtone.play();
     }
 
     @Override
@@ -65,29 +80,29 @@ public class AlertActivity extends Activity {
     }
 
     private void displayAlert() {
+
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("Your Trip ").setCancelable(
                 false).setPositiveButton("Snooze",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
+                        id = notificationId;
                         show_Notification();
-                        r.stop();
+                        ringtone.stop();
                     }
+
+
                 }).setNegativeButton("Stop",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-
-
-                        r.stop();
+                        id = notificationId;
                         NotificationManager notificationManager = (NotificationManager)
                                 getSystemService(Context.
                                         NOTIFICATION_SERVICE);
-                        //   notificationManager.cancelAll();
-                        notificationManager.cancel(notificationId);
-                       dialog.cancel();
-                        android.os.Process.killProcess(android.os.Process.myPid());
+                        notificationManager.cancel(id);
+                        dialog.cancel();
+                        ringtone.stop();
                         finish();
-
 
                     }
                 }).setOnCancelListener(new DialogInterface.OnCancelListener() {
@@ -97,7 +112,7 @@ public class AlertActivity extends Activity {
             }
         });
         AlertDialog alert = builder.create();
-//        alert.setCanceledOnTouchOutside(false);
+        alert.setCanceledOnTouchOutside(false);
         alert.show();
 
 
@@ -107,20 +122,24 @@ public class AlertActivity extends Activity {
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
 
     public void show_Notification() {
+
         Intent intent = new Intent(getApplicationContext(), AlertActivity.class);
-        String CHANNEL_ID = "MYCHANNEL";
+        String CHANNEL_ID = generateString();
         NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_ID, "name", NotificationManager.IMPORTANCE_LOW);
-        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 1, intent, 0);
+        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(),notificationId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         Notification notification = new Notification.Builder(getApplicationContext(), CHANNEL_ID)
                 .setContentText("You are waiting for your trip")
-                .setContentTitle("Trip away")
+                .setContentTitle(intentExtra)
                 .setContentIntent(pendingIntent)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setLargeIcon((BitmapFactory.decodeResource(this.getResources(),
+                        R.mipmap.ic_launcher_foreground)))
                 .setChannelId(CHANNEL_ID)
-                .setSmallIcon(android.R.drawable.sym_action_chat)
                 .setOngoing(true)
+                .setAutoCancel(true)
                 .build();
 
-        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.createNotificationChannel(notificationChannel);
         notificationManager.notify(notificationId, notification);
         finish();
@@ -130,9 +149,13 @@ public class AlertActivity extends Activity {
     @Override
     protected void onStop() {
         super.onStop();
-        r.stop();
+        ringtone.stop();
+        finish();
     }
-
-
-
+    public static String generateString() {
+        String uuid = UUID.randomUUID().toString();
+        return "uuid = " + uuid;
+    }
 }
+
+

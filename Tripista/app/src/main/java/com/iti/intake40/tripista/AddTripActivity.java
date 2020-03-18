@@ -36,6 +36,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Random;
 
 public class AddTripActivity extends AppCompatActivity {
     final static int RQS_1 = 1;
@@ -53,6 +54,8 @@ public class AddTripActivity extends AppCompatActivity {
     public String backStrTime;
     public Spinner mSpinner;
     public String coordinates;
+    public String name;
+    public int id = new Random().nextInt(10000);
     DatePickerDialog datePicker;
     DatePickerDialog datePicker2;
     TimePickerDialog timePicker;
@@ -68,16 +71,15 @@ public class AddTripActivity extends AppCompatActivity {
     AutocompleteSupportFragment startAutoCompleteFragment;
     AutocompleteSupportFragment endAutoCompleteFragment;
     String flag;
+    Intent intent;
     private TextView info;
     private TextView text;
     private Button addTripBtn;
-    private FireBaseCore core;
-    private String name;
+    private FireBaseCore core = FireBaseCore.getInstance();
     private Button timeBtn;
     private Button dateBtn;
     private int mYear, mMonth, mDay, hour, min, sec;
     private int mYear2, mMonth2, mDay2, hour2, minute2, sec2;
-    private ArrayAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,16 +95,18 @@ public class AddTripActivity extends AppCompatActivity {
         setmSpinner();
         getPlaces();
 
+
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void setAlarm(Calendar targetCal) {
-        Intent intent = new Intent(getBaseContext(), AlarmReceiver.class);
-        final int id = (int) System.currentTimeMillis();
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(getBaseContext(), id, intent, 0);
+        intent = new Intent(this, AlarmReceiver.class);
+        intent.putExtra("title", name);
+        intent.putExtra("s", id);
+        intent.putExtra("tripId",tripModel.getTripId());
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, id, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         alarmManager.setExact(AlarmManager.RTC_WAKEUP, targetCal.getTimeInMillis(), pendingIntent);
-
 
     }
 
@@ -279,6 +283,7 @@ public class AddTripActivity extends AppCompatActivity {
         } else {
             setOneWayTrip();
 
+
         }
     }
 
@@ -293,7 +298,8 @@ public class AddTripActivity extends AppCompatActivity {
 
             addTripToFirebase();
             core.addTrip(tripModel);
-          setAlarm(cal);
+            setAlarm(cal);
+
         }
     }
 
@@ -371,7 +377,7 @@ public class AddTripActivity extends AppCompatActivity {
         tripModel.setEndPoint(endPlace);
         tripModel.setDate(strDate);
         tripModel.setTime(strTime);
-
+        tripModel.setCancelID(id);
         Toast.makeText(getApplicationContext(),
                 "valid Date/Time",
                 Toast.LENGTH_LONG).show();

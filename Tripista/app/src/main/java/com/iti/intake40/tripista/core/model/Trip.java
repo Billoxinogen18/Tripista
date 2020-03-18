@@ -4,71 +4,84 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Trip {
-    String tripId;
-    String title;
-    String date;
-    String time;
-    String startPoint;
-    String endPoint;
-    String backStartPoint;
-    String backEndPoint;
-    String status; //upcomming / done / cancelled
-    String type; //one way / round trip
-    String latLng;
-    String backTime;
-    String backDate;
 
+    /*
+    private fields
+     */
+    private String tripId;
+    private String title;
+    private String date;
+    private String time;
+    private String startPoint;
+    private String endPoint;
+    private String backDate;
+    private String backTime;
+    private String backStartPoint;
+    private String backEndPoint;
+    private Status status; //upcomming / done / cancelled
+    private Type type; //one way / round trip
+    private List<Note> notes = new ArrayList<>();
+    //ID's to cancel the alaram
+    private int cancelID;
+    private int backCancelID;
 
-    List<Note> notes = new ArrayList<>();
+    /*
+    enums
+     */
+    public enum Type {
+        ONE_WAY,
+        ROUND_TRIP
+    }
+
+    public enum Status {
+        UPCOMMING,
+        DONE,
+        CANCELLED
+    }
+
+    /*
+    constructors
+     */
 
     public Trip() {
     }
 
-    public Trip(String tripId, String title, String date, String time, String startPoint, String endPoint, String backStartPoint, String backEndPoint, String status, String type, String latLng, String backTime, String backDate, List<Note> notes) {
+    // one way trip without notes
+    public Trip(String tripId, String title,
+                String date, String time, String startPoint, String endPoint,
+                Status status, Type type) {
         this.tripId = tripId;
         this.title = title;
         this.date = date;
         this.time = time;
         this.startPoint = startPoint;
         this.endPoint = endPoint;
+        this.status = status;
+        this.type = type;
+    }
+
+    //round trip without notes
+    public Trip(String tripId, String title,
+                String date, String time, String startPoint, String endPoint,
+                String backDate, String backTime, String backStartPoint, String backEndPoint,
+                Status status, Type type) {
+        this.tripId = tripId;
+        this.title = title;
+        this.date = date;
+        this.time = time;
+        this.startPoint = startPoint;
+        this.endPoint = endPoint;
+        this.backDate = backDate;
+        this.backTime = backTime;
         this.backStartPoint = backStartPoint;
         this.backEndPoint = backEndPoint;
         this.status = status;
         this.type = type;
-        this.latLng = latLng;
-        this.backTime = backTime;
-        this.backDate = backDate;
-        this.notes = notes;
     }
 
-    public Trip(String date, String time) {
-        this.date = date;
-        this.time = time;
-    }
-
-    public String getLatLng() {
-        return latLng;
-    }
-
-    public void setLatLng(String latLng) {
-        this.latLng = latLng;
-    }
-
-    public String getBackStartPoint() {
-        return backStartPoint;
-    }
-
-    public void setBackStartPoint(String backStartPoint) {
-        this.backStartPoint = backStartPoint;
-    }
-
-    public String getBackEndPoint() {
-        return backEndPoint;
-    }
-
-    public void setBackEndPoint(String backEndPoint) {
-        this.backEndPoint = backEndPoint;
-    }
+    /*
+    getters and setters
+     */
 
     public String getTripId() {
         return tripId;
@@ -114,21 +127,40 @@ public class Trip {
         return endPoint;
     }
 
-
     public void setEndPoint(String endPoint) {
         this.endPoint = endPoint;
     }
 
-    public String getStatus() {
+    public String getBackStartPoint() {
+        return backStartPoint;
+    }
+
+    public void setBackStartPoint(String backStartPoint) {
+        this.backStartPoint = backStartPoint;
+    }
+
+    public String getBackEndPoint() {
+        return backEndPoint;
+    }
+
+    public void setBackEndPoint(String backEndPoint) {
+        this.backEndPoint = backEndPoint;
+    }
+
+    public Status getStatus() {
         return status;
     }
 
-    public String getType() {
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
+    public Type getType() {
         return type;
     }
 
-    public List<Note> getNotes() {
-        return notes;
+    public void setType(Type type) {
+        this.type = type;
     }
 
     public String getBackTime() {
@@ -145,5 +177,55 @@ public class Trip {
 
     public void setBackDate(String backDate) {
         this.backDate = backDate;
+    }
+
+    public List<Note> getNotes() {
+        return notes;
+    }
+
+    public void setNotes(List<Note> notes) {
+        this.notes = notes;
+    }
+
+    public int getCancelID() {
+        return cancelID;
+    }
+
+    public void setCancelID(int cancelID) {
+        this.cancelID = cancelID;
+    }
+
+    public int getBackCancelID() {
+        return backCancelID;
+    }
+
+    public void setBackCancelID(int backCancelID) {
+        this.backCancelID = backCancelID;
+    }
+
+    @Override
+    public String toString() {
+        return "Trip{" +
+                "tripId='" + tripId + '\'' +
+                ", title='" + title + '\'' +
+                ", date='" + date + '\'' +
+                ", time='" + time + '\'' +
+                ", startPoint='" + startPoint + '\'' +
+                ", endPoint='" + endPoint + '\'' +
+                ", backDate='" + backDate + '\'' +
+                ", backTime='" + backTime + '\'' +
+                ", backStartPoint='" + backStartPoint + '\'' +
+                ", backEndPoint='" + backEndPoint + '\'' +
+                ", status=" + status +
+                ", type=" + type +
+                ", notes=" + notes +
+                ", cancelID=" + cancelID +
+                ", backCancelID=" + backCancelID +
+                '}';
+    }
+
+    public Trip(String date, String time) {
+        this.date = date;
+        this.time = time;
     }
 }

@@ -49,6 +49,7 @@ public class FireBaseCore {
     remon
      */
     ArrayList<Trip> recievedTrips = new ArrayList<>();
+    int b;
     private DatabaseReference rootDB;
     private StorageReference rootStorage;
     private FirebaseUser currentUser;
@@ -380,7 +381,6 @@ public class FireBaseCore {
     public void addTrip(final Trip trip) {
         //here we just only refer to path
         profilePath = rootDB.child("users").child("trips").child(id);
-        //to add trips we should take snapshot from this path
         final String key = profilePath.push().getKey();
         trip.setTripId(key);
         profilePath.child(key).setValue(trip).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -405,20 +405,34 @@ public class FireBaseCore {
 
     private void addTripToList(Trip t) {
         recievedTrips.add(t);
+        Log.d("fire", "onDataChange: \n" + t.getTitle());
+
+    }
+
+    public int getTripCancelID(Trip t) {
+        t.getCancelID();
+        b = (int) t.getCancelID();
+        return b;
     }
 
     public void getTripsForCurrentUser(final OnTripsLoaded onTripsLoaded) {
         rootDB.child("users")
                 .child("trips")
-                .child(auth.getCurrentUser().getUid())
+                .child(auth.getCurrentUser().getUid()
+
+                )
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
                         for (DataSnapshot tripSnapShot : dataSnapshot.getChildren()) {
                             addTripToList(tripSnapShot.getValue(Trip.class));
+//                            Log.d("firebase", "onDataChange: \n" + tripSnapShot.);
+
                         }
                         onTripsLoaded.onTripsLoaded(recievedTrips);
-                        Log.d("firebase", "onDataChange: \n" + recievedTrips);
+//                        Log.d("firebase", "onDataChange: \n" + recievedTrips);
+
                     }
 
                     @Override
