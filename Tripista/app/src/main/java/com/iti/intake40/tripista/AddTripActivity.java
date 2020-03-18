@@ -104,8 +104,6 @@ public class AddTripActivity extends AppCompatActivity {
     private void setAlarm(Calendar targetCal) {
         intent = new Intent(this, AlarmReceiver.class);
         intent.putExtra("title", name);
-        intent.putExtra("s", id);
-        intent.putExtra("tripId",tripModel.getTripId());
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, id, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         alarmManager.setExact(AlarmManager.RTC_WAKEUP, targetCal.getTimeInMillis(), pendingIntent);
@@ -115,10 +113,8 @@ public class AddTripActivity extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void setSecAlarm(Calendar targetCal) {
-        intent = new Intent(this, AlarmReceiver.class);
+       Intent intent = new Intent(this, AlarmReceiver.class);
         intent.putExtra("title", name);
-        intent.putExtra("s", id);
-        intent.putExtra("tripId",tripModel.getTripId());
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, secId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         alarmManager.setExact(AlarmManager.RTC_WAKEUP, targetCal.getTimeInMillis(), pendingIntent);

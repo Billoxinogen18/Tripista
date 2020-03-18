@@ -50,7 +50,8 @@ public class FireBaseCore {
     remon
      */
     ArrayList<Trip> recievedTrips = new ArrayList<>();
-    int b;
+    int cancelId;
+    int backCancelId;
     private DatabaseReference rootDB;
     private StorageReference rootStorage;
     private FirebaseUser currentUser;
@@ -410,12 +411,14 @@ public class FireBaseCore {
 
     }
 
-    public int getTripCancelID(Trip t) {
-        t.getCancelID();
-        b = (int) t.getCancelID();
-        return b;
+    public int getTripBackCancelID(Trip t) {
+        backCancelId = (int) t.getBackCancelID();
+        return backCancelId;
     }
-
+    public int getTripCancelID(Trip t) {
+        cancelId = (int) t.getCancelID();
+        return cancelId;
+    }
     public void getTripsForCurrentUser(final OnTripsLoaded onTripsLoaded) {
         rootDB.child("users")
                 .child("trips")

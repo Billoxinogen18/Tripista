@@ -33,7 +33,6 @@ public class AlarmReceiver extends BroadcastReceiver {
             FireBaseCore core = FireBaseCore.getInstance();
              context = arg0;
              intent = arg1;
-
             core.getTripsForCurrentUser(new OnTripsLoaded() {
                 @Override
                 public void onTripsLoaded(List<Trip> trips) {

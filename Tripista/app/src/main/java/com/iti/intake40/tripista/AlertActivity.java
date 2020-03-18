@@ -145,6 +145,7 @@ public class AlertActivity extends Activity {
     @Override
     protected void onStop() {
         super.onStop();
+
         ringtone.stop();
 //        finish();
     }
