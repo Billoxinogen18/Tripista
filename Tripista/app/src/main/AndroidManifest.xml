@@ -16,8 +16,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".note.AddNote"
-            android:theme="@style/NoActionBarForDialog"/>
+        <activity android:name=".trip.ShowNotes"></activity>
+        <activity android:name=".note.ShowNotes" />
+        <activity
+            android:name=".note.AddNote"
+            android:theme="@style/NoActionBarForDialog" />
         <activity android:name=".map.ShowMap" />
         <activity
             android:name=".AlertActivity"
