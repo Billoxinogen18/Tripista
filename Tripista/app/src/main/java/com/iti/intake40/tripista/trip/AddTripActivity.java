@@ -155,14 +155,6 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
 
 
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    private void setSecAlarm(Calendar targetCal) {
-        Intent intent = new Intent(getBaseContext(), AlarmReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, secId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP, targetCal.getTimeInMillis(), pendingIntent);
-    }
-
     public void tripDate() {
         mYear = cal.get(Calendar.YEAR);
         mMonth = cal.get(Calendar.MONTH);
@@ -463,11 +455,21 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
         Intent intent = new Intent(getBaseContext(), AlarmReceiver.class);
         intent.putExtra("id", trip.getTripId());
         intent.putExtra("title", trip.getTitle());
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(getBaseContext(), id, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
     }
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    private void setSecAlarm(Calendar targetCal) {
+        Intent intent = new Intent(getBaseContext(), AlarmReceiver.class);
+        intent.putExtra("id", tripModel.getTripId());
+        intent.putExtra("title", tripModel.getTitle());
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getBaseContext(), secId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, targetCal.getTimeInMillis(), pendingIntent);
+    }
+
 
     private Trip createTripFromInput() {
         Trip trip = new Trip();
