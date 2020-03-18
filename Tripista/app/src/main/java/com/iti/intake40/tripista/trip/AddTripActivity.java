@@ -469,6 +469,7 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
     public void setAlarm(Trip trip, Calendar calendar) {
         Intent intent = new Intent(getBaseContext(), AlarmReceiver.class);
         intent.putExtra("id", trip.getTripId());
+        intent.putExtra("title",trip.getTitle());
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         final int id = (int) System.currentTimeMillis();
         PendingIntent pendingIntent = PendingIntent.getBroadcast(getBaseContext(), id, intent, 0);

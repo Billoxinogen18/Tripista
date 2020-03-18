@@ -74,7 +74,7 @@ public class AlertActivity extends Activity {
     private void displayAlert() {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("Your Trip ").setCancelable(
+        builder.setMessage(intentExtra).setCancelable(
                 false).setPositiveButton("Start", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
