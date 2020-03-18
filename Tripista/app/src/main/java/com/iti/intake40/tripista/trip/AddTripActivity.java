@@ -218,20 +218,17 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
         setContentView(R.layout.activity_add_trip);
         addTripBtn = findViewById(R.id.addTrip);
         titleTextView = findViewById(R.id.title);
-        info = findViewById(R.id.info);
         dateBtn = findViewById(R.id.dateBtn);
         backDateBtn = findViewById(R.id.backDate);
         backTimeBtn = findViewById(R.id.backTime);
         startAutoCompleteFragment = (AutocompleteSupportFragment)
                 getSupportFragmentManager().findFragmentById(R.id.startfragment);
-
         endAutoCompleteFragment = (AutocompleteSupportFragment)
                 getSupportFragmentManager().findFragmentById(R.id.endfragment);
         tripType = findViewById(R.id.trip_type);
         oneWayTrip = findViewById(R.id.one_way_trip);
         roundTrip = findViewById(R.id.round_trip);
         returnDetails = findViewById(R.id.return_details);
-
         returnDetails.setVisibility(View.GONE);
         backDateBtn.setVisibility(View.GONE);
         backTimeBtn.setVisibility(View.GONE);
@@ -472,7 +469,7 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
         intent.putExtra("title",trip.getTitle());
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         final int id = (int) System.currentTimeMillis();
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(getBaseContext(), id, intent, 0);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getBaseContext(), id, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
     }

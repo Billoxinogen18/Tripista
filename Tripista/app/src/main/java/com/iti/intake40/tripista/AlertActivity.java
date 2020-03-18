@@ -126,7 +126,7 @@ public class AlertActivity extends Activity {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             Intent intent = new Intent(getApplicationContext(), AlertActivity.class);
             String CHANNEL_ID = generateString();
-            NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_ID, "name", NotificationManager.IMPORTANCE_LOW);
+            NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_ID, "name", NotificationManager.IMPORTANCE_HIGH);
             PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), notificationId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
             Notification notification = new Notification.Builder(getApplicationContext(), CHANNEL_ID)
                     .setContentText("You are waiting for your trip")
@@ -149,6 +149,7 @@ public class AlertActivity extends Activity {
                     .setContentText("You are waiting for your trip")
                     .setContentTitle(intentExtra)
                     .setContentIntent(pendingIntent)
+                    .setVibrate(new long[]{1000, 1000})
                     .setSmallIcon(R.mipmap.ic_launcher)
                     .setLargeIcon((BitmapFactory.decodeResource(this.getResources(),
                             R.mipmap.ic_launcher_foreground)))
@@ -172,6 +173,8 @@ public class AlertActivity extends Activity {
         String uuid = UUID.randomUUID().toString();
         return "uuid = " + uuid;
     }
+
+
 }
 
 
