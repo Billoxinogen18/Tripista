@@ -313,9 +313,9 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
             updateTrip();
         } else {
             tripTitle = titleTextView.getText().toString();
-            if (flag == "round") {
+            if (isRoundTrip) {
                 setOneWayTrip();
-                setRoundTrip();
+               // setRoundTrip();
 
             } else {
                 setOneWayTrip();
@@ -333,7 +333,7 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
         } else if (cal.compareTo(current) > 0 && strDate != null && strTime != null && tripTitle != null && startPlace != null && endPlace != null) {
             addTripToFirebase();
             tripModel.setCancelID(id);
-            setAlarm(cal);
+            //setAlarm(cal);
             addTripPresenter.addTrip(tripModel, cal);
         }
     }
@@ -346,14 +346,14 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
                     , Toast.LENGTH_LONG).show();
 
         } else if (cal.compareTo(current) > 0 && cal2.compareTo(current) > 0 && strDate != null && strTime != null && backStrTime != null && backStrDate != null && cal2.compareTo(cal) > 0 && tripTitle != null && startPlace != null && endPlace != null) {
-            addTripToFirebase();
+           // addTripToFirebase();
             tripModel.setBackCancelID(secId);
             tripModel.setBackDate(backStrDate);
             tripModel.setBackTime(backStrTime);
             tripModel.setBackStartPoint(backStartPlace);
             tripModel.setBackEndPoint(backEndPlace);
             setSecAlarm(cal2);
-            addTripPresenter.addTrip(tripModel, cal2);
+          //  addTripPresenter.addTrip(tripModel, cal2);
         }
     }
 
@@ -467,11 +467,12 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public void setAlarm(Trip trip, Calendar calendar) {
+        if(isRoundTrip)
+            setRoundTrip();
         Intent intent = new Intent(getBaseContext(), AlarmReceiver.class);
         intent.putExtra("id", trip.getTripId());
         intent.putExtra("title", trip.getTitle());
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        final int id = (int) System.currentTimeMillis();
         PendingIntent pendingIntent = PendingIntent.getBroadcast(getBaseContext(), id, intent, 0);
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
