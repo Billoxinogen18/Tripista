@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
 import android.widget.TextView;
@@ -20,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.iti.intake40.tripista.core.FireBaseCore;
 import com.iti.intake40.tripista.core.model.Trip;
+import com.iti.intake40.tripista.map.ShowMap;
 import com.iti.intake40.tripista.note.AddNote;
 import com.iti.intake40.tripista.trip.AddTripActivity;
 
@@ -81,7 +83,7 @@ public class UpcommingTripAdapter extends RecyclerView.Adapter<UpcommingTripAdap
         private TextView distance;
         private ConstraintLayout rootLayout;
         private ImageButton optionsButton;
-
+        private Button startTrip;
         ViewHolder(final View itemView) {
             super(itemView);
 
@@ -94,7 +96,7 @@ public class UpcommingTripAdapter extends RecyclerView.Adapter<UpcommingTripAdap
             distance = itemView.findViewById(R.id.txt_distance);
             rootLayout = itemView.findViewById(R.id.trip_row);
             optionsButton = itemView.findViewById(R.id.textViewOptions);
-
+            startTrip = itemView.findViewById(R.id.start_trip);
             optionsButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -126,6 +128,16 @@ public class UpcommingTripAdapter extends RecyclerView.Adapter<UpcommingTripAdap
                     });
                     //show the menu
                     menu.show();
+                }
+            });
+            startTrip.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    String id = trips.get(getAdapterPosition()).getTripId();
+                    core.changeStateOfTrip("DONE",id);
+                    Intent goMap = new Intent(context, ShowMap.class);
+                    goMap.putExtra("id",id);
+                    context.startActivity(goMap);
                 }
             });
         }

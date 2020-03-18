@@ -113,7 +113,7 @@
             app:layout_constraintTop_toBottomOf="@+id/txt_end_point" />
 
         <Button
-            android:id="@+id/button4"
+            android:id="@+id/start_trip"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="36dp"
@@ -132,7 +132,7 @@
             android:layout_marginRight="80dp"
             android:scaleType="centerCrop"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/button4"
+            app:layout_constraintTop_toTopOf="@+id/start_trip"
             app:srcCompat="@drawable/ic_note" />
 
         <View
