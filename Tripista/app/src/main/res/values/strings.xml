@@ -37,7 +37,6 @@
     <string name="navigation_drawer_close">close navigation drawer</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="hint_verfy_code">code</string>
     <string name="phone_verified">Phone Verfied</string>
     <string name="phone_wrong">phone can`t verfied</string>
@@ -57,4 +56,10 @@
     <string name="update_trip">Update trip</string>
     <string name="one_way">One-Way trip</string>
     <string name="round_trip">Round trip</string>
+
+    <!-- toolbar strings-->
+    <string name="upcomming_trips">Upcomming Trips</string>
+    <string name="trip_history">Your trip history</string>
+    <string name="add_new_trip">Add new trip</string>
+    <string name="edit_trip">Edit trip</string>
 </resources>

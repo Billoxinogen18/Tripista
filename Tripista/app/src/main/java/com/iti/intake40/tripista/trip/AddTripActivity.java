@@ -118,12 +118,15 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
         updateIntent = getIntent();
         if (updateIntent.getStringExtra(UpcommingTripAdapter.IntentKeys.ID) != null) {
             isUpdate = true;
+            //set toolbar title
+            AddTripActivity.this.setTitle(R.string.edit_trip);
             addTripBtn.setText(R.string.update_trip);
             titleTextView.setText(updateIntent.getStringExtra(UpcommingTripAdapter.IntentKeys.TITLE));
             startAutoCompleteFragment.setText(updateIntent.getStringExtra(UpcommingTripAdapter.IntentKeys.START_POINT));
             endAutoCompleteFragment.setText(updateIntent.getStringExtra(UpcommingTripAdapter.IntentKeys.END_POINT));
             String t = updateIntent.getStringExtra(UpcommingTripAdapter.IntentKeys.TYPE);
-            if (t == Trip.Type.ONE_WAY.toString()) {
+            Log.d(TAG, "onStart: " + t);
+            if (t.equals(Trip.Type.ONE_WAY.toString())) {
                 //make one way selected
                 setRoundTripVisability(View.GONE);
             } else {
@@ -134,6 +137,8 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
         } else {
             isUpdate = false;
             addTripBtn.setText(R.string.add_trip);
+            AddTripActivity.this.setTitle(R.string.add_new_trip);
+
         }
     }
 
@@ -393,7 +398,11 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
         //set trip type to upcoming
         tripModel.setStatus(Trip.Status.UPCOMMING);
         //set trip type to round or one way
-
+        if (isRoundTrip) {
+            tripModel.setType(Trip.Type.ROUND_TRIP);
+        } else {
+            tripModel.setType(Trip.Type.ONE_WAY);
+        }
         Toast.makeText(getApplicationContext(),
                 "Trip added!",
                 Toast.LENGTH_LONG).show();

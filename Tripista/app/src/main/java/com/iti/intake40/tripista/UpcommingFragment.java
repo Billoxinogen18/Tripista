@@ -40,6 +40,7 @@ public class UpcommingFragment extends Fragment {
 
         final View rootView = inflater.inflate(R.layout.fragment_upcomming, container, false);
 
+        getActivity().setTitle(R.string.upcomming_trips);
         upcommingRecyclerView = rootView.findViewById(R.id.upcommming_rc);
         upcommingRecyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getContext());

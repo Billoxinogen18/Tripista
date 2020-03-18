@@ -84,6 +84,7 @@ public class UpcommingTripAdapter extends RecyclerView.Adapter<UpcommingTripAdap
         private ConstraintLayout rootLayout;
         private ImageButton optionsButton;
         private Button startTrip;
+
         ViewHolder(final View itemView) {
             super(itemView);
 
@@ -109,8 +110,8 @@ public class UpcommingTripAdapter extends RecyclerView.Adapter<UpcommingTripAdap
                                 case R.id.notes:
                                     Intent addNote = new Intent(context, AddNote.class);
                                     String tripId = trips.get(getAdapterPosition()).getTripId();
-                                    addNote.putExtra("ID",tripId);
-                                   context.startActivity(addNote);
+                                    addNote.putExtra("ID", tripId);
+                                    context.startActivity(addNote);
                                     break;
                                 case R.id.edit:
                                     Toast.makeText(context, "edit", Toast.LENGTH_SHORT).show();
@@ -134,9 +135,9 @@ public class UpcommingTripAdapter extends RecyclerView.Adapter<UpcommingTripAdap
                 @Override
                 public void onClick(View view) {
                     String id = trips.get(getAdapterPosition()).getTripId();
-                    core.changeStateOfTrip("DONE",id);
+                    core.changeStateOfTrip("DONE", id);
                     Intent goMap = new Intent(context, ShowMap.class);
-                    goMap.putExtra("id",id);
+                    goMap.putExtra("id", id);
                     context.startActivity(goMap);
                 }
             });
@@ -181,7 +182,7 @@ public class UpcommingTripAdapter extends RecyclerView.Adapter<UpcommingTripAdap
         editIntent.putExtra(IntentKeys.BACK_START_POINT, updatedTrip.getBackStartPoint());
         editIntent.putExtra(IntentKeys.BACK_END_POINT, updatedTrip.getBackEndPoint());
         editIntent.putExtra(IntentKeys.STATUS, updatedTrip.getStatus());
-        editIntent.putExtra(IntentKeys.TYPE, updatedTrip.getType());
+        editIntent.putExtra(IntentKeys.TYPE, updatedTrip.getType().toString());
         context.startActivity(editIntent);
     }
 
