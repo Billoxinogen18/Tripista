@@ -20,7 +20,7 @@ public interface AddTripContract {
 
         void sentError(int message);
 
-        void setAlarm (Trip trip , Calendar calendar);
+        void setAlarm ( Trip trip,Calendar calendar);
 
     }
 }
