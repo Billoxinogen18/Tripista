@@ -466,7 +466,7 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
     public void setAlarm(Trip trip, Calendar calendar) {
         Intent intent = new Intent(getBaseContext(), AlarmReceiver.class);
         intent.putExtra("id", trip.getTripId());
-        intent.putExtra("title",trip.getTitle());
+        intent.putExtra("title", trip.getTitle());
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         final int id = (int) System.currentTimeMillis();
         PendingIntent pendingIntent = PendingIntent.getBroadcast(getBaseContext(), id, intent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -487,12 +487,12 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
                 switch (checkedId) {
                     case R.id.one_way_trip:
                         setRoundTripVisability((View.GONE));
-                        isRoundTrip = true;
+                        isRoundTrip = false;
                         break;
 
                     case R.id.round_trip:
                         setRoundTripVisability((View.VISIBLE));
-                        isRoundTrip = false;
+                        isRoundTrip = true;
                         break;
                 }
             }
