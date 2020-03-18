@@ -102,7 +102,7 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
         now = Calendar.getInstance();
         current = Calendar.getInstance();
         core = FireBaseCore.getInstance();
-        addTripPresenter = new AddTripPresenter(core,this);
+        addTripPresenter = new AddTripPresenter(core, this);
         setViews();
         setmSpinner();
         getPlaces();
@@ -112,6 +112,17 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
             isUpdate = true;
             addTripBtn.setText(R.string.update_trip);
             titleTextView.setText(updateIntent.getStringExtra(UpcommingTripAdapter.IntentKeys.TITLE));
+            startAutoCompleteFragment.setText(updateIntent.getStringExtra(UpcommingTripAdapter.IntentKeys.START_POINT));
+            endAutoCompleteFragment.setText(updateIntent.getStringExtra(UpcommingTripAdapter.IntentKeys.END_POINT));
+            String t = updateIntent.getStringExtra(UpcommingTripAdapter.IntentKeys.TYPE);
+            if(t == Trip.Type.ONE_WAY.toString()) {
+                //make one way selected
+            } else {
+                //make round trip selected
+
+                //show back date and time buttons
+
+            }
         } else {
             isUpdate = false;
             addTripBtn.setText(R.string.add_trip);
@@ -140,7 +151,7 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
                     @Override
                     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                         cal.set(year, monthOfYear, dayOfMonth);
-                        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");//                        Date strDate2 = ;
+                        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
                         strDate = dateFormat.format(cal.getTime());
 
                     }
@@ -322,7 +333,7 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
         } else if (cal.compareTo(current) > 0 && strDate != null && strTime != null && tripTitle != null && startPlace != null && endPlace != null) {
 
             addTripToFirebase();
-            addTripPresenter.addTrip(tripModel,cal);
+            addTripPresenter.addTrip(tripModel, cal);
         }
     }
 
@@ -340,7 +351,7 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
             tripModel.setBackTime(backStrTime);
             tripModel.setBackStartPoint(backStartPlace);
             tripModel.setBackEndPoint(backEndPlace);
-            addTripPresenter.addTrip(tripModel,cal2);
+            addTripPresenter.addTrip(tripModel, cal2);
 
         }
     }
@@ -414,11 +425,17 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
     private void updateTrip() {
         Trip trip = new Trip();
         trip.setTripId(updateIntent.getStringExtra(UpcommingTripAdapter.IntentKeys.ID));
-        trip.setTitle(tripTitle);
+        trip.setTitle(titleTextView.getText().toString());
         trip.setDate(strDate);
         trip.setTime(strTime);
+        trip.setStartPoint(startPlace);
+        trip.setEndPoint(endPlace);
 
         //trip.setStatus();
+
+        //clear old alarms
+
+        //add new alarms
         if (isRoundTrip) {
             trip.setType(Trip.Type.ROUND_TRIP);
             trip.setBackDate(backStrDate);
@@ -428,7 +445,6 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
         } else {
             trip.setType(Trip.Type.ONE_WAY);
         }
-
         core.updateTrip(trip);
         // after updating the trip finish the activity
         finish();
@@ -455,9 +471,10 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
     }
-    private Trip createTripFromInput(){
+
+    private Trip createTripFromInput() {
         Trip trip = new Trip();
-        
+
         return trip;
     }
 }

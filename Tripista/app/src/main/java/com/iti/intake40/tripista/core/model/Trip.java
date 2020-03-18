@@ -21,8 +21,10 @@ public class Trip {
     private String backEndPoint;
     private Status status; //upcomming / done / cancelled
     private Type type; //one way / round trip
+    //ID's to cancel the alaram
+    private int cancelID;
+    private int backCancelID;
     private HashMap<String,Note> notes ;
-
 
     /*
     enums
@@ -203,6 +205,22 @@ public class Trip {
         this.notes = notes;
     }
 
+    public int getCancelID() {
+        return cancelID;
+    }
+
+    public void setCancelID(int cancelID) {
+        this.cancelID = cancelID;
+    }
+
+    public int getBackCancelID() {
+        return backCancelID;
+    }
+
+    public void setBackCancelID(int backCancelID) {
+        this.backCancelID = backCancelID;
+    }
+
     @Override
     public String toString() {
         return "Trip{" +
@@ -212,13 +230,15 @@ public class Trip {
                 ", time='" + time + '\'' +
                 ", startPoint='" + startPoint + '\'' +
                 ", endPoint='" + endPoint + '\'' +
+                ", backDate='" + backDate + '\'' +
+                ", backTime='" + backTime + '\'' +
                 ", backStartPoint='" + backStartPoint + '\'' +
                 ", backEndPoint='" + backEndPoint + '\'' +
                 ", status=" + status +
                 ", type=" + type +
-                ", backTime='" + backTime + '\'' +
-                ", backDate='" + backDate + '\'' +
                 ", notes=" + notes +
+                ", cancelID=" + cancelID +
+                ", backCancelID=" + backCancelID +
                 '}';
     }
 }
