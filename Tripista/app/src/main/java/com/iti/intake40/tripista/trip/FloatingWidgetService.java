@@ -1,4 +1,4 @@
-package com.iti.intake40.tripista;
+package com.iti.intake40.tripista.trip;
 
 import android.app.Service;
 import android.content.Intent;
@@ -15,9 +15,13 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.iti.intake40.tripista.R;
 import com.iti.intake40.tripista.core.FireBaseCore;
 import com.iti.intake40.tripista.core.model.Note;
 import com.iti.intake40.tripista.core.model.Trip;
@@ -36,6 +40,7 @@ public class FloatingWidgetService extends Service implements View.OnClickListen
     private int x_init_cord, y_init_cord, x_init_margin, y_init_margin;
     private MapContract.PresenterInterface presenterInterface;
     private FireBaseCore core;
+    private RecyclerView  notesList;
     //Variable to check if the Floating widget view is on left side or in right side
     // initially we are displaying Floating widget view to Left side so set it to true
     private boolean isLeft = true;
@@ -503,7 +508,10 @@ public class FloatingWidgetService extends Service implements View.OnClickListen
     @Override
     public void setTripData(Trip trip) {
         HashMap<String, Note> notes = trip.getNotes();
-        if(notes != null)
-        System.out.println("notes count "+notes.size());
+        NotesAdapter adapter = new NotesAdapter(notes,getBaseContext());
+        notesList = mFloatingWidgetView.findViewById(R.id.recycle);
+        notesList.setLayoutManager(new LinearLayoutManager(this));
+        notesList.setAdapter(adapter);
+        notesList.setHasFixedSize(true);
     }
 }

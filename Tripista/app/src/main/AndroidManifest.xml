@@ -74,7 +74,7 @@
         </activity>
 
         <service
-            android:name=".FloatingWidgetService"
+            android:name=".trip.FloatingWidgetService"
             android:enabled="true"
             android:exported="false" />
     </application>
