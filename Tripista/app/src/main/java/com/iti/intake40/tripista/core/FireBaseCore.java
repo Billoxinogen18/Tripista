@@ -43,6 +43,7 @@ import java.util.concurrent.TimeUnit;
 import static androidx.constraintlayout.widget.Constraints.TAG;
 
 public class FireBaseCore {
+
     //make singletone class
     public static FireBaseCore core;
     /*

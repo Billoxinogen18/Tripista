@@ -42,6 +42,7 @@ public class AlertActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // setContentView(R.layout.activity_alert);
+
         getWindow().setFlags(
                 WindowManager.LayoutParams.FLAG_FULLSCREEN |
                         WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
@@ -56,11 +57,7 @@ public class AlertActivity extends Activity {
                         WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
 
         intent = getIntent();
-//       strExtra = intent.getExtras().getInt("s");
         intentExtra = intent.getStringExtra("title");
-//        tripIdExtra = intent.getStringExtra("tripId");
-
-
         notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
         ringtone = RingtoneManager.getRingtone(this.getApplicationContext(), notification);
         ringtone.play();
@@ -80,7 +77,7 @@ public class AlertActivity extends Activity {
     }
 
     private void displayAlert() {
-
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("Your Trip ").setCancelable(
                 false).setPositiveButton("Snooze",
@@ -114,7 +111,6 @@ public class AlertActivity extends Activity {
         AlertDialog alert = builder.create();
         alert.setCanceledOnTouchOutside(false);
         alert.show();
-
 
     }
 
@@ -150,7 +146,7 @@ public class AlertActivity extends Activity {
     protected void onStop() {
         super.onStop();
         ringtone.stop();
-        finish();
+//        finish();
     }
     public static String generateString() {
         String uuid = UUID.randomUUID().toString();

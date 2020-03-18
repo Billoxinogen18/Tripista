@@ -56,6 +56,7 @@ public class AddTripActivity extends AppCompatActivity {
     public String coordinates;
     public String name;
     public int id = new Random().nextInt(10000);
+    public int secId = new Random().nextInt(20000) + 1;
     DatePickerDialog datePicker;
     DatePickerDialog datePicker2;
     TimePickerDialog timePicker;
@@ -80,6 +81,7 @@ public class AddTripActivity extends AppCompatActivity {
     private Button dateBtn;
     private int mYear, mMonth, mDay, hour, min, sec;
     private int mYear2, mMonth2, mDay2, hour2, minute2, sec2;
+    Status status;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,6 +112,18 @@ public class AddTripActivity extends AppCompatActivity {
 
     }
 
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    private void setSecAlarm(Calendar targetCal) {
+        intent = new Intent(this, AlarmReceiver.class);
+        intent.putExtra("title", name);
+        intent.putExtra("s", id);
+        intent.putExtra("tripId",tripModel.getTripId());
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, secId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, targetCal.getTimeInMillis(), pendingIntent);
+
+    }
     public void tripDate() {
         mYear = cal.get(Calendar.YEAR);
         mMonth = cal.get(Calendar.MONTH);
@@ -297,6 +311,7 @@ public class AddTripActivity extends AppCompatActivity {
         } else if (cal.compareTo(current) > 0 && strDate != null && strTime != null && name != null && startPlace != null && endPlace != null) {
 
             addTripToFirebase();
+            tripModel.setCancelID(id);
             core.addTrip(tripModel);
             setAlarm(cal);
 
@@ -313,12 +328,13 @@ public class AddTripActivity extends AppCompatActivity {
         } else if (cal.compareTo(current) > 0 && cal2.compareTo(current) > 0 && strDate != null && strTime != null && backStrTime != null && backStrDate != null && cal2.compareTo(cal) > 0 && name != null && startPlace != null && endPlace != null) {
 
             addTripToFirebase();
+            tripModel.setBackCancelID(secId);
             tripModel.setBackDate(backStrDate);
             tripModel.setBackTime(backStrTime);
             tripModel.setBackStartPoint(backStartPlace);
             tripModel.setBackEndPoint(backEndPlace);
             core.addTrip(tripModel);
-            setAlarm(cal2);
+            setSecAlarm(cal2);
         }
     }
 
@@ -377,7 +393,8 @@ public class AddTripActivity extends AppCompatActivity {
         tripModel.setEndPoint(endPlace);
         tripModel.setDate(strDate);
         tripModel.setTime(strTime);
-        tripModel.setCancelID(id);
+//        tripModel.setCancelID(id);
+//        tripModel.setStatus(status);
         Toast.makeText(getApplicationContext(),
                 "valid Date/Time",
                 Toast.LENGTH_LONG).show();
