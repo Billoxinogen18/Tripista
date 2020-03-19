@@ -137,6 +137,7 @@ public class UpcommingTripAdapter extends RecyclerView.Adapter<UpcommingTripAdap
                                     deleteTrip(getAdapterPosition());
                                     break;
                                 case R.id.cancel:
+                                    //cancel the alram
                                     cancelOneWayTripId = core.getTripCancelID(currentTrip);
                                     cancelRoundWayTripId = core.getTripBackCancelID(currentTrip);
                                     if (currentTrip.getType() == Trip.Type.ROUND_TRIP && currentTrip.getStatus() == Trip.Status.UPCOMMING) {
@@ -145,6 +146,9 @@ public class UpcommingTripAdapter extends RecyclerView.Adapter<UpcommingTripAdap
                                     } else {
                                         cancelAlarm(cancelOneWayTripId);
                                     }
+
+                                    //cancel status
+                                    core.changeStateOfTrip(Trip.Status.CANCELLED);
 
                                     break;
 
