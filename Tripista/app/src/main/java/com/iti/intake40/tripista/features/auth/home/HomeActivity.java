@@ -140,12 +140,8 @@ public class HomeActivity extends AppCompatActivity
 
                     }
                 });
-
-
                 break;
-            case R.id.nav_sync:
-                Toast.makeText(this, "syncing", Toast.LENGTH_SHORT).show();
-                break;
+              
             case R.id.nav_logout:
                 //log the user out
                 //go to signin screen
