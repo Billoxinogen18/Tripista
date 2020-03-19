@@ -1,8 +1,6 @@
 package com.iti.intake40.tripista.core.model;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class Trip {
 
@@ -21,6 +19,8 @@ public class Trip {
     private String backEndPoint;
     private Status status; //upcomming / done / cancelled
     private Type type; //one way / round trip
+    private Repeatation repeatation; //none, daily, weekly, monthly
+    private int distance;
     //ID's to cancel the alaram
     private int cancelID;
     private int backCancelID;
@@ -45,6 +45,13 @@ public class Trip {
         IN_PROGRESS
     }
 
+    public enum Repeatation {
+        NONE,
+        DAILY,
+        WEEKLY,
+        MONTHLY
+    }
+
     /*
     constructors
      */
@@ -52,8 +59,7 @@ public class Trip {
     public Trip() {
     }
 
-
-    public Trip(String tripId, String title, String date, String time, String startPoint, String endPoint, String backDate, String backTime, String backStartPoint, String backEndPoint, Status status, Type type, HashMap<String, Note> notes) {
+    public Trip(String tripId, String title, String date, String time, String startPoint, String endPoint, String backDate, String backTime, String backStartPoint, String backEndPoint, Status status, Type type, Repeatation repeatation, int distance, int cancelID, int backCancelID, HashMap<String, Note> notes) {
         this.tripId = tripId;
         this.title = title;
         this.date = date;
@@ -66,6 +72,10 @@ public class Trip {
         this.backEndPoint = backEndPoint;
         this.status = status;
         this.type = type;
+        this.repeatation = repeatation;
+        this.distance = distance;
+        this.cancelID = cancelID;
+        this.backCancelID = backCancelID;
         this.notes = notes;
     }
 
@@ -258,6 +268,22 @@ public class Trip {
         this.backCancelID = backCancelID;
     }
 
+    public Repeatation getRepeatation() {
+        return repeatation;
+    }
+
+    public void setRepeatation(Repeatation repeatation) {
+        this.repeatation = repeatation;
+    }
+
+    public int getDistance() {
+        return distance;
+    }
+
+    public void setDistance(int distance) {
+        this.distance = distance;
+    }
+
     @Override
     public String toString() {
         return "Trip{" +
@@ -273,9 +299,11 @@ public class Trip {
                 ", backEndPoint='" + backEndPoint + '\'' +
                 ", status=" + status +
                 ", type=" + type +
-                ", notes=" + notes +
+                ", repeatation=" + repeatation +
+                ", distance=" + distance +
                 ", cancelID=" + cancelID +
                 ", backCancelID=" + backCancelID +
+                ", notes=" + notes +
                 '}';
     }
 }

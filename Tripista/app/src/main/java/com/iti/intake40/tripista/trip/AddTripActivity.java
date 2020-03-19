@@ -78,6 +78,12 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
     private RadioGroup tripType;
     private RadioButton oneWayTrip;
     private RadioButton roundTrip;
+    private RadioGroup tripRepeated;
+    private RadioButton none;
+    private RadioButton daily;
+    private RadioButton weekly;
+    private RadioButton monthly;
+
     //global variables
     private Trip tripModel;
     private String startPlace;
@@ -109,6 +115,9 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
     private double startLg;
     private double endLat;
     private double endLg;
+    private Intent oneWayintent;
+    private PendingIntent oneWayPendingIntent;
+    private AlarmManager oneWayAlarmManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,6 +132,7 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
         addTripPresenter = new AddTripPresenter(core, this);
         setViews();
         handleRadioButtons();
+        handleRepeatedRadioButtons();
         getPlaces();
     }
 
@@ -159,7 +169,6 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
     }
 
 
-
     public void tripDate() {
         mYear = cal.get(Calendar.YEAR);
         mMonth = cal.get(Calendar.MONTH);
@@ -194,8 +203,9 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
                         cal.set(Calendar.HOUR_OF_DAY, hourOfDay);
                         cal.set(Calendar.MINUTE, minute);
                         cal.set(Calendar.SECOND, 0);
-                        DateFormat dateFormat = new SimpleDateFormat("hh:mm:00");
+                        DateFormat dateFormat = new SimpleDateFormat("HH:mm:00");
                         strTime = dateFormat.format(cal.getTime());
+
 
                     }
                 }, hour, min, false);
@@ -225,6 +235,11 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
         backDateBtn.setVisibility(View.GONE);
         backTimeBtn.setVisibility(View.GONE);
 
+        tripRepeated = findViewById(R.id.trip_repeated);
+        none = findViewById(R.id.repeat_none);
+        daily = findViewById(R.id.repeat_daily);
+        weekly = findViewById(R.id.repeat_weekly);
+        monthly = findViewById(R.id.repeat_monthly);
 
     }
 
@@ -313,10 +328,11 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
             tripTitle = titleTextView.getText().toString();
             if (isRoundTrip) {
                 setOneWayTrip();
-               // setRoundTrip();
+                // setRoundTrip();
 
             } else {
                 setOneWayTrip();
+
             }
         }
     }
@@ -362,7 +378,7 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
                         cal2.set(Calendar.HOUR_OF_DAY, hourOfDay);
                         cal2.set(Calendar.MINUTE, minute);
                         cal2.set(Calendar.SECOND, 0);
-                        DateFormat dateFormat = new SimpleDateFormat("hh:mm:00");
+                        DateFormat dateFormat = new SimpleDateFormat("HH:mm:00");
                         backStrTime = dateFormat.format(cal2.getTime());
                     }
                 }, hour2, minute2, false);
@@ -414,6 +430,18 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
             tripModel.setBackCancelID(secId);
         } else {
             tripModel.setType(Trip.Type.ONE_WAY);
+        }
+
+        //handle trip repeatation
+        switch (tripModel.getRepeatation()) {
+            case NONE:
+                break;
+            case DAILY:
+                break;
+            case WEEKLY:
+                break;
+            case MONTHLY:
+                break;
         }
 
         Toast.makeText(getApplicationContext(),
@@ -469,12 +497,14 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public void setAlarm(Trip trip, Calendar calendar) {
-        Intent intent = new Intent(getBaseContext(), AlarmReceiver.class);
-        intent.putExtra("id", trip.getTripId());
-        intent.putExtra("title", trip.getTitle());
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(getBaseContext(), id, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+
+        oneWayintent = new Intent(getBaseContext(), AlarmReceiver.class);
+        oneWayintent.putExtra("id", trip.getTripId());
+        oneWayintent.putExtra("title", trip.getTitle());
+        oneWayPendingIntent = PendingIntent.getBroadcast(getBaseContext(), id, oneWayintent, PendingIntent.FLAG_UPDATE_CURRENT);
+        oneWayAlarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        oneWayAlarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), oneWayPendingIntent);
+
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -507,6 +537,31 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
                     case R.id.round_trip:
                         setRoundTripVisability((View.VISIBLE));
                         isRoundTrip = true;
+                        break;
+                }
+            }
+        });
+    }
+
+    private void handleRepeatedRadioButtons() {
+        tripRepeated.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                switch (checkedId) {
+                    case R.id.repeat_none:
+                        tripModel.setRepeatation(Trip.Repeatation.NONE);
+                        break;
+
+                    case R.id.repeat_daily:
+                        tripModel.setRepeatation(Trip.Repeatation.DAILY);
+                        break;
+
+                    case R.id.repeat_weekly:
+                        tripModel.setRepeatation(Trip.Repeatation.WEEKLY);
+                        break;
+
+                    case R.id.repeat_monthly:
+                        tripModel.setRepeatation(Trip.Repeatation.MONTHLY);
                         break;
                 }
             }

@@ -2,6 +2,7 @@ package com.iti.intake40.tripista.features.auth.splash;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -13,12 +14,14 @@ import com.iti.intake40.tripista.features.auth.signin.SigninActivity;
 public class SplashScreen extends AppCompatActivity implements SplashContract.ViewInterfce {
     private FireBaseCore core;
     private SplashPresenter presenter;
+    private ImageView imageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
         core = FireBaseCore.getInstance();
+        imageView = findViewById(R.id.logoImg);
         presenter = new SplashPresenter(core, this);
         Thread timer = new Thread() {
             public void run() {

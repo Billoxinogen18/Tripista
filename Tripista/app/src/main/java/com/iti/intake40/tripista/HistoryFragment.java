@@ -44,7 +44,7 @@ public class HistoryFragment extends Fragment {
         historyRecyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getContext());
         historyRecyclerView.setLayoutManager(layoutManager);
-        adapter = new UpcommingTripAdapter(getContext(), tripList);
+        adapter = new HistoryTripAdapter(getContext(), tripList);
         historyRecyclerView.setAdapter(adapter);
 
         core.getHistoryTripsForCurrentUser(new OnTripsLoaded() {
