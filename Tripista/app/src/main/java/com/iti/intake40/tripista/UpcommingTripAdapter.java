@@ -74,7 +74,7 @@ public class UpcommingTripAdapter extends RecyclerView.Adapter<UpcommingTripAdap
         holder.rootLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, currentTrip.toString(), Toast.LENGTH_SHORT).show();
+
             }
         });
     }
@@ -128,14 +128,12 @@ public class UpcommingTripAdapter extends RecyclerView.Adapter<UpcommingTripAdap
                                     context.startActivity(addNote);
                                     break;
                                 case R.id.edit:
-                                    Toast.makeText(context, "edit", Toast.LENGTH_SHORT).show();
                                     gotoEditTrip(getAdapterPosition());
                                     break;
                                 case R.id.delete:
                                     deleteTrip(getAdapterPosition());
                                     break;
                                 case R.id.cancel:
-                                    Toast.makeText(context, "cancel", Toast.LENGTH_SHORT).show();
                                     cancelOneWayTripId = core.getTripCancelID(currentTrip);
                                     cancelRoundWayTripId = core.getTripBackCancelID(currentTrip);
                                     if (currentTrip.getType() == Trip.Type.ROUND_TRIP && currentTrip.getStatus() == Trip.Status.UPCOMMING) {
