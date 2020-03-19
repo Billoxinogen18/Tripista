@@ -26,7 +26,6 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.net.PlacesClient;
@@ -240,7 +239,6 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
         daily = findViewById(R.id.repeat_daily);
         weekly = findViewById(R.id.repeat_weekly);
         monthly = findViewById(R.id.repeat_monthly);
-
     }
 
     public void getPlaces() {
@@ -261,10 +259,10 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
         startAutoCompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(@NonNull Place place) {
-                Log.i(placeTAG, "Place: " + place.getName() + ", " );
+                Log.i(placeTAG, "Place: " + place.getName() + ", ");
                 startPlace = place.getName();
-                if(!isRoundTrip) {
-                    startLat =place.getLatLng().latitude;
+                if (!isRoundTrip) {
+                    startLat = place.getLatLng().latitude;
                     startLg = place.getLatLng().longitude;
                 }
                 backEndPlace = startPlace;
@@ -286,8 +284,8 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
                 System.out.println(place.getName());
                 Log.i(placeTAG, "Place: " + place.getName() + ", " + place.getId());
                 endPlace = place.getName();
-                if(!isRoundTrip) {
-                    endLat =place.getLatLng().latitude;
+                if (!isRoundTrip) {
+                    endLat = place.getLatLng().latitude;
                     endLg = place.getLatLng().longitude;
                 }
                 backStartPlace = endPlace;
@@ -433,6 +431,9 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
         }
 
         //handle trip repeatation
+        if (tripModel.getRepeatation().toString().equals(null)) {
+            tripModel.setRepeatation(Trip.Repeatation.NONE);
+        }
         switch (tripModel.getRepeatation()) {
             case NONE:
                 break;
@@ -566,6 +567,7 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
                 }
             }
         });
+        none.performClick();
     }
 
     private void setRoundTripVisability(int visability) {
