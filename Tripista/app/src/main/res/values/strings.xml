@@ -56,9 +56,7 @@
     <string name="update_trip">Update trip</string>
     <string name="one_way">One-Way trip</string>
     <string name="round_trip">Round trip</string>
-    <string name="daily">daily</string>
-    <string name="weekly">weekly</string>
-    <string name="monthly">monthly</string>
+
 
 
     <!-- toolbar strings-->
@@ -67,4 +65,11 @@
     <string name="add_new_trip">Add new trip</string>
     <string name="edit_trip">Edit trip</string>
     <string name="view_notes">View Notes</string>
+
+    <!-- alarm repeat-->
+    <string name="none">None</string>
+    <string name="alarm_repeat">Alarm repeat</string>
+    <string name="daily">Daily</string>
+    <string name="weekly">Weekly</string>
+    <string name="monthly">Monthly</string>
 </resources>
