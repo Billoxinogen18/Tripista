@@ -36,7 +36,6 @@
     <string name="navigation_drawer_open">open navigation drawer</string>
     <string name="navigation_drawer_close">close navigation drawer</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hint_verfy_code">code</string>
     <string name="phone_verified">Phone Verfied</string>
     <string name="phone_wrong">phone can`t verfied</string>
@@ -57,7 +56,11 @@
     <string name="one_way">One-Way trip</string>
     <string name="round_trip">Round trip</string>
 
-
+    <!-- Alert for alarm-->
+    <string name="start">Start</string>
+    <string name="snooze">Snooze</string>
+    <string name="stop">Stop</string>
+    <string name="time_for_trip">Your trip is waiting</string>
 
     <!-- toolbar strings-->
     <string name="upcomming_trips">Upcomming Trips</string>
