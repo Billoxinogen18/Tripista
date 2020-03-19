@@ -86,7 +86,18 @@ public class AlertActivity extends Activity {
                     String tripId = getIntent().getExtras().getString("id");
                     String tripStatus = getIntent().getStringExtra("status");
                     String tripType = getIntent().getStringExtra("type");
-                    core.changeStateOfTrip(Trip.Status.DONE.toString(), tripId);
+                    if (tripType.equals(Trip.Type.ONE_WAY.toString())) {
+                        core.changeStateOfTrip(Trip.Status.DONE.toString(), tripId);
+                    } else {
+                        //if it's round trip check for status first
+                        if (tripStatus.equals(Trip.Status.UPCOMMING.toString())) {
+                            core.changeStateOfTrip(Trip.Status.IN_PROGRESS.toString(), tripId);
+                        }
+                        if (tripStatus.equals(Trip.Status.IN_PROGRESS.toString())) {
+                            core.changeStateOfTrip(Trip.Status.DONE.toString(), tripId);
+                        }
+                    }
+
                     Intent goMap = new Intent(AlertActivity.this, ShowMap.class);
                     goMap.putExtra("id", tripId);
                     startActivity(goMap);
@@ -108,7 +119,7 @@ public class AlertActivity extends Activity {
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         String tripId = getIntent().getExtras().getString("id");
-                        core.changeStateOfTrip("CANCEL", tripId);
+                        core.changeStateOfTrip(Trip.Status.CANCELLED.toString(), tripId);
                         id = notificationId;
                         NotificationManager notificationManager = (NotificationManager)
                                 getSystemService(Context.

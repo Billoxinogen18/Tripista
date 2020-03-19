@@ -50,6 +50,7 @@ public class HistoryFragment extends Fragment {
         core.getHistoryTripsForCurrentUser(new OnTripsLoaded() {
             @Override
             public void onTripsLoaded(List<Trip> trips) {
+                tripList.clear();
                 tripList.addAll(trips);
                 adapter.notifyDataSetChanged();
             }
