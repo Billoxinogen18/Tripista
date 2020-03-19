@@ -12,6 +12,10 @@
             android:id="@+id/nav_history"
             android:icon="@drawable/ic_history_black_24dp"
             android:title="@string/history" />
+        <item
+            android:id="@+id/nav_map_history"
+            android:icon="@drawable/map_icon"
+            android:title="@string/map_history" />
     </group>
 
     <item android:title="@string/other">

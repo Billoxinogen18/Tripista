@@ -25,6 +25,10 @@ public class Trip {
     private int cancelID;
     private int backCancelID;
     private HashMap<String,Note> notes ;
+    private double startLat;
+    private double startLg;
+    private double endLat;
+    private double endLg;
 
     /*
     enums
@@ -101,6 +105,38 @@ public class Trip {
     /*
     getters and setters
      */
+
+    public double getStartLat() {
+        return startLat;
+    }
+
+    public void setStartLat(double startLat) {
+        this.startLat = startLat;
+    }
+
+    public double getStartLg() {
+        return startLg;
+    }
+
+    public void setStartLg(double startLg) {
+        this.startLg = startLg;
+    }
+
+    public double getEndLat() {
+        return endLat;
+    }
+
+    public void setEndLat(double endLat) {
+        this.endLat = endLat;
+    }
+
+    public double getEndLg() {
+        return endLg;
+    }
+
+    public void setEndLg(double endLg) {
+        this.endLg = endLg;
+    }
 
     public String getTripId() {
         return tripId;

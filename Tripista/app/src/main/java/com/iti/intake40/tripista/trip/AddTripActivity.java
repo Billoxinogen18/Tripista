@@ -26,6 +26,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.net.PlacesClient;
@@ -104,6 +105,10 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
     private Intent updateIntent;
     private boolean isUpdate; // use the view to update or to ddd
     private boolean isRoundTrip; // is round trip or one way
+    private double startLat;
+    private double startLg;
+    private double endLat;
+    private double endLg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -236,14 +241,19 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
 
 
 //StartAutoComplete
-        startAutoCompleteFragment.setPlaceFields(Arrays.asList(com.google.android.libraries.places.api.model.Place.Field.ID.ID, com.google.android.libraries.places.api.model.Place.Field.NAME));
+        startAutoCompleteFragment.setPlaceFields(Arrays.asList(com.google.android.libraries.places.api.model.Place.Field.ID.ID, com.google.android.libraries.places.api.model.Place.Field.NAME, Place.Field.LAT_LNG));
         startAutoCompleteFragment.setCountry("Eg");
         startAutoCompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(@NonNull Place place) {
-                Log.i(placeTAG, "Place: " + place.getName() + ", " + place.getId());
+                Log.i(placeTAG, "Place: " + place.getName() + ", " );
                 startPlace = place.getName();
+                if(!isRoundTrip) {
+                    startLat =place.getLatLng().latitude;
+                    startLg = place.getLatLng().longitude;
+                }
                 backEndPlace = startPlace;
+
             }
 
             @Override
@@ -253,7 +263,7 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
         });
 
 //EndAutoComplete
-        endAutoCompleteFragment.setPlaceFields(Arrays.asList(com.google.android.libraries.places.api.model.Place.Field.ID.ID, com.google.android.libraries.places.api.model.Place.Field.NAME));
+        endAutoCompleteFragment.setPlaceFields(Arrays.asList(com.google.android.libraries.places.api.model.Place.Field.ID.ID, com.google.android.libraries.places.api.model.Place.Field.NAME, Place.Field.LAT_LNG));
         endAutoCompleteFragment.setCountry("Eg");
         endAutoCompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
@@ -261,6 +271,10 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
                 System.out.println(place.getName());
                 Log.i(placeTAG, "Place: " + place.getName() + ", " + place.getId());
                 endPlace = place.getName();
+                if(!isRoundTrip) {
+                    endLat =place.getLatLng().latitude;
+                    endLg = place.getLatLng().longitude;
+                }
                 backStartPlace = endPlace;
             }
 
@@ -383,6 +397,10 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
         tripModel.setDate(strDate);
         tripModel.setTime(strTime);
         tripModel.setCancelID(id);
+        tripModel.setStartLat(startLat);
+        tripModel.setStartLg(startLg);
+        tripModel.setEndLat(endLat);
+        tripModel.setEndLg(endLg);
 //        tripModel.setStatus(status);
         //set trip type to upcoming
         tripModel.setStatus(Trip.Status.UPCOMMING);
