@@ -14,7 +14,6 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -98,7 +97,7 @@ public class UpcommingTripAdapter extends RecyclerView.Adapter<UpcommingTripAdap
         private TextView endPoint;
         private TextView distance;
         private ConstraintLayout rootLayout;
-        private ImageButton optionsButton,notes;
+        private ImageButton optionsButton, notes;
         private Button startTrip;
 
 
@@ -161,7 +160,19 @@ public class UpcommingTripAdapter extends RecyclerView.Adapter<UpcommingTripAdap
                 @Override
                 public void onClick(View view) {
                     String id = trips.get(getAdapterPosition()).getTripId();
-                    core.changeStateOfTrip("DONE", id);
+                    Trip thisTrip = trips.get(getAdapterPosition());
+                    if (thisTrip.getType().toString().equals(Trip.Type.ONE_WAY.toString())) {
+                        core.changeStateOfTrip(Trip.Status.DONE.toString(), id);
+                    } else {
+                        //if it's round trip check for status first
+                        if (thisTrip.getStatus().equals(Trip.Status.UPCOMMING.toString())) {
+                            core.changeStateOfTrip(Trip.Status.IN_PROGRESS.toString(), id);
+                        }
+                        if (thisTrip.getStatus().equals(Trip.Status.IN_PROGRESS.toString())) {
+                            core.changeStateOfTrip(Trip.Status.DONE.toString(), id);
+                        }
+                    }
+
                     Intent goMap = new Intent(context, ShowMap.class);
                     goMap.putExtra("id", id);
                     context.startActivity(goMap);
