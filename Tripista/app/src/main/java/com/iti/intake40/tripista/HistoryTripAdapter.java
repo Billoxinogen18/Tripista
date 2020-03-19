@@ -49,7 +49,7 @@ public class HistoryTripAdapter extends RecyclerView.Adapter<HistoryTripAdapter.
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
         this.currentTrip = this.trips.get(position);
         Log.d(TAG, "onBindViewHolder: " + currentTrip.toString());
         holder.tripDate.setText(currentTrip.getDate());
@@ -58,11 +58,24 @@ public class HistoryTripAdapter extends RecyclerView.Adapter<HistoryTripAdapter.
         holder.tripStatus.setText(currentTrip.getStatus().toString());
         holder.startPoint.setText(currentTrip.getStartPoint());
         holder.endPoint.setText(currentTrip.getEndPoint());
+        //holder.distance.setText(); // get distance here
+        holder.type.setText(currentTrip.getType().toString());
 
         holder.rootLayout.setOnClickListener(new View.OnClickListener() {
+            boolean isExpanded = false;
             @Override
             public void onClick(View v) {
                 Toast.makeText(context, currentTrip.toString(), Toast.LENGTH_SHORT).show();
+                if (isExpanded) {
+                    //collapse
+                    changeVisibilityTo(holder, View.GONE);
+                    isExpanded = false;
+
+                } else {
+                    //expand();
+                    changeVisibilityTo(holder, View.VISIBLE);
+                    isExpanded = true;
+                }
             }
         });
     }
@@ -144,6 +157,15 @@ public class HistoryTripAdapter extends RecyclerView.Adapter<HistoryTripAdapter.
         Intent notesIntent = new Intent(context, ShowNotes.class);
         notesIntent.putExtra("id", tripId);
         context.startActivity(notesIntent);
+    }
+
+    private void changeVisibilityTo(ViewHolder holder, int visability) {
+        holder.showNotes.setVisibility(visability);
+        holder.delete.setVisibility(visability);
+        holder.startPoint.setVisibility(visability);
+        holder.endPoint.setVisibility(visability);
+        holder.type.setVisibility(visability);
+        holder.distance.setVisibility(visability);
     }
 }
 
