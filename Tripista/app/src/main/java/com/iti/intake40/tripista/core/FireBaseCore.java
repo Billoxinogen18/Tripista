@@ -45,10 +45,7 @@ import com.iti.intake40.tripista.note.AddNoteContract;
 import com.iti.intake40.tripista.note.AddNotePrsenter;
 import com.iti.intake40.tripista.trip.AddTripPresenter;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 public class FireBaseCore {
@@ -423,14 +420,16 @@ public class FireBaseCore {
                 .child("trips")
                 .child(auth.getCurrentUser().getUid())
                 //check that title is equal to test3
-                .orderByChild("status")
-                .equalTo(String.valueOf(Trip.Status.UPCOMMING))
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         ArrayList<Trip> upcommingTrips = new ArrayList<Trip>();
                         for (DataSnapshot tripSnapShot : dataSnapshot.getChildren()) {
-                            upcommingTrips.add(tripSnapShot.getValue(Trip.class));
+                            Trip t = tripSnapShot.getValue(Trip.class);
+                            if (t.getStatus().equals(Trip.Status.UPCOMMING)
+                                    || t.getStatus().equals(Trip.Status.IN_PROGRESS)) {
+                                upcommingTrips.add(tripSnapShot.getValue(Trip.class));
+                            }
                         }
                         onTripsLoaded.onTripsLoaded(upcommingTrips);
                         Log.d("firebase", "onDataChange: \n" + upcommingTrips);
@@ -444,21 +443,20 @@ public class FireBaseCore {
     }
 
     public void getHistoryTripsForCurrentUser(final OnTripsLoaded onTripsLoaded) {
-        Date c = Calendar.getInstance().getTime();
-        SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
-        String formattedDate = df.format(c);
-
         rootDB.child("users")
                 .child("trips")
                 .child(auth.getCurrentUser().getUid())
-                .endAt(formattedDate)
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         ArrayList<Trip> historyTrips = new ArrayList<>();
                         //historyTrips.clear();
                         for (DataSnapshot tripSnapShot : dataSnapshot.getChildren()) {
-                            historyTrips.add(tripSnapShot.getValue(Trip.class));
+                            Trip t = tripSnapShot.getValue(Trip.class);
+                            if (t.getStatus().equals(Trip.Status.DONE)
+                                    || t.getStatus().equals(Trip.Status.CANCELLED)) {
+                                historyTrips.add(tripSnapShot.getValue(Trip.class));
+                            }
                         }
                         onTripsLoaded.onTripsLoaded(historyTrips);
                     }
@@ -534,20 +532,21 @@ public class FireBaseCore {
                 });
     }
 
-    public void  changeStateOfNote (int state , String noteID,String tripId)
-    {
+    public void changeStateOfNote(int state, String noteID, String tripId) {
         profilePath = rootDB.child("users").child("trips").child(id).child(tripId).child("notes").child(noteID).child("noteState");
         profilePath.setValue(state);
     }
-    public void  changeStateOfTrip (String state , String tripId)
-    {
+
+    public void changeStateOfTrip(String state, String tripId) {
         profilePath = rootDB.child("users").child("trips").child(id).child(tripId).child("status");
         profilePath.setValue(state);
     }
+
     public int getTripBackCancelID(Trip t) {
         backCancelId = (int) t.getBackCancelID();
         return backCancelId;
     }
+
     public int getTripCancelID(Trip t) {
         cancelId = (int) t.getCancelID();
         return cancelId;
