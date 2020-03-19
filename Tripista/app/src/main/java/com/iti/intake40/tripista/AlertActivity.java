@@ -64,15 +64,15 @@ public class AlertActivity extends Activity {
     }
 
     @Override
-    protected void onRestart() {
-        super.onRestart();
-        ringtone.play();
-    }
-
-    @Override
     protected void onStart() {
         super.onStart();
 
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        ringtone.play();
     }
 
     private void displayAlert() {
@@ -84,6 +84,8 @@ public class AlertActivity extends Activity {
             public void onClick(DialogInterface dialogInterface, int i) {
                 if (getIntent() != null) {
                     String tripId = getIntent().getExtras().getString("id");
+                    String tripStatus = getIntent().getStringExtra("status");
+                    String tripType = getIntent().getStringExtra("type");
                     core.changeStateOfTrip(Trip.Status.DONE.toString(), tripId);
                     Intent goMap = new Intent(AlertActivity.this, ShowMap.class);
                     goMap.putExtra("id", tripId);
