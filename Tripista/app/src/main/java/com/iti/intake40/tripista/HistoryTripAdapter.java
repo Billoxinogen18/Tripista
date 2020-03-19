@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,10 +18,13 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.iti.intake40.tripista.core.FireBaseCore;
 import com.iti.intake40.tripista.core.model.Trip;
 import com.iti.intake40.tripista.trip.ShowNotes;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,9 +64,23 @@ public class HistoryTripAdapter extends RecyclerView.Adapter<HistoryTripAdapter.
         holder.endPoint.setText(currentTrip.getEndPoint());
         //holder.distance.setText(); // get distance here
         holder.type.setText(currentTrip.getType().toString());
-
+        URL url = null;
+        try {
+            url = new URL("https://maps.googleapis.com/maps/api/staticmap?center=Brooklyn+Bridge,New+York,NY&zoom=13&size=600x300&maptype=roadmap\n" +
+                    "&markers=color:blue%7Clabel:S%7C40.702147,-74.015794&markers=color:green%7Clabel:G%7C40.711614,-74.012318\n" +
+                    "&markers=color:red%7Clabel:C%7C40.718217,-73.998284\n" +
+                    "&key=AIzaSyA1J0I7OlNHN2BjD_tdKhRbgTNSDMDxWZw");
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        Glide.with(context)
+                .load(url)
+                .centerCrop()
+                .placeholder(R.drawable.no_preview_available)
+                .into(holder.mapPreview);
         holder.rootLayout.setOnClickListener(new View.OnClickListener() {
             boolean isExpanded = false;
+
             @Override
             public void onClick(View v) {
                 Toast.makeText(context, currentTrip.toString(), Toast.LENGTH_SHORT).show();
@@ -96,6 +114,7 @@ public class HistoryTripAdapter extends RecyclerView.Adapter<HistoryTripAdapter.
         private TextView type;
         private ImageButton delete;
         private Button showNotes;
+        private ImageView mapPreview;
         private ConstraintLayout rootLayout;
 
         ViewHolder(final View itemView) {
@@ -111,6 +130,7 @@ public class HistoryTripAdapter extends RecyclerView.Adapter<HistoryTripAdapter.
             type = itemView.findViewById(R.id.history_type_text);
             delete = itemView.findViewById(R.id.history_delete);
             showNotes = itemView.findViewById(R.id.history_show_notes);
+            mapPreview = itemView.findViewById(R.id.map_preview);
             rootLayout = itemView.findViewById(R.id.trip_row);
 
             showNotes.setOnClickListener(new View.OnClickListener() {
