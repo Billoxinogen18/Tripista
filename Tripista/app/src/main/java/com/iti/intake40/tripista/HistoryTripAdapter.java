@@ -72,13 +72,13 @@ public class HistoryTripAdapter extends RecyclerView.Adapter<HistoryTripAdapter.
                 .append("&maptype=roadmap")
                 //markers
                 .append("&markers=color:green")
-                .append("%7C").append(currentTrip.getStartPoint())
+                .append("%7C").append(currentTrip.getStartLat()).append(",").append(currentTrip.getStartLg())
                 .append("&markers=color:red")
-                .append("%7C").append(currentTrip.getEndPoint())
+                .append("%7C").append(currentTrip.getEndLat()).append(",").append(currentTrip.getEndLg())
                 //path
                 .append("&path=color:blue")
-                .append("%7C").append(currentTrip.getStartPoint())
-                .append("%7C").append(currentTrip.getEndPoint())
+                .append("%7C").append(currentTrip.getStartLat()).append(",").append(currentTrip.getStartLg())
+                .append("%7C").append(currentTrip.getEndLat()).append(",").append(currentTrip.getEndLg())
                 //API KEY
                 .append("&key=AIzaSyA1J0I7OlNHN2BjD_tdKhRbgTNSDMDxWZw");
         Log.d(TAG, "onBindViewHolder: " + urlStringBuilder);
@@ -88,6 +88,7 @@ public class HistoryTripAdapter extends RecyclerView.Adapter<HistoryTripAdapter.
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
+
         Glide.with(context)
                 .load(url)
                 .centerCrop()
