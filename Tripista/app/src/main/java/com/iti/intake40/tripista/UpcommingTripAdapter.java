@@ -148,7 +148,8 @@ public class UpcommingTripAdapter extends RecyclerView.Adapter<UpcommingTripAdap
                                     }
 
                                     //cancel status
-                                    core.changeStateOfTrip(Trip.Status.CANCELLED);
+                                    core.changeStateOfTrip(Trip.Status.CANCELLED.toString(),
+                                            trips.get(getAdapterPosition()).getTripId());
 
                                     break;
 
