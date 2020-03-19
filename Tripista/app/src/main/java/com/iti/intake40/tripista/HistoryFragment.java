@@ -14,12 +14,14 @@ import com.iti.intake40.tripista.core.model.Trip;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class HistoryFragment extends Fragment {
+
 
     private RecyclerView historyRecyclerView;
     private RecyclerView.Adapter adapter;
@@ -55,4 +57,6 @@ public class HistoryFragment extends Fragment {
 
         return rootView;
     }
+
+
 }

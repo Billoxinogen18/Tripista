@@ -64,6 +64,11 @@
     <string name="trip_history">Your trip history</string>
     <string name="add_new_trip">Add new trip</string>
     <string name="edit_trip">Edit trip</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="map_history">Map History</string>
+
     <string name="view_notes">View Notes</string>
 
     <!-- alarm repeat-->

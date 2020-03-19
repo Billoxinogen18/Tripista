@@ -2,6 +2,7 @@ package com.iti.intake40.tripista.features.auth.home;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,20 +16,28 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
 import com.facebook.login.LoginManager;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.iti.intake40.tripista.HistoryFragment;
+import com.iti.intake40.tripista.OnTripsLoaded;
 import com.iti.intake40.tripista.R;
 import com.iti.intake40.tripista.UpcommingFragment;
 import com.iti.intake40.tripista.core.FireBaseCore;
+import com.iti.intake40.tripista.core.model.Trip;
 import com.iti.intake40.tripista.core.model.UserModel;
 import com.iti.intake40.tripista.features.auth.signin.SigninActivity;
+import com.iti.intake40.tripista.map.MapDelegate;
+import com.iti.intake40.tripista.map.ShowMapImage;
 import com.iti.intake40.tripista.trip.AddTripActivity;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 import static com.iti.intake40.tripista.features.auth.signin.PhoneVerficiation.PREF_NAME;
 import static com.iti.intake40.tripista.features.auth.signin.SigninActivity.PHONE_ARG;
@@ -46,9 +55,13 @@ public class HomeActivity extends AppCompatActivity
     private TextView userNameTextView;
     private TextView emailTextView;
     private URL img_value = null;
+    private static final String GOOGLE_MAP_API = "http://maps.google.com/maps/api/staticmap?size=600x600";
+    private static final String API_KEY = "AIzaSyDE9fxP7sernImHPGVNjI6JimiKG5GgpB0";
     private FireBaseCore core;
+    private List<Trip> tripList = new ArrayList<>();
     private HomeContract.PresenterInterface homePresenter;
     private FloatingActionButton goToAddTrip;
+    private MapDelegate mapDelegate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +94,8 @@ public class HomeActivity extends AppCompatActivity
                 startActivity(intent);
             }
         });
+
+
     }
 
     @Override
@@ -110,7 +125,24 @@ public class HomeActivity extends AppCompatActivity
                         new HistoryFragment()).commit();
                 toolbar.setTitle(R.string.trip_history);
                 break;
+            case R.id.nav_map_history:
+                mapDelegate = new ShowMapImage();
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, (Fragment) mapDelegate)
+                        .commit();
+                core = FireBaseCore.getInstance();
+                core.getHistoryTripsForCurrentUser(new OnTripsLoaded() {
+                    @Override
+                    public void onTripsLoaded(List<Trip> trips) {
 
+                        Uri mapUri = Uri.parse(getAllTrips(trips));
+                        mapDelegate.setMapUri(mapUri);
+
+                    }
+                });
+
+
+                break;
             case R.id.nav_sync:
                 Toast.makeText(this, "syncing", Toast.LENGTH_SHORT).show();
                 break;
@@ -128,6 +160,35 @@ public class HomeActivity extends AppCompatActivity
         }
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private String getAllTrips(List<Trip> trips) {
+        StringBuilder url = new StringBuilder(GOOGLE_MAP_API);
+        for (int i = 0; i < trips.size(); i++) {
+            String color = Integer.toHexString(new Random().nextInt(16777215));
+            url.append("&markers=color:green")
+                    .append("|label:S|")
+                    .append(trips.get(i).getStartLat())
+                    .append(",")
+                    .append(trips.get(i).getStartLg())
+                    .append("&markers=color:red")
+                    .append("|label:E|")
+                    .append(trips.get(i).getEndLat())
+                    .append(",")
+                    .append(trips.get(i).getEndLg())
+                    .append("&path=color:0x")
+                    .append(color)
+                    .append("|weight:5|")
+                    .append(trips.get(i).getStartLat())
+                    .append(",")
+                    .append(trips.get(i).getStartLg())
+                    .append("|")
+                    .append(trips.get(i).getEndLat())
+                    .append(",")
+                    .append(trips.get(i).getEndLg());
+        }
+        url.append("&key=").append(API_KEY);
+        return url.toString();
     }
 
     @Override
