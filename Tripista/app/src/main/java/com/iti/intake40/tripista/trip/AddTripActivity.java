@@ -524,6 +524,8 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
         oneWayintent = new Intent(getBaseContext(), AlarmReceiver.class);
         oneWayintent.putExtra("id", trip.getTripId());
         oneWayintent.putExtra("title", trip.getTitle());
+        oneWayintent.putExtra("status", trip.getStatus().toString());
+        oneWayintent.putExtra("type", trip.getType().toString());
         oneWayPendingIntent = PendingIntent.getBroadcast(getBaseContext(), id, oneWayintent, PendingIntent.FLAG_UPDATE_CURRENT);
         oneWayAlarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         oneWayAlarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), oneWayPendingIntent);
@@ -535,6 +537,8 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
         Intent intent = new Intent(getBaseContext(), AlarmReceiver.class);
         intent.putExtra("id", tripModel.getTripId());
         intent.putExtra("title", tripModel.getTitle());
+        oneWayintent.putExtra("status", tripModel.getStatus().toString());
+        oneWayintent.putExtra("type", tripModel.getType().toString());
         PendingIntent pendingIntent = PendingIntent.getBroadcast(getBaseContext(), secId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         alarmManager.setExact(AlarmManager.RTC_WAKEUP, targetCal.getTimeInMillis(), pendingIntent);

@@ -15,9 +15,13 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.WindowManager;
+
 import androidx.appcompat.app.AlertDialog;
+
 import com.iti.intake40.tripista.core.FireBaseCore;
+import com.iti.intake40.tripista.core.model.Trip;
 import com.iti.intake40.tripista.map.ShowMap;
+
 import java.util.Random;
 import java.util.UUID;
 
@@ -60,49 +64,62 @@ public class AlertActivity extends Activity {
     }
 
     @Override
-    protected void onRestart() {
-        super.onRestart();
-        ringtone.play();
-    }
-
-    @Override
     protected void onStart() {
         super.onStart();
 
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        ringtone.play();
     }
 
     private void displayAlert() {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(intentExtra).setCancelable(
-                false).setPositiveButton("Start", new DialogInterface.OnClickListener() {
+                false).setPositiveButton(R.string.start, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 if (getIntent() != null) {
                     String tripId = getIntent().getExtras().getString("id");
-                    core.changeStateOfTrip("DONE", tripId);
+                    String tripStatus = getIntent().getStringExtra("status");
+                    String tripType = getIntent().getStringExtra("type");
+                    if (tripType.equals(Trip.Type.ONE_WAY.toString())) {
+                        core.changeStateOfTrip(Trip.Status.DONE.toString(), tripId);
+                    } else {
+                        //if it's round trip check for status first
+                        if (tripStatus.equals(Trip.Status.UPCOMMING.toString())) {
+                            core.changeStateOfTrip(Trip.Status.IN_PROGRESS.toString(), tripId);
+                        }
+                        if (tripStatus.equals(Trip.Status.IN_PROGRESS.toString())) {
+                            core.changeStateOfTrip(Trip.Status.DONE.toString(), tripId);
+                        }
+                    }
+
                     Intent goMap = new Intent(AlertActivity.this, ShowMap.class);
                     goMap.putExtra("id", tripId);
                     startActivity(goMap);
                     finish();
                 }
             }
-        }).setNeutralButton("Snooze",
+        }).setNeutralButton(R.string.snooze,
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         String tripId = getIntent().getExtras().getString("id");
-                        core.changeStateOfTrip("INPROGRESS", tripId);
+                        //core.changeStateOfTrip(, tripId);
                         id = notificationId;
                         show_Notification();
                         ringtone.stop();
                     }
 
 
-                }).setNegativeButton("Stop",
+                }).setNegativeButton(R.string.stop,
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         String tripId = getIntent().getExtras().getString("id");
-                        core.changeStateOfTrip("CANCEL", tripId);
+                        core.changeStateOfTrip(Trip.Status.CANCELLED.toString(), tripId);
                         id = notificationId;
                         NotificationManager notificationManager = (NotificationManager)
                                 getSystemService(Context.
@@ -150,7 +167,7 @@ public class AlertActivity extends Activity {
         } else {
             PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), notificationId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
             Notification notification = new Notification.Builder(getApplicationContext())
-                    .setContentText("You are waiting for your trip")
+                    .setContentText("Your trip is waiting")
                     .setContentTitle(intentExtra)
                     .setContentIntent(pendingIntent)
                     .setVibrate(new long[]{1000, 1000})
@@ -170,7 +187,6 @@ public class AlertActivity extends Activity {
     protected void onStop() {
         super.onStop();
         ringtone.stop();
-//        finish();
     }
 
     public static String generateString() {

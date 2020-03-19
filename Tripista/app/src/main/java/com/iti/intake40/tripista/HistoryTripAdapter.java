@@ -99,7 +99,6 @@ public class HistoryTripAdapter extends RecyclerView.Adapter<HistoryTripAdapter.
 
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, currentTrip.toString(), Toast.LENGTH_SHORT).show();
                 if (isExpanded) {
                     //collapse
                     changeVisibilityTo(holder, View.GONE);
