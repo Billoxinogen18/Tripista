@@ -66,4 +66,5 @@
     <string name="trip_history">Your trip history</string>
     <string name="add_new_trip">Add new trip</string>
     <string name="edit_trip">Edit trip</string>
+    <string name="view_notes">View Notes</string>
 </resources>

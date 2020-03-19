@@ -312,7 +312,7 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
             tripTitle = titleTextView.getText().toString();
             if (isRoundTrip) {
                 setOneWayTrip();
-                setRoundTrip();
+               // setRoundTrip();
 
             } else {
                 setOneWayTrip();
@@ -465,12 +465,14 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public void setAlarm(Trip trip, Calendar calendar) {
+
         oneWayintent = new Intent(getBaseContext(), AlarmReceiver.class);
         oneWayintent.putExtra("id", trip.getTripId());
         oneWayintent.putExtra("title", trip.getTitle());
         oneWayPendingIntent = PendingIntent.getBroadcast(getBaseContext(), id, oneWayintent, PendingIntent.FLAG_UPDATE_CURRENT);
         oneWayAlarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         oneWayAlarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), oneWayPendingIntent);
+
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)

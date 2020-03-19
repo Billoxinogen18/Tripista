@@ -31,6 +31,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
         this.notes = notes;
         this.context = context;
         inflater = LayoutInflater.from(context);
+        if(notes!=null)
         noteList = new ArrayList<>(notes.keySet());
         this.tripId = tripId;
         core = FireBaseCore.getInstance();
@@ -57,6 +58,9 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
 
     @Override
     public int getItemCount() {
+        if(notes ==null)
+            return 0;
+        else
         return notes.size();
     }
 

@@ -79,10 +79,10 @@ public class AlertActivity extends Activity {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 if (getIntent() != null) {
-                    String id = getIntent().getExtras().getString("id");
-                    core.changeStateOfTrip("DONE", id);
+                    String tripId = getIntent().getExtras().getString("id");
+                    core.changeStateOfTrip("DONE", tripId);
                     Intent goMap = new Intent(AlertActivity.this, ShowMap.class);
-                    goMap.putExtra("id", id);
+                    goMap.putExtra("id", tripId);
                     startActivity(goMap);
                     finish();
                 }
@@ -90,6 +90,8 @@ public class AlertActivity extends Activity {
         }).setNeutralButton("Snooze",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
+                        String tripId = getIntent().getExtras().getString("id");
+                        core.changeStateOfTrip("INPROGRESS", tripId);
                         id = notificationId;
                         show_Notification();
                         ringtone.stop();
@@ -99,6 +101,8 @@ public class AlertActivity extends Activity {
                 }).setNegativeButton("Stop",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
+                        String tripId = getIntent().getExtras().getString("id");
+                        core.changeStateOfTrip("CANCEL", tripId);
                         id = notificationId;
                         NotificationManager notificationManager = (NotificationManager)
                                 getSystemService(Context.
