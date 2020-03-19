@@ -37,7 +37,8 @@ public class Trip {
     public enum Status {
         UPCOMMING,
         DONE,
-        CANCELLED
+        CANCELLED,
+        IN_PROGRESS
     }
 
     /*

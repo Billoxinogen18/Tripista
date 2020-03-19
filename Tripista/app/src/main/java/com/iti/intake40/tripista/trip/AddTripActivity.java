@@ -153,23 +153,7 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    private void setAlarm(Calendar targetCal) {
-        intent = new Intent(this, AlarmReceiver.class);
-        intent.putExtra("title", name);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, id, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP, targetCal.getTimeInMillis(), pendingIntent);
-    }
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    private void setSecAlarm(Calendar targetCal) {
-        Intent intent = new Intent(this, AlarmReceiver.class);
-        intent.putExtra("title", name);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, secId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP, targetCal.getTimeInMillis(), pendingIntent);
-    }
 
     public void tripDate() {
         mYear = cal.get(Calendar.YEAR);
@@ -332,28 +316,22 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
 
         } else if (cal.compareTo(current) > 0 && strDate != null && strTime != null && tripTitle != null && startPlace != null && endPlace != null) {
             addTripToFirebase();
-            tripModel.setCancelID(id);
-            //setAlarm(cal);
             addTripPresenter.addTrip(tripModel, cal);
+
         }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public void setRoundTrip() {
+
         if (cal.compareTo(current) <= 0 || cal2.compareTo(current) <= 0 || cal2.compareTo(cal) <= 0 || tripTitle == null || startPlace == null || endPlace == null || strDate == null || strTime == null || backStrDate == null || backStrTime == null || cal2.compareTo(cal) == 0) {
             Toast.makeText(getApplicationContext(),
                     "Invalid Data"
                     , Toast.LENGTH_LONG).show();
 
         } else if (cal.compareTo(current) > 0 && cal2.compareTo(current) > 0 && strDate != null && strTime != null && backStrTime != null && backStrDate != null && cal2.compareTo(cal) > 0 && tripTitle != null && startPlace != null && endPlace != null) {
-           // addTripToFirebase();
-            tripModel.setBackCancelID(secId);
-            tripModel.setBackDate(backStrDate);
-            tripModel.setBackTime(backStrTime);
-            tripModel.setBackStartPoint(backStartPlace);
-            tripModel.setBackEndPoint(backEndPlace);
+
             setSecAlarm(cal2);
-          //  addTripPresenter.addTrip(tripModel, cal2);
         }
     }
 
@@ -404,16 +382,22 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
         tripModel.setEndPoint(endPlace);
         tripModel.setDate(strDate);
         tripModel.setTime(strTime);
-//        tripModel.setCancelID(id);
+        tripModel.setCancelID(id);
 //        tripModel.setStatus(status);
         //set trip type to upcoming
         tripModel.setStatus(Trip.Status.UPCOMMING);
         //set trip type to round or one way
         if (isRoundTrip) {
+            tripModel.setBackDate(backStrDate);
+            tripModel.setBackTime(backStrTime);
+            tripModel.setBackStartPoint(backStartPlace);
+            tripModel.setBackEndPoint(backEndPlace);
             tripModel.setType(Trip.Type.ROUND_TRIP);
+            tripModel.setBackCancelID(secId);
         } else {
             tripModel.setType(Trip.Type.ONE_WAY);
         }
+
         Toast.makeText(getApplicationContext(),
                 "Trip added!",
                 Toast.LENGTH_LONG).show();
@@ -467,16 +451,24 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public void setAlarm(Trip trip, Calendar calendar) {
-        if(isRoundTrip)
-            setRoundTrip();
         Intent intent = new Intent(getBaseContext(), AlarmReceiver.class);
         intent.putExtra("id", trip.getTripId());
         intent.putExtra("title", trip.getTitle());
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(getBaseContext(), id, intent, 0);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getBaseContext(), id, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
     }
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    private void setSecAlarm(Calendar targetCal) {
+        Intent intent = new Intent(getBaseContext(), AlarmReceiver.class);
+        intent.putExtra("id", tripModel.getTripId());
+        intent.putExtra("title", tripModel.getTitle());
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getBaseContext(), secId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, targetCal.getTimeInMillis(), pendingIntent);
+    }
+
 
     private Trip createTripFromInput() {
         Trip trip = new Trip();

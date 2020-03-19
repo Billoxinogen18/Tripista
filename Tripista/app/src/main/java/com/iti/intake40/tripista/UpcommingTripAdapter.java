@@ -26,6 +26,7 @@ import com.iti.intake40.tripista.core.model.Trip;
 import com.iti.intake40.tripista.map.ShowMap;
 import com.iti.intake40.tripista.note.AddNote;
 import com.iti.intake40.tripista.trip.AddTripActivity;
+import com.iti.intake40.tripista.trip.ShowNotes;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -93,7 +94,7 @@ public class UpcommingTripAdapter extends RecyclerView.Adapter<UpcommingTripAdap
         private TextView endPoint;
         private TextView distance;
         private ConstraintLayout rootLayout;
-        private ImageButton optionsButton;
+        private ImageButton optionsButton,notes;
         private Button startTrip;
 
 
@@ -110,6 +111,7 @@ public class UpcommingTripAdapter extends RecyclerView.Adapter<UpcommingTripAdap
             rootLayout = itemView.findViewById(R.id.trip_row);
             optionsButton = itemView.findViewById(R.id.textViewOptions);
             startTrip = itemView.findViewById(R.id.start_trip);
+            notes = itemView.findViewById(R.id.notes_icon);
             optionsButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -161,6 +163,16 @@ public class UpcommingTripAdapter extends RecyclerView.Adapter<UpcommingTripAdap
                     Intent goMap = new Intent(context, ShowMap.class);
                     goMap.putExtra("id", id);
                     context.startActivity(goMap);
+                }
+            });
+            notes.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    String id = trips.get(getAdapterPosition()).getTripId();
+                    Intent showNotes = new Intent(context, ShowNotes.class);
+                    showNotes.putExtra("id", id);
+                    context.startActivity(showNotes);
+
                 }
             });
         }
