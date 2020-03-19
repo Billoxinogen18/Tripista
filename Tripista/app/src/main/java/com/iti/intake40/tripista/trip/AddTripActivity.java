@@ -26,7 +26,6 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.net.PlacesClient;
@@ -261,12 +260,10 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
         startAutoCompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(@NonNull Place place) {
-                Log.i(placeTAG, "Place: " + place.getName() + ", " );
+                Log.i(placeTAG, "Place: " + place.getName() + ", ");
                 startPlace = place.getName();
-                if(!isRoundTrip) {
-                    startLat =place.getLatLng().latitude;
-                    startLg = place.getLatLng().longitude;
-                }
+                startLat = place.getLatLng().latitude;
+                startLg = place.getLatLng().longitude;
                 backEndPlace = startPlace;
 
             }
@@ -286,10 +283,8 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
                 System.out.println(place.getName());
                 Log.i(placeTAG, "Place: " + place.getName() + ", " + place.getId());
                 endPlace = place.getName();
-                if(!isRoundTrip) {
-                    endLat =place.getLatLng().latitude;
-                    endLg = place.getLatLng().longitude;
-                }
+                endLat = place.getLatLng().latitude;
+                endLg = place.getLatLng().longitude;
                 backStartPlace = endPlace;
             }
 
@@ -302,6 +297,26 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
         });
     }
 
+    private double distance(double lat1, double lon1, double lat2, double lon2) {
+        double theta = lon1 - lon2;
+        double dist = Math.sin(deg2rad(lat1))
+                * Math.sin(deg2rad(lat2))
+                + Math.cos(deg2rad(lat1))
+                * Math.cos(deg2rad(lat2))
+                * Math.cos(deg2rad(theta));
+        dist = Math.acos(dist);
+        dist = rad2deg(dist);
+        dist = dist * 60 * 1.1515;
+        return (dist);
+    }
+
+    private double deg2rad(double deg) {
+        return (deg * Math.PI / 180.0);
+    }
+
+    private double rad2deg(double rad) {
+        return (rad * 180.0 / Math.PI);
+    }
 
     public void setBackDate(View view) {
         backTripDate();
@@ -328,7 +343,7 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
             tripTitle = titleTextView.getText().toString();
             if (isRoundTrip) {
                 setOneWayTrip();
-                // setRoundTrip();
+                setRoundTrip();
 
             } else {
                 setOneWayTrip();
@@ -406,7 +421,10 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
     }
 
     public void addTripToFirebase() {
+        //calculate distance
+        double dist = distance(startLat, startLg, endLat, endLg);
         core = FireBaseCore.getInstance();
+        tripModel.setDistance(dist);
         tripModel.setTitle(tripTitle);
         tripModel.setStartPoint(startPlace);
         tripModel.setEndPoint(endPlace);
@@ -433,15 +451,17 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
         }
 
         //handle trip repeatation
-        switch (tripModel.getRepeatation()) {
-            case NONE:
-                break;
-            case DAILY:
-                break;
-            case WEEKLY:
-                break;
-            case MONTHLY:
-                break;
+        if (tripModel.getRepeatation() != null) {
+            switch (tripModel.getRepeatation()) {
+                case NONE:
+                    break;
+                case DAILY:
+                    break;
+                case WEEKLY:
+                    break;
+                case MONTHLY:
+                    break;
+            }
         }
 
         Toast.makeText(getApplicationContext(),
