@@ -121,11 +121,13 @@ public class HomeActivity extends AppCompatActivity
                 toolbar.setTitle(R.string.upcomming_trips);
                 break;
             case R.id.nav_history:
+                toolbar.setTitle(R.string.history);
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         new HistoryFragment()).commit();
                 toolbar.setTitle(R.string.trip_history);
                 break;
             case R.id.nav_map_history:
+                toolbar.setTitle(R.string.map_history);
                 mapDelegate = new ShowMapImage();
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragment_container, (Fragment) mapDelegate)

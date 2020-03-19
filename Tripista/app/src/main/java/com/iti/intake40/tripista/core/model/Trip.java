@@ -20,7 +20,7 @@ public class Trip {
     private Status status; //upcomming / done / cancelled
     private Type type; //one way / round trip
     private Repeatation repeatation; //none, daily, weekly, monthly
-    private int distance;
+    private double distance;
     //ID's to cancel the alaram
     private int cancelID;
     private int backCancelID;
@@ -276,11 +276,11 @@ public class Trip {
         this.repeatation = repeatation;
     }
 
-    public int getDistance() {
+    public double getDistance() {
         return distance;
     }
 
-    public void setDistance(int distance) {
+    public void setDistance(double distance) {
         this.distance = distance;
     }
 

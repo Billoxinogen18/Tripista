@@ -2,6 +2,8 @@ package com.iti.intake40.tripista.features.auth.splash;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,7 +24,10 @@ public class SplashScreen extends AppCompatActivity implements SplashContract.Vi
         setContentView(R.layout.activity_splash_screen);
         core = FireBaseCore.getInstance();
         imageView = findViewById(R.id.logoImg);
+        Animation anim = AnimationUtils.loadAnimation(this,R.anim.transation);
+        imageView.setAnimation(anim);
         presenter = new SplashPresenter(core, this);
+
         Thread timer = new Thread() {
             public void run() {
                 try {

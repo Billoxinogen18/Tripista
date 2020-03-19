@@ -28,6 +28,7 @@ import com.iti.intake40.tripista.note.AddNote;
 import com.iti.intake40.tripista.trip.AddTripActivity;
 import com.iti.intake40.tripista.trip.ShowNotes;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,6 +71,9 @@ public class UpcommingTripAdapter extends RecyclerView.Adapter<UpcommingTripAdap
         holder.tripStatus.setText(currentTrip.getStatus().toString());
         holder.startPoint.setText(currentTrip.getStartPoint());
         holder.endPoint.setText(currentTrip.getEndPoint());
+        DecimalFormat df = new DecimalFormat("#.##");
+        double distance = Double.valueOf(df.format(currentTrip.getDistance()));
+        holder.distance.setText(String.valueOf(distance));
 
         holder.rootLayout.setOnClickListener(new View.OnClickListener() {
             @Override
