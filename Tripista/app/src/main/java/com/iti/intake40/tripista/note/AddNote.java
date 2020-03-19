@@ -21,6 +21,7 @@ public class AddNote extends AppCompatActivity implements AddNoteContract.ViewIn
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTitle("Add Note");
         setContentView(R.layout.activity_add_note);
         etDescripe = findViewById(R.id.et_note_desc);
         core = FireBaseCore.getInstance();

@@ -5,7 +5,8 @@
     android:layout_width="260dp"
     android:layout_height="260dp"
     tools:context=".note.AddNote"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="#fff">
 <EditText
     android:layout_width="240dp"
     android:layout_height="200dp"

@@ -30,9 +30,9 @@ import com.iti.intake40.tripista.map.MapPresenter;
 
 import java.util.HashMap;
 
-public class FloatingWidgetService extends Service implements View.OnClickListener, MapContract.ViewInterface {
+public class FloatingWidgetService extends Service implements  MapContract.ViewInterface {
     private WindowManager mWindowManager;
-    private View mFloatingWidgetView, collapsedView, expandedView;
+    private View mFloatingWidgetView, collapsedView, expandedView ,noteFound;
     private ImageView remove_image_view;
     private Point szWindow = new Point();
     private View removeFloatingWidgetView;
@@ -67,7 +67,6 @@ public class FloatingWidgetService extends Service implements View.OnClickListen
 
         addRemoveView(inflater);
         addFloatingWidgetView(inflater);
-        implementClickListeners();
         implementTouchListenerToFloatingWidgetView();
     }
 
@@ -144,6 +143,7 @@ public class FloatingWidgetService extends Service implements View.OnClickListen
 
         //find id of the expanded view layout
         expandedView = mFloatingWidgetView.findViewById(R.id.layoutExpanded);
+        noteFound = collapsedView.findViewById(R.id.not_found);
     }
 
     private void getWindowManagerDefaultDisplay() {
@@ -320,21 +320,9 @@ public class FloatingWidgetService extends Service implements View.OnClickListen
         });
     }
 
-    private void implementClickListeners() {
-        mFloatingWidgetView.findViewById(R.id.buttonClose).setOnClickListener(this);
-    }
 
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.buttonClose:
-                collapsedView.setVisibility(View.VISIBLE);
-                expandedView.setVisibility(View.GONE);
-                break;
 
-        }
-    }
 
     /*  on Floating Widget Long Click, increase the size of remove view as it look like taking focus */
     private void onFloatingWidgetLongClick() {
@@ -508,10 +496,17 @@ public class FloatingWidgetService extends Service implements View.OnClickListen
     @Override
     public void setTripData(Trip trip) {
         HashMap<String, Note> notes = trip.getNotes();
-        NotesAdapter adapter = new NotesAdapter(notes,getBaseContext(),trip.getTripId());
-        notesList = mFloatingWidgetView.findViewById(R.id.recycle);
-        notesList.setLayoutManager(new LinearLayoutManager(this));
-        notesList.setAdapter(adapter);
-        notesList.setHasFixedSize(true);
+        if(notes.size()==0)
+        {
+            noteFound.setVisibility(View.VISIBLE);
+        }
+        else {
+            noteFound.setVisibility(View.GONE);
+            NotesAdapter adapter = new NotesAdapter(notes, getBaseContext(), trip.getTripId());
+            notesList = mFloatingWidgetView.findViewById(R.id.recycle);
+            notesList.setLayoutManager(new LinearLayoutManager(this));
+            notesList.setAdapter(adapter);
+            notesList.setHasFixedSize(true);
+        }
     }
 }
