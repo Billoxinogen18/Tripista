@@ -56,6 +56,10 @@
     <string name="update_trip">Update trip</string>
     <string name="one_way">One-Way trip</string>
     <string name="round_trip">Round trip</string>
+    <string name="daily">daily</string>
+    <string name="weekly">weekly</string>
+    <string name="monthly">monthly</string>
+
 
     <!-- toolbar strings-->
     <string name="upcomming_trips">Upcomming Trips</string>

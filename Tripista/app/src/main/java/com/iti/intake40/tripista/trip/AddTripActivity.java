@@ -4,8 +4,10 @@ import android.app.AlarmManager;
 import android.app.DatePickerDialog;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -41,6 +43,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Locale;
 import java.util.Random;
 
 public class AddTripActivity extends AppCompatActivity implements AddTripContract.ViewInterface {
@@ -77,6 +80,10 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
     private RadioGroup tripType;
     private RadioButton oneWayTrip;
     private RadioButton roundTrip;
+    private RadioGroup tripRepeated;
+    private RadioButton daily;
+    private RadioButton weekly;
+    private RadioButton monthly;
     //global variables
     private Trip tripModel;
     private String startPlace;
@@ -104,6 +111,10 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
     private Intent updateIntent;
     private boolean isUpdate; // use the view to update or to ddd
     private boolean isRoundTrip; // is round trip or one way
+    private String isRepeated;
+    private Intent oneWayintent;
+    private PendingIntent oneWayPendingIntent;
+    private AlarmManager oneWayAlarmManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -189,8 +200,10 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
                         cal.set(Calendar.HOUR_OF_DAY, hourOfDay);
                         cal.set(Calendar.MINUTE, minute);
                         cal.set(Calendar.SECOND, 0);
-                        DateFormat dateFormat = new SimpleDateFormat("hh:mm:00");
+                        DateFormat dateFormat = new SimpleDateFormat("HH:mm:00");
                         strTime = dateFormat.format(cal.getTime());
+
+
 
                     }
                 }, hour, min, false);
@@ -303,6 +316,7 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
 
             } else {
                 setOneWayTrip();
+
             }
         }
     }
@@ -348,7 +362,7 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
                         cal2.set(Calendar.HOUR_OF_DAY, hourOfDay);
                         cal2.set(Calendar.MINUTE, minute);
                         cal2.set(Calendar.SECOND, 0);
-                        DateFormat dateFormat = new SimpleDateFormat("hh:mm:00");
+                        DateFormat dateFormat = new SimpleDateFormat("HH:mm:00");
                         backStrTime = dateFormat.format(cal2.getTime());
                     }
                 }, hour2, minute2, false);
@@ -451,13 +465,12 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public void setAlarm(Trip trip, Calendar calendar) {
-
-        Intent intent = new Intent(getBaseContext(), AlarmReceiver.class);
-        intent.putExtra("id", trip.getTripId());
-        intent.putExtra("title", trip.getTitle());
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(getBaseContext(), id, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+        oneWayintent = new Intent(getBaseContext(), AlarmReceiver.class);
+        oneWayintent.putExtra("id", trip.getTripId());
+        oneWayintent.putExtra("title", trip.getTitle());
+        oneWayPendingIntent = PendingIntent.getBroadcast(getBaseContext(), id, oneWayintent, PendingIntent.FLAG_UPDATE_CURRENT);
+        oneWayAlarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        oneWayAlarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), oneWayPendingIntent);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -495,6 +508,34 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
             }
         });
     }
+//     private void handleRepeatedRadioButtons() {
+//        tripRepeated.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(RadioGroup group, int checkedId) {
+//                switch (checkedId) {
+//                    case R.id.repeat_daily:
+//                        isRepeated = "daily";
+//                        oneWayAlarmManager.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(),
+//                                1000 * 60 * 60 * 24, oneWayPendingIntent);
+//                        break;
+//
+//                    case R.id.repeat_weekly:
+//                        isRepeated = "weekly";
+//                        oneWayAlarmManager.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(),
+//                                1000 * 60 * 60 * 24 * 7, oneWayPendingIntent);
+//                        break;
+//
+//                    case R.id.repeat_monthly:
+//                        isRepeated = "monthly";
+//                        oneWayAlarmManager.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(),
+//                                1000 * 60 * 60* 24 * 30, oneWayPendingIntent);
+//                        break;
+//                }
+//            }
+//        });
+//    }
+//
+//
 
     private void setRoundTripVisability(int visability) {
         returnDetails.setVisibility(visability);

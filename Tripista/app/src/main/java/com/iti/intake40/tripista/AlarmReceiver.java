@@ -5,6 +5,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.widget.Toast;
+
 import androidx.annotation.RequiresApi;
 import com.google.firebase.FirebaseApp;
 import com.iti.intake40.tripista.core.FireBaseCore;
@@ -24,7 +26,7 @@ public class AlarmReceiver extends BroadcastReceiver {
     Context context;
     Intent intent;
 
-    public int notificationId = new Random().nextInt(10000);
+    public int notificationId;
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public void onReceive(Context arg0, Intent arg1) {
@@ -40,17 +42,29 @@ public class AlarmReceiver extends BroadcastReceiver {
                     //loop the list for all the trips
                     for (Trip t : trips) {
                         //get the date & time for each trip
-                      //  if (t.getStatus() == Trip.Status.UPCOMMING && t.getType() == Trip.Type.ONE_WAY ){
-                        date = t.getDate();
-                        time = t.getTime();
-                        //set alarm
-                        setAlarm();
-//                        //if the trip is round get the back date & time
-////                        if (t.getType() == Trip.Type.ROUND_TRIP) {
-////                            setTripAlarm(t.setBacDate(), t.getTime());
+                        if (t.getStatus() == Trip.Status.UPCOMMING && t.getType() == Trip.Type.ONE_WAY ) {
+                            date = t.getDate();
+                            time = t.getTime();
+                            notificationId = t.getCancelID();
+                            //set alarm
+                            setAlarm(notificationId,t.getTitle());
+                        }
+                        //if the trip is round get the back date & time
+                        if (t.getStatus() == Trip.Status.UPCOMMING && t.getType() == Trip.Type.ROUND_TRIP ) {
+                            date = t.getDate();
+                            time = t.getTime();
+                            notificationId = t.getCancelID();
+                            //set alarm
+                            setAlarm(notificationId,t.getTitle());
+                            date = t.getBackDate();
+                            time = t.getBackTime();
+                            notificationId = t.getBackCancelID();
+                            //set alarm
+                            setSecAlarm(notificationId,t.getTitle());
+                        }
               }
               }
-//                }
+
             });
 
         } else {
@@ -64,6 +78,7 @@ public class AlarmReceiver extends BroadcastReceiver {
                arg0.startActivity(alarmIntent);
            }
         }
+
 
     }
 
@@ -83,14 +98,28 @@ public class AlarmReceiver extends BroadcastReceiver {
         return myformat2;
     }
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    public void setAlarm(){
+    public void setAlarm(int id,String str){
+        String[] dateArr = getDate();
+        String[] timeArr = getTime();
+        Calendar myAlarmDate = Calendar.getInstance();
+   myAlarmDate.set(Integer.parseInt(dateArr[0]), Integer.parseInt(dateArr[1]) - 1, Integer.parseInt(dateArr[2]), Integer.parseInt(timeArr[0]) , Integer.parseInt(timeArr[1]),Integer.parseInt(timeArr[2]));
+        AlarmManager tripAlarmManager =(AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        Intent tripAlarmIntent = new Intent(context, AlertActivity.class);
+        tripAlarmIntent.putExtra("title",str);
+        PendingIntent tripAlarmPendingIntent = PendingIntent.getActivity(context,id,tripAlarmIntent,PendingIntent.FLAG_UPDATE_CURRENT);
+        tripAlarmManager.setExact(AlarmManager.RTC_WAKEUP, myAlarmDate.getTimeInMillis(), tripAlarmPendingIntent);
+
+
+    }
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    public void setSecAlarm(int id , String str){
         String[] dateArr = getDate();
         String[] timeArr = getTime();
         Calendar myAlarmDate = Calendar.getInstance();
         myAlarmDate.set(Integer.parseInt(dateArr[0]), Integer.parseInt(dateArr[1]) - 1, Integer.parseInt(dateArr[2]), Integer.parseInt(timeArr[0]) + 12 , Integer.parseInt(timeArr[1]),Integer.parseInt(timeArr[2]));
         AlarmManager tripAlarmManager =(AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent tripAlarmIntent = new Intent(context, AlertActivity.class);
-        PendingIntent tripAlarmPendingIntent = PendingIntent.getActivity(context, notificationId,tripAlarmIntent, 0);
+        PendingIntent tripAlarmPendingIntent = PendingIntent.getActivity(context, id,tripAlarmIntent, 0);
         tripAlarmManager.setExact(AlarmManager.RTC_WAKEUP, myAlarmDate.getTimeInMillis(), tripAlarmPendingIntent);
 
 
