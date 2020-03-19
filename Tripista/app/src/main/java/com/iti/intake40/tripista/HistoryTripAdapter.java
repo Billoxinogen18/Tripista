@@ -64,12 +64,27 @@ public class HistoryTripAdapter extends RecyclerView.Adapter<HistoryTripAdapter.
         holder.endPoint.setText(currentTrip.getEndPoint());
         //holder.distance.setText(); // get distance here
         holder.type.setText(currentTrip.getType().toString());
+
+        StringBuilder urlStringBuilder = new StringBuilder("https://maps.googleapis.com/maps/api/staticmap?");
+        //urlStringBuilder.append("center=Brooklyn+Bridge,New+York,NY"); //required if markers not present - defines the center of the map
+        //urlStringBuilder.append("&zoom=13"); //(required if markers not present) defines the zoom level of the map
+        urlStringBuilder.append("&size=600x300")
+                .append("&maptype=roadmap")
+                //markers
+                .append("&markers=color:green")
+                .append("%7C").append(currentTrip.getStartPoint())
+                .append("&markers=color:red")
+                .append("%7C").append(currentTrip.getEndPoint())
+                //path
+                .append("&path=color:blue")
+                .append("%7C").append(currentTrip.getStartPoint())
+                .append("%7C").append(currentTrip.getEndPoint())
+                //API KEY
+                .append("&key=AIzaSyA1J0I7OlNHN2BjD_tdKhRbgTNSDMDxWZw");
+        Log.d(TAG, "onBindViewHolder: " + urlStringBuilder);
         URL url = null;
         try {
-            url = new URL("https://maps.googleapis.com/maps/api/staticmap?center=Brooklyn+Bridge,New+York,NY&zoom=13&size=600x300&maptype=roadmap\n" +
-                    "&markers=color:blue%7Clabel:S%7C40.702147,-74.015794&markers=color:green%7Clabel:G%7C40.711614,-74.012318\n" +
-                    "&markers=color:red%7Clabel:C%7C40.718217,-73.998284\n" +
-                    "&key=AIzaSyA1J0I7OlNHN2BjD_tdKhRbgTNSDMDxWZw");
+            url = new URL(urlStringBuilder.toString());
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
