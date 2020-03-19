@@ -4,10 +4,8 @@ import android.app.AlarmManager;
 import android.app.DatePickerDialog;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -43,7 +41,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Locale;
 import java.util.Random;
 
 public class AddTripActivity extends AppCompatActivity implements AddTripContract.ViewInterface {
@@ -81,9 +78,11 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
     private RadioButton oneWayTrip;
     private RadioButton roundTrip;
     private RadioGroup tripRepeated;
+    private RadioButton none;
     private RadioButton daily;
     private RadioButton weekly;
     private RadioButton monthly;
+
     //global variables
     private Trip tripModel;
     private String startPlace;
@@ -111,7 +110,6 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
     private Intent updateIntent;
     private boolean isUpdate; // use the view to update or to ddd
     private boolean isRoundTrip; // is round trip or one way
-    private String isRepeated;
     private Intent oneWayintent;
     private PendingIntent oneWayPendingIntent;
     private AlarmManager oneWayAlarmManager;
@@ -129,6 +127,7 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
         addTripPresenter = new AddTripPresenter(core, this);
         setViews();
         handleRadioButtons();
+        handleRepeatedRadioButtons();
         getPlaces();
     }
 
@@ -163,7 +162,6 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
 
         }
     }
-
 
 
     public void tripDate() {
@@ -204,7 +202,6 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
                         strTime = dateFormat.format(cal.getTime());
 
 
-
                     }
                 }, hour, min, false);
         timePicker.show();
@@ -233,6 +230,11 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
         backDateBtn.setVisibility(View.GONE);
         backTimeBtn.setVisibility(View.GONE);
 
+        tripRepeated = findViewById(R.id.trip_repeated);
+        none = findViewById(R.id.repeat_none);
+        daily = findViewById(R.id.repeat_daily);
+        weekly = findViewById(R.id.repeat_weekly);
+        monthly = findViewById(R.id.repeat_monthly);
 
     }
 
@@ -312,7 +314,7 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
             tripTitle = titleTextView.getText().toString();
             if (isRoundTrip) {
                 setOneWayTrip();
-               // setRoundTrip();
+                // setRoundTrip();
 
             } else {
                 setOneWayTrip();
@@ -410,6 +412,18 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
             tripModel.setBackCancelID(secId);
         } else {
             tripModel.setType(Trip.Type.ONE_WAY);
+        }
+
+        //handle trip repeatation
+        switch (tripModel.getRepeatation()) {
+            case NONE:
+                break;
+            case DAILY:
+                break;
+            case WEEKLY:
+                break;
+            case MONTHLY:
+                break;
         }
 
         Toast.makeText(getApplicationContext(),
@@ -510,34 +524,31 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
             }
         });
     }
-//     private void handleRepeatedRadioButtons() {
-//        tripRepeated.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(RadioGroup group, int checkedId) {
-//                switch (checkedId) {
-//                    case R.id.repeat_daily:
-//                        isRepeated = "daily";
-//                        oneWayAlarmManager.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(),
-//                                1000 * 60 * 60 * 24, oneWayPendingIntent);
-//                        break;
-//
-//                    case R.id.repeat_weekly:
-//                        isRepeated = "weekly";
-//                        oneWayAlarmManager.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(),
-//                                1000 * 60 * 60 * 24 * 7, oneWayPendingIntent);
-//                        break;
-//
-//                    case R.id.repeat_monthly:
-//                        isRepeated = "monthly";
-//                        oneWayAlarmManager.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(),
-//                                1000 * 60 * 60* 24 * 30, oneWayPendingIntent);
-//                        break;
-//                }
-//            }
-//        });
-//    }
-//
-//
+
+    private void handleRepeatedRadioButtons() {
+        tripRepeated.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                switch (checkedId) {
+                    case R.id.repeat_none:
+                        tripModel.setRepeatation(Trip.Repeatation.NONE);
+                        break;
+
+                    case R.id.repeat_daily:
+                        tripModel.setRepeatation(Trip.Repeatation.DAILY);
+                        break;
+
+                    case R.id.repeat_weekly:
+                        tripModel.setRepeatation(Trip.Repeatation.WEEKLY);
+                        break;
+
+                    case R.id.repeat_monthly:
+                        tripModel.setRepeatation(Trip.Repeatation.MONTHLY);
+                        break;
+                }
+            }
+        });
+    }
 
     private void setRoundTripVisability(int visability) {
         returnDetails.setVisibility(visability);
