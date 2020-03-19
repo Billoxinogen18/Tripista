@@ -1,4 +1,150 @@
 package com.iti.intake40.tripista;
 
-public class HistoryTripAdapter {
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.iti.intake40.tripista.core.FireBaseCore;
+import com.iti.intake40.tripista.core.model.Trip;
+import com.iti.intake40.tripista.trip.ShowNotes;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class HistoryTripAdapter extends RecyclerView.Adapter<HistoryTripAdapter.ViewHolder> {
+
+    private static final String TAG = "historyAdapter";
+    private final Context context;
+    private Trip currentTrip;
+    private FireBaseCore core = FireBaseCore.getInstance();
+    private List<Trip> trips;
+    private List<Trip> tripList = new ArrayList<>();
+
+
+    public HistoryTripAdapter(Context context, List<Trip> trips) {
+        this.context = context;
+        this.trips = trips;
+    }
+
+    @NonNull
+    @Override
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+        View view = inflater.inflate(R.layout.trip_history_single_row, parent, false);
+        ViewHolder viewHolder = new ViewHolder(view);
+        return viewHolder;
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        this.currentTrip = this.trips.get(position);
+        Log.d(TAG, "onBindViewHolder: " + currentTrip.toString());
+        holder.tripDate.setText(currentTrip.getDate());
+        holder.tripTime.setText(currentTrip.getTime());
+        holder.tripTitle.setText(currentTrip.getTitle());
+        holder.tripStatus.setText(currentTrip.getStatus().toString());
+        holder.startPoint.setText(currentTrip.getStartPoint());
+        holder.endPoint.setText(currentTrip.getEndPoint());
+
+        holder.rootLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(context, currentTrip.toString(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    @Override
+    public int getItemCount() {
+        return trips.size();
+    }
+
+    public class ViewHolder extends RecyclerView.ViewHolder {
+        private TextView tripDate;
+        private TextView tripTime;
+        private TextView tripTitle;
+        private TextView tripStatus;
+        private TextView startPoint;
+        private TextView endPoint;
+        private TextView distance;
+        private TextView type;
+        private ImageButton delete;
+        private Button showNotes;
+        private ConstraintLayout rootLayout;
+
+        ViewHolder(final View itemView) {
+            super(itemView);
+
+            tripDate = itemView.findViewById(R.id.history_date_text);
+            tripTime = itemView.findViewById(R.id.history_time_text);
+            tripTitle = itemView.findViewById(R.id.history_title_text);
+            tripStatus = itemView.findViewById(R.id.history_status_text);
+            startPoint = itemView.findViewById(R.id.history_from_text);
+            endPoint = itemView.findViewById(R.id.history_to_text);
+            distance = itemView.findViewById(R.id.history_distance_text);
+            type = itemView.findViewById(R.id.history_type_text);
+            delete = itemView.findViewById(R.id.history_delete);
+            showNotes = itemView.findViewById(R.id.history_show_notes);
+            rootLayout = itemView.findViewById(R.id.trip_row);
+
+            showNotes.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    String tripId = trips.get(getAdapterPosition()).getTripId();
+                    showTripNotes(tripId);
+
+                }
+            });
+
+            delete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    deleteTrip(getAdapterPosition());
+                }
+            });
+        }
+    }
+
+    private void deleteTrip(final int tripPos) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context)
+                .setTitle("Delete Trip")
+                .setMessage("Are you sure you want to delete this trip?")
+                .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String tripId = trips.get(tripPos).getTripId();
+                        core.deleteTrip(tripId, context);
+                    }
+                });
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+    private void showTripNotes(String tripId) {
+        Intent notesIntent = new Intent(context, ShowNotes.class);
+        notesIntent.putExtra("id", tripId);
+        context.startActivity(notesIntent);
+    }
 }
+
+
