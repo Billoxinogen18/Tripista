@@ -80,4 +80,5 @@
     <string name="daily">Daily</string>
     <string name="weekly">Weekly</string>
     <string name="monthly">Monthly</string>
+    <string name="km">K.M</string>
 </resources>
