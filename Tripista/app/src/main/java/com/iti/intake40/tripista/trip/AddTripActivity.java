@@ -239,7 +239,6 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
         daily = findViewById(R.id.repeat_daily);
         weekly = findViewById(R.id.repeat_weekly);
         monthly = findViewById(R.id.repeat_monthly);
-
     }
 
     public void getPlaces() {
@@ -264,6 +263,7 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
                 startPlace = place.getName();
                 startLat = place.getLatLng().latitude;
                 startLg = place.getLatLng().longitude;
+
                 backEndPlace = startPlace;
 
             }
@@ -285,6 +285,7 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
                 endPlace = place.getName();
                 endLat = place.getLatLng().latitude;
                 endLg = place.getLatLng().longitude;
+
                 backStartPlace = endPlace;
             }
 
@@ -451,17 +452,19 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
         }
 
         //handle trip repeatation
-        if (tripModel.getRepeatation() != null) {
-            switch (tripModel.getRepeatation()) {
-                case NONE:
-                    break;
-                case DAILY:
-                    break;
-                case WEEKLY:
-                    break;
-                case MONTHLY:
-                    break;
-            }
+
+        if (tripModel.getRepeatation().toString().equals(null)) {
+            tripModel.setRepeatation(Trip.Repeatation.NONE);
+        }
+        switch (tripModel.getRepeatation()) {
+            case NONE:
+                break;
+            case DAILY:
+                break;
+            case WEEKLY:
+                break;
+            case MONTHLY:
+                break;
         }
 
         Toast.makeText(getApplicationContext(),
@@ -586,6 +589,7 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
                 }
             }
         });
+        none.performClick();
     }
 
     private void setRoundTripVisability(int visability) {
