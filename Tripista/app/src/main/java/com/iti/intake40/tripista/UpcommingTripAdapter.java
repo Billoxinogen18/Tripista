@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static android.content.Context.ALARM_SERVICE;
+import static android.content.Context.INPUT_METHOD_SERVICE;
 import static com.facebook.FacebookSdk.getApplicationContext;
 
 public class UpcommingTripAdapter extends RecyclerView.Adapter<UpcommingTripAdapter.ViewHolder> {
@@ -240,6 +241,9 @@ public class UpcommingTripAdapter extends RecyclerView.Adapter<UpcommingTripAdap
         editIntent.putExtra(IntentKeys.BACK_END_POINT, updatedTrip.getBackEndPoint());
         editIntent.putExtra(IntentKeys.STATUS, updatedTrip.getStatus());
         editIntent.putExtra(IntentKeys.TYPE, updatedTrip.getType().toString());
+        editIntent.putExtra(IntentKeys.START_LG, updatedTrip.getStartLg());
+        editIntent.putExtra(IntentKeys.START_LT, updatedTrip.getStartLat());
+        editIntent.putExtra(IntentKeys.DISTANCE, updatedTrip.getDistance());
         context.startActivity(editIntent);
     }
 
@@ -256,6 +260,11 @@ public class UpcommingTripAdapter extends RecyclerView.Adapter<UpcommingTripAdap
         public static final String BACK_END_POINT = "back_endPoint";
         public static final String STATUS = "status";
         public static final String TYPE = "type";
+        public static final String START_LG = "startLt";
+        public static final String START_LT = "startLt";
+        public static final String END_LG = "endLg";
+        public static final String END_LT = "endLT";
+        public static final String DISTANCE = "distance";
     }
 }
 

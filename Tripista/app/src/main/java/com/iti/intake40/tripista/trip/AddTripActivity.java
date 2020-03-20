@@ -476,35 +476,57 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
 
 
     private void updateTrip() {
-        addTripToFirebase();
+
         Trip trip = new Trip();
-        tripDate();
-        tripTime();
-        trip.setTripId(updateIntent.getStringExtra(UpcommingTripAdapter.IntentKeys.ID));
-        trip.setTitle(titleTextView.getText().toString());
-        trip.setDate(tripModel.getDate());
-        trip.setTime(tripModel.getTime());
-        trip.setStartPoint(tripModel.getStartPoint());
-        trip.setEndPoint(tripModel.getEndPoint());
-        trip.setStatus(Trip.Status.UPCOMMING);
-
-        //clear old alarms
-
-        //add new alarms
-
-        //check trip type
-        if (isRoundTrip) {
-            trip.setType(Trip.Type.ROUND_TRIP);
-            trip.setBackDate(backStrDate);
-            trip.setBackTime(backStrTime);
-            trip.setBackStartPoint(backStartPlace);
-            trip.setBackEndPoint(backEndPlace);
+        if (strDate == null || strTime == null) {
+            Toast.makeText(this, "enter date and time", Toast.LENGTH_SHORT).show();
         } else {
-            trip.setType(Trip.Type.ONE_WAY);
+            if (startPlace == null) {
+                trip.setStartPoint(updateIntent.getStringExtra(UpcommingTripAdapter.IntentKeys.START_POINT));
+                trip.setStartLg(Double.parseDouble(updateIntent.getStringExtra(UpcommingTripAdapter.IntentKeys.START_LG)));
+                trip.setStartLat(Double.parseDouble(updateIntent.getStringExtra(UpcommingTripAdapter.IntentKeys.START_LT)));
+            } else {
+                trip.setStartPoint(startPlace);
+                trip.setStartLat(startLat);
+                trip.setStartLg(startLg);
+            }
+
+            if (endPlace == null) {
+                trip.setEndPoint(updateIntent.getStringExtra(UpcommingTripAdapter.IntentKeys.END_POINT));
+                trip.setEndLg(Double.parseDouble(updateIntent.getStringExtra(UpcommingTripAdapter.IntentKeys.END_LG)));
+                trip.setEndLat(Double.parseDouble(updateIntent.getStringExtra(UpcommingTripAdapter.IntentKeys.END_LT)));
+            } else {
+                trip.setEndPoint(endPlace);
+                trip.setEndLat(endLat);
+                trip.setEndLg(endLg);
+            }
+            trip.setTripId(updateIntent.getStringExtra(UpcommingTripAdapter.IntentKeys.ID));
+            trip.setTitle(titleTextView.getText().toString());
+            trip.setDate(strDate);
+            trip.setTime(strTime);
+            trip.setDistance(Double.parseDouble(updateIntent.getStringExtra(UpcommingTripAdapter.IntentKeys.DISTANCE)));
+
+            trip.setStatus(Trip.Status.UPCOMMING);
+            //trip.setType(updateIntent.getStringExtra(UpcommingTripAdapter.IntentKeys.TYPE));
+
+            //clear old alarms
+
+            //add new alarms
+
+            //check trip type
+            if (isRoundTrip) {
+                trip.setType(Trip.Type.ROUND_TRIP);
+                trip.setBackDate(backStrDate);
+                trip.setBackTime(backStrTime);
+                trip.setBackStartPoint(backStartPlace);
+                trip.setBackEndPoint(backEndPlace);
+            } else {
+                trip.setType(Trip.Type.ONE_WAY);
+            }
+            core.updateTrip(trip);
+            // after updating the trip finish the activity
+            finish();
         }
-        core.updateTrip(trip);
-        // after updating the trip finish the activity
-        finish();
     }
 
     @Override
