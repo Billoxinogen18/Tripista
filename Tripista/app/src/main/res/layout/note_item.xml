@@ -2,19 +2,22 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_margin="10dp"
     android:orientation="horizontal"
-    android:weightSum="4"
-    android:layout_margin="10dp">
+    android:weightSum="4">
+
     <TextView
         android:id="@+id/note_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="3"
-        android:text="note"/>
+        android:text="note"
+        android:textColor="#FFFFFF" />
+
     <CheckBox
         android:id="@+id/state"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"/>
+        android:layout_weight="1" />
 
 </LinearLayout>

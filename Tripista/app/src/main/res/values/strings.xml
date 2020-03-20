@@ -81,4 +81,5 @@
     <string name="weekly">Weekly</string>
     <string name="monthly">Monthly</string>
     <string name="km">K.M</string>
+    <string name="no_trips">You currently have no trips. Tap (+) to get started</string>
 </resources>
