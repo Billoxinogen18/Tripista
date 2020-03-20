@@ -3,8 +3,6 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
-
-
     <RelativeLayout
         android:id="@+id/container"
         android:layout_width="wrap_content"
@@ -32,12 +30,12 @@
         <!-- this is the expanded layout-->
 
 
-        <LinearLayout
+        <RelativeLayout
             android:id="@+id/layoutExpanded"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="#000"
-            android:orientation="horizontal"
+            android:background="#fff"
+            android:orientation="vertical"
             android:layout_toRightOf="@id/layoutCollapsed"
             android:visibility="gone"
             >
@@ -47,15 +45,30 @@
                 android:layout_height="300dp"
                 />
 
-            <ImageView
-                android:id="@+id/buttonClose"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_marginLeft="50dp"
-                android:src="@drawable/close"
-                />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_centerInParent="true"
+                android:visibility="gone"
+                android:id="@+id/not_found"
+                >
+                <ImageView
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:src="@drawable/ic_location"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="has no notes"
+                    android:gravity="center"
+                    android:textColor="@color/colorPrimaryDark"
+                    />
+            </LinearLayout>
 
-        </LinearLayout>
+
+        </RelativeLayout>
 
 
     </RelativeLayout>

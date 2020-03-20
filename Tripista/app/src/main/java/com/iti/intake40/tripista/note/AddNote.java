@@ -21,6 +21,7 @@ public class AddNote extends AppCompatActivity implements AddNoteContract.ViewIn
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTitle("Add Note");
         setContentView(R.layout.activity_add_note);
         etDescripe = findViewById(R.id.et_note_desc);
         core = FireBaseCore.getInstance();
@@ -49,6 +50,11 @@ public class AddNote extends AppCompatActivity implements AddNoteContract.ViewIn
         if (description != null) {
            note =new Note(description,0);
            addNotePrsenter.addNote(note,tripID);
+           finish();
+        }
+        else
+        {
+            Toast.makeText(this,"empty note not allowed",Toast.LENGTH_LONG).show();
         }
     }
 }

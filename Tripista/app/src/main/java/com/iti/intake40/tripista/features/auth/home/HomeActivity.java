@@ -116,12 +116,14 @@ public class HomeActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         switch (menuItem.getItemId()) {
             case R.id.nav_upcomming:
+                mapDelegate = null;
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         new UpcommingFragment()).commit();
                 toolbar.setTitle(R.string.upcomming_trips);
                 break;
             case R.id.nav_history:
                 toolbar.setTitle(R.string.history);
+                mapDelegate = null;
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         new HistoryFragment()).commit();
                 toolbar.setTitle(R.string.trip_history);
@@ -138,12 +140,14 @@ public class HomeActivity extends AppCompatActivity
                     public void onTripsLoaded(List<Trip> trips) {
 
                         Uri mapUri = Uri.parse(getAllTrips(trips));
+                        if(mapDelegate != null)
                         mapDelegate.setMapUri(mapUri);
 
                     }
                 });
-                break;
 
+
+                break;
             case R.id.nav_logout:
                 //log the user out
                 //go to signin screen
