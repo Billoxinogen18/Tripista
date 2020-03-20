@@ -55,7 +55,7 @@ public class HomeActivity extends AppCompatActivity
     private TextView userNameTextView;
     private TextView emailTextView;
     private URL img_value = null;
-    private static final String GOOGLE_MAP_API = "http://maps.google.com/maps/api/staticmap?size=600x600";
+    private static final String GOOGLE_MAP_API = "https://maps.google.com/maps/api/staticmap?size=600x600";
     private static final String API_KEY = "AIzaSyDE9fxP7sernImHPGVNjI6JimiKG5GgpB0";
     private FireBaseCore core;
     private List<Trip> tripList = new ArrayList<>();

@@ -476,16 +476,16 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
 
 
     private void updateTrip() {
+        addTripToFirebase();
         Trip trip = new Trip();
         tripDate();
         tripTime();
         trip.setTripId(updateIntent.getStringExtra(UpcommingTripAdapter.IntentKeys.ID));
         trip.setTitle(titleTextView.getText().toString());
-        trip.setDate(strDate);
-        trip.setTime(strTime);
-        trip.setStartPoint(startPlace);
-        trip.setEndPoint(endPlace);
-
+        trip.setDate(tripModel.getDate());
+        trip.setTime(tripModel.getTime());
+        trip.setStartPoint(tripModel.getStartPoint());
+        trip.setEndPoint(tripModel.getEndPoint());
         trip.setStatus(Trip.Status.UPCOMMING);
 
         //clear old alarms

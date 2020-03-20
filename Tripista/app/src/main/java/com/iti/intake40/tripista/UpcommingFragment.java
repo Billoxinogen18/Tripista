@@ -30,6 +30,7 @@ public class UpcommingFragment extends Fragment {
     private List<Trip> tripList = new ArrayList<>();
     private FireBaseCore core = FireBaseCore.getInstance();
     private LinearLayout notFound;
+
     public UpcommingFragment() {
         // Required empty public constructor
     }
@@ -48,19 +49,20 @@ public class UpcommingFragment extends Fragment {
         layoutManager = new LinearLayoutManager(getContext());
         upcommingRecyclerView.setLayoutManager(layoutManager);
         adapter = new UpcommingTripAdapter(getContext(), tripList);
-
-        if(tripList.size()==0)
-        notFound.setVisibility(View.VISIBLE);
+        upcommingRecyclerView.setAdapter(adapter);
+        if (tripList.size() == 0)
+            notFound.setVisibility(View.VISIBLE);
         else {
             notFound.setVisibility(View.GONE);
-            upcommingRecyclerView.setAdapter(adapter);
+
         }
         core.getTripsForCurrentUser(new OnTripsLoaded() {
             @Override
             public void onTripsLoaded(List<Trip> trips) {
                 tripList.clear();
                 tripList.addAll(trips);
-                if(tripList.size()==0)
+                adapter.notifyDataSetChanged();
+                if (tripList.size() == 0)
                     notFound.setVisibility(View.VISIBLE);
                 else {
                     notFound.setVisibility(View.GONE);
