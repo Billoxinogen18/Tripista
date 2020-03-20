@@ -76,7 +76,7 @@ public class AlarmReceiver extends BroadcastReceiver {
                 String tripStatus = arg1.getStringExtra("status");
                 String tripType = arg1.getStringExtra("type");
                 Intent alarmIntent = new Intent(arg0, AlertActivity.class);
-                alarmIntent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                alarmIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 alarmIntent.putExtra("id", id);
                 alarmIntent.putExtra("title", tripTitle);
                 alarmIntent.putExtra("status", tripStatus);
