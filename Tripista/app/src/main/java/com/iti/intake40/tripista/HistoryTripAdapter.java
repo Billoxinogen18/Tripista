@@ -11,7 +11,6 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -153,7 +152,6 @@ public class HistoryTripAdapter extends RecyclerView.Adapter<HistoryTripAdapter.
                 public void onClick(View view) {
                     String tripId = trips.get(getAdapterPosition()).getTripId();
                     showTripNotes(tripId);
-
                 }
             });
 
@@ -161,6 +159,7 @@ public class HistoryTripAdapter extends RecyclerView.Adapter<HistoryTripAdapter.
                 @Override
                 public void onClick(View v) {
                     deleteTrip(getAdapterPosition());
+                    notifyDataSetChanged();
                 }
             });
         }
