@@ -12,7 +12,8 @@
     android:layout_height="200dp"
     android:hint="add note"
     android:layout_margin="10dp"
-    android:id="@+id/et_note_desc"/>
+    android:id="@+id/et_note_desc"
+    android:textColor="@color/colorPrimaryDark"/>
     <Button
         android:id="@+id/addTrip"
         android:layout_margin="10dp"

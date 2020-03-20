@@ -50,6 +50,11 @@ public class AddNote extends AppCompatActivity implements AddNoteContract.ViewIn
         if (description != null) {
            note =new Note(description,0);
            addNotePrsenter.addNote(note,tripID);
+           finish();
+        }
+        else
+        {
+            Toast.makeText(this,"empty note not allowed",Toast.LENGTH_LONG).show();
         }
     }
 }

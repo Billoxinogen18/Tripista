@@ -34,7 +34,7 @@ public class ShowNotes extends AppCompatActivity implements MapContract.ViewInte
 
     @Override
     public void setTripData(Trip trip) {
-        if (trip.getNotes().size() == 0) {
+        if (trip.getNotes()== null) {
             noteFound.setVisibility(View.VISIBLE);
         } else {
             noteFound.setVisibility(View.VISIBLE);

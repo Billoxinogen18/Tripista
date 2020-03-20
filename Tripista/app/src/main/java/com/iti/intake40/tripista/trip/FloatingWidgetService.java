@@ -15,7 +15,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
-import android.widget.Toast;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -30,9 +31,10 @@ import com.iti.intake40.tripista.map.MapPresenter;
 
 import java.util.HashMap;
 
-public class FloatingWidgetService extends Service implements  MapContract.ViewInterface {
+public class FloatingWidgetService extends Service implements MapContract.ViewInterface {
     private WindowManager mWindowManager;
-    private View mFloatingWidgetView, collapsedView, expandedView ,noteFound;
+    private View mFloatingWidgetView, collapsedView, expandedView;
+    private LinearLayout notFound;
     private ImageView remove_image_view;
     private Point szWindow = new Point();
     private View removeFloatingWidgetView;
@@ -40,7 +42,7 @@ public class FloatingWidgetService extends Service implements  MapContract.ViewI
     private int x_init_cord, y_init_cord, x_init_margin, y_init_margin;
     private MapContract.PresenterInterface presenterInterface;
     private FireBaseCore core;
-    private RecyclerView  notesList;
+    private RecyclerView notesList;
     //Variable to check if the Floating widget view is on left side or in right side
     // initially we are displaying Floating widget view to Left side so set it to true
     private boolean isLeft = true;
@@ -86,7 +88,7 @@ public class FloatingWidgetService extends Service implements  MapContract.ViewI
                     WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
                     PixelFormat.TRANSLUCENT);
         } else {
-            params  = new WindowManager.LayoutParams(
+            params = new WindowManager.LayoutParams(
                     WindowManager.LayoutParams.WRAP_CONTENT,
                     WindowManager.LayoutParams.WRAP_CONTENT,
                     WindowManager.LayoutParams.TYPE_PHONE,
@@ -99,7 +101,7 @@ public class FloatingWidgetService extends Service implements  MapContract.ViewI
 
         //Initially the Removing widget view is not visible, so set visibility to GONE
         removeFloatingWidgetView.setVisibility(View.GONE);
-        remove_image_view =  removeFloatingWidgetView.findViewById(R.id.remove_image);
+        remove_image_view = removeFloatingWidgetView.findViewById(R.id.remove_image);
 
         //Add the view to the window
         mWindowManager.addView(removeFloatingWidgetView, params);
@@ -113,14 +115,14 @@ public class FloatingWidgetService extends Service implements  MapContract.ViewI
         WindowManager.LayoutParams params;
         //Add the view to the window.
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-          params = new WindowManager.LayoutParams(
+            params = new WindowManager.LayoutParams(
                     WindowManager.LayoutParams.WRAP_CONTENT,
                     WindowManager.LayoutParams.WRAP_CONTENT,
                     WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
                     WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
                     PixelFormat.TRANSLUCENT);
         } else {
-             params  = new WindowManager.LayoutParams(
+            params = new WindowManager.LayoutParams(
                     WindowManager.LayoutParams.WRAP_CONTENT,
                     WindowManager.LayoutParams.WRAP_CONTENT,
                     WindowManager.LayoutParams.TYPE_PHONE,
@@ -143,7 +145,6 @@ public class FloatingWidgetService extends Service implements  MapContract.ViewI
 
         //find id of the expanded view layout
         expandedView = mFloatingWidgetView.findViewById(R.id.layoutExpanded);
-        noteFound = collapsedView.findViewById(R.id.not_found);
     }
 
     private void getWindowManagerDefaultDisplay() {
@@ -302,7 +303,7 @@ public class FloatingWidgetService extends Service implements  MapContract.ViewI
                                 inBounded = false;
                                 remove_image_view.getLayoutParams().height = remove_img_height;
                                 remove_image_view.getLayoutParams().width = remove_img_width;
-                             //   onFloatingWidgetClick();
+                                //   onFloatingWidgetClick();
                             }
 
                         }
@@ -319,9 +320,6 @@ public class FloatingWidgetService extends Service implements  MapContract.ViewI
             }
         });
     }
-
-
-
 
 
     /*  on Floating Widget Long Click, increase the size of remove view as it look like taking focus */
@@ -456,11 +454,10 @@ public class FloatingWidgetService extends Service implements  MapContract.ViewI
             //When user clicks on the image view of the collapsed layout,
             //visibility of the collapsed layout will be changed to "View.GONE"
             //and expanded view will become visible.
-            if(isExpanded) {
+            if (isExpanded) {
                 expandedView.setVisibility(View.GONE);
                 isExpanded = false;
-            }else
-            {
+            } else {
                 expandedView.setVisibility(View.VISIBLE);
                 isExpanded = true;
             }
@@ -482,26 +479,25 @@ public class FloatingWidgetService extends Service implements  MapContract.ViewI
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-         super.onStartCommand(intent, flags, startId);
-         String id ;
-         if(intent!=null) {
-             id = intent.getExtras().getString("id");
-             core = FireBaseCore.getInstance();
-             presenterInterface = new MapPresenter(core,this);
-             presenterInterface.getTripById(id);
-         }
-         return START_STICKY;
+        super.onStartCommand(intent, flags, startId);
+        String id;
+        if (intent != null) {
+            id = intent.getExtras().getString("id");
+            core = FireBaseCore.getInstance();
+            presenterInterface = new MapPresenter(core, this);
+            presenterInterface.getTripById(id);
+        }
+        return START_STICKY;
     }
 
     @Override
     public void setTripData(Trip trip) {
         HashMap<String, Note> notes = trip.getNotes();
-        if(notes.size()==0)
-        {
-            noteFound.setVisibility(View.VISIBLE);
-        }
-        else {
-            noteFound.setVisibility(View.GONE);
+        if (notes == null) {
+            notFound = mFloatingWidgetView.findViewById(R.id.not_found);
+            notFound.setVisibility(View.VISIBLE);
+        } else {
+            notFound.setVisibility(View.GONE);
             NotesAdapter adapter = new NotesAdapter(notes, getBaseContext(), trip.getTripId());
             notesList = mFloatingWidgetView.findViewById(R.id.recycle);
             notesList.setLayoutManager(new LinearLayoutManager(this));
