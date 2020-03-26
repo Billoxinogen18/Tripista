@@ -82,4 +82,11 @@
     <string name="monthly">Monthly</string>
     <string name="km">K.M</string>
     <string name="no_trips">You currently have no trips. Tap (+) to get started</string>
+    <string name="email_phone_layout_error">this is not phone or email please enter correct data</string>
+    <string name="user_name_empty">user name is empty</string>
+    <string name="email_empty">email is empty</string>
+    <string name="phone_empty">phone is empty</string>
+    <string name="password_empty">password is empty</string>
+    <string name="password_not_match">password don`t match</string>
+    <string name="password_small">password less than 6 letter</string>
 </resources>

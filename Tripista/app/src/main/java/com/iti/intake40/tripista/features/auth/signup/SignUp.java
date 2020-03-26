@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.iti.intake40.tripista.R;
 import com.iti.intake40.tripista.core.FireBaseCore;
 import com.iti.intake40.tripista.core.model.UserModel;
@@ -21,16 +22,17 @@ import com.theartofdev.edmodo.cropper.CropImage;
 import static com.iti.intake40.tripista.features.auth.signin.SigninActivity.EMAIL_ARG;
 
 public class SignUp extends AppCompatActivity implements SignupContract.ViewInterface {
-    ImageView profileImage;
-    String userName;
-    String phoneNumber;
-    String password;
-    String repassword;
-    String email;
-    UserModel model;
-    FireBaseCore core;
+    private ImageView profileImage;
+    private String userName;
+    private String phoneNumber;
+    private String password;
+    private String repassword;
+    private String email;
+    private UserModel model;
+    private FireBaseCore core;
     private Uri imageUri;
     private TextInputEditText etUserName;
+    private TextInputLayout etUserNameLayout,emailLayout,phoneLayout,passwordLayout,confirmPassLayout;
     private TextInputEditText etPasword;
     private TextInputEditText etRePassword;
     private TextInputEditText etPhoneNumber;
@@ -43,10 +45,15 @@ public class SignUp extends AppCompatActivity implements SignupContract.ViewInte
         setContentView(R.layout.activity_sign_up);
         profileImage = findViewById(R.id.profile_image);
         etUserName = findViewById(R.id.et_user_name);
+        etUserNameLayout=findViewById(R.id.input_layout_user_name);
         etPasword = findViewById(R.id.et_password);
         etRePassword = findViewById(R.id.et_confirm_password);
+        confirmPassLayout = findViewById(R.id.input_layout_confirm_password);
         etPhoneNumber = findViewById(R.id.et_phone_number);
+        phoneLayout = findViewById(R.id.input_layout_phone);
+        passwordLayout=findViewById(R.id.input_layout_password);
         etEmail = findViewById(R.id.et_user_email);
+        emailLayout=findViewById(R.id.input_layout_user_email);
         core = FireBaseCore.getInstance();
         model = new UserModel();
     }
@@ -58,15 +65,47 @@ public class SignUp extends AppCompatActivity implements SignupContract.ViewInte
         password = etPasword.getText().toString();
         repassword = etRePassword.getText().toString();
         email = etEmail.getText().toString();
-        if (!TextUtils.isEmpty(userName) && !TextUtils.isEmpty(email) && !TextUtils.isEmpty(phoneNumber) && !TextUtils.isEmpty(password) && !TextUtils.isEmpty(repassword)) {
-            model.setName(userName);
-            model.setPhone("+2" + phoneNumber);
-            model.setPassWord(password);
-            if (imageUri != null)
-                model.setImageUrl(imageUri.toString());
-            model.setEmail(email);
-            presenterInterface.signup(model);
+        etUserNameLayout.setError("");
+        emailLayout.setError("");
+        phoneLayout.setError("");
+        passwordLayout.setError("");
+        confirmPassLayout.setError("");
+        if (!TextUtils.isEmpty(userName) && !TextUtils.isEmpty(email) && !TextUtils.isEmpty(phoneNumber) && !TextUtils.isEmpty(password)) {
+            if(!password.equals(repassword))
+            {
+                confirmPassLayout.setError(getResources().getString(R.string.password_not_match));
+            }
+            else  if(password.length()<6)
+            {
+                passwordLayout.setError(getResources().getString(R.string.password_small));
+            }
+            else {
+                model.setName(userName);
+                model.setPhone("+2" + phoneNumber);
+                model.setPassWord(password);
+                if (imageUri != null)
+                    model.setImageUrl(imageUri.toString());
+                model.setEmail(email);
+                presenterInterface.signup(model);
+            }
         }
+        if(TextUtils.isEmpty(userName))
+        {
+            etUserNameLayout.setError(getResources().getString(R.string.user_name_empty));
+        }
+        if(TextUtils.isEmpty(email))
+        {
+            emailLayout.setError(getResources().getString(R.string.email_empty));
+        }
+        if(TextUtils.isEmpty(phoneNumber))
+        {
+            phoneLayout.setError(getResources().getString(R.string.phone_empty));
+        }
+        if(TextUtils.isEmpty(password))
+        {
+            passwordLayout.setError(getResources().getString(R.string.password_empty));
+        }
+
     }
 
     //get image from galary
@@ -84,9 +123,6 @@ public class SignUp extends AppCompatActivity implements SignupContract.ViewInte
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             imageUri = result.getUri();
             profileImage.setImageURI(imageUri);
-        } else {
-            Toast.makeText(this, "error", Toast.LENGTH_SHORT).show();
-
         }
     }
 

@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.iti.intake40.tripista.R;
 import com.iti.intake40.tripista.core.FireBaseCore;
 import com.iti.intake40.tripista.features.auth.home.HomeActivity;
@@ -25,7 +26,7 @@ public class PasswordFragment extends Fragment implements SigninContract.ViewInt
     private SigninContract.PresenterInterface presenterInterface;
     private TextInputEditText et_password;
     private FloatingActionButton signIn;
-
+    private TextInputLayout passwordLayout;
     public PasswordFragment() {
         // Required empty public constructor
     }
@@ -44,14 +45,21 @@ public class PasswordFragment extends Fragment implements SigninContract.ViewInt
         View view = inflater.inflate(R.layout.fragment_password, container, false);
         et_password = view.findViewById(R.id.et_password_login);
         signIn = view.findViewById(R.id.sign_in);
+        passwordLayout = view.findViewById(R.id.input_layout_password);
         // Inflate the layout for this fragment
         email = getArguments().getString(EMAIL_ARG);
         signIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 password = et_password.getText().toString();
-                if (!TextUtils.isEmpty(email) && !TextUtils.isEmpty(password)) {
-                    presenterInterface.signIn(email, password);
+                if(password.length()<6) {
+                    if (!TextUtils.isEmpty(email) && !TextUtils.isEmpty(password)) {
+                        presenterInterface.signIn(email, password);
+                    }
+                }
+                else
+                {
+                    passwordLayout.setError(getResources().getString(R.string.password_small));
                 }
             }
         });

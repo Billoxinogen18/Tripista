@@ -20,6 +20,7 @@ import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.iti.intake40.tripista.R;
 import com.iti.intake40.tripista.core.FireBaseCore;
 import com.iti.intake40.tripista.features.auth.home.HomeActivity;
@@ -35,6 +36,7 @@ public class SignInFragment extends Fragment implements SigninContract.ViewInter
     private String inputData;
     private Delegate delegate;
     private TextView signupLink;
+    private TextInputLayout emailPhoneLayout;
 
     private SigninPresenter signinPresenter;
 
@@ -84,6 +86,7 @@ public class SignInFragment extends Fragment implements SigninContract.ViewInter
                 gotoSignUpActivity();
             }
         });
+        emailPhoneLayout=view.findViewById(R.id.input_layout_user_email_phone);
 
         signinPresenter = new SigninPresenter(getActivity(), this, FireBaseCore.getInstance());
 
@@ -126,15 +129,13 @@ public class SignInFragment extends Fragment implements SigninContract.ViewInter
         if (!TextUtils.isEmpty(inputData)) {
             if (isEmailValid(inputData)) {
                 delegate = (Delegate) getActivity();
-                Toast.makeText(getActivity(), "email", Toast.LENGTH_LONG).show();
                 delegate.setData(inputData);
 
             } else if (isPhoneValid(inputData)) {
                 delegate = (Delegate) getActivity();
-                Toast.makeText(getActivity(), "phone", Toast.LENGTH_LONG).show();
                 delegate.changeFragment(inputData);
             } else {
-                Toast.makeText(getActivity(), "this is not phone or email please enter correct data", Toast.LENGTH_LONG).show();
+               emailPhoneLayout.setError(getResources().getText(R.string.email_phone_layout_error));
 
             }
         }
