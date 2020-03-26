@@ -51,7 +51,7 @@ public class SignInFragment extends Fragment implements SigninContract.ViewInter
     public static boolean isPhoneValid(String phone) {
         if (phone.length() != 13)
             return false;
-        String regex = "^\\+?[0-9. ()-]{9,25}$";
+        String regex = "^\\+(201)[0-9]{9}";//"^\\+?[0-9. ()-]{9,25}$";
         return phone.matches(regex);
     }
 
