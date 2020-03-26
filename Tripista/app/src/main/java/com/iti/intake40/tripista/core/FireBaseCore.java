@@ -426,8 +426,7 @@ public class FireBaseCore {
                         ArrayList<Trip> upcommingTrips = new ArrayList<Trip>();
                         for (DataSnapshot tripSnapShot : dataSnapshot.getChildren()) {
                             Trip t = tripSnapShot.getValue(Trip.class);
-                            if (t.getStatus().equals(Trip.Status.UPCOMMING)
-                                    || t.getStatus().equals(Trip.Status.IN_PROGRESS)) {
+                            if (t.getStatus().equals(Trip.Status.UPCOMMING) || t.getStatus().equals(Trip.Status.IN_PROGRESS)) {
                                 upcommingTrips.add(tripSnapShot.getValue(Trip.class));
                             }
                         }
