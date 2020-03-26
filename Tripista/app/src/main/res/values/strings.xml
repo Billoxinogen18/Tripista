@@ -15,7 +15,7 @@
     <string name="txt_forget_password">forget password</string>
     <string name="txt_or">OR</string>
     <string name="next">next</string>
-    <string name="txt_have_account">already have account?</string>
+    <string name="txt_have_account">already have an account?</string>
     <string name="logged_in_successfuly">Logged in successfully</string>
     <string name="login_failed">wrong email or password</string>
 
