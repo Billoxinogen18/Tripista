@@ -23,7 +23,7 @@
             android:layout_weight="1"
             android:minWidth="48dp"
             android:minHeight="48dp"
-            android:visibility="gone"
+            android:visibility="visible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/history_type_text"
             app:srcCompat="@drawable/ic_delete_black_24dp" />
@@ -98,7 +98,7 @@
             android:layout_marginLeft="16dp"
             android:layout_marginTop="16dp"
             android:text="TextView"
-            android:visibility="gone"
+            android:visibility="visible"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/history_title_text" />
 
@@ -110,7 +110,7 @@
             android:layout_marginLeft="16dp"
             android:layout_marginTop="16dp"
             android:text="TextView"
-            android:visibility="gone"
+            android:visibility="visible"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/history_from_text" />
 
@@ -122,7 +122,7 @@
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
             android:text="3.7"
-            android:visibility="gone"
+            android:visibility="visible"
             app:layout_constraintEnd_toStartOf="@+id/textView2"
             app:layout_constraintStart_toStartOf="@+id/history_status_text"
             app:layout_constraintTop_toBottomOf="@+id/history_status_text" />
@@ -135,7 +135,7 @@
             android:layout_marginEnd="16dp"
             android:layout_marginRight="16dp"
             android:text="TextView"
-            android:visibility="gone"
+            android:visibility="visible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/history_distance_text" />
 
@@ -148,8 +148,9 @@
             android:layout_marginTop="16dp"
             android:background="@drawable/button_shape"
             android:minWidth="48dp"
+            android:padding="8dp"
             android:text="@string/view_notes"
-            android:visibility="gone"
+            android:visibility="visible"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/history_to_text" />
 
@@ -160,7 +161,7 @@
             android:layout_marginEnd="16dp"
             android:layout_marginRight="16dp"
             android:text="@string/km"
-            android:visibility="gone"
+            android:visibility="visible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/history_distance_text" />
     </androidx.constraintlayout.widget.ConstraintLayout>
