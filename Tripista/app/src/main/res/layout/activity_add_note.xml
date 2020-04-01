@@ -6,7 +6,7 @@
     android:layout_height="260dp"
     tools:context=".note.AddNote"
     android:orientation="vertical"
-    android:background="#fff">
+    android:background="@color/add_trip">
 <EditText
     android:layout_width="240dp"
     android:layout_height="200dp"
