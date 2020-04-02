@@ -3,6 +3,7 @@ package com.iti.intake40.tripista.features.auth.home;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -33,12 +35,15 @@ import com.iti.intake40.tripista.features.auth.signin.SigninActivity;
 import com.iti.intake40.tripista.map.MapDelegate;
 import com.iti.intake40.tripista.map.ShowMapImage;
 import com.iti.intake40.tripista.trip.AddTripActivity;
+import com.iti.intake40.tripista.utils.AlarmTest;
 
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import static com.iti.intake40.tripista.UpcommingTripAdapter.cancelOneWayTripId;
+import static com.iti.intake40.tripista.UpcommingTripAdapter.cancelRoundWayTripId;
 import static com.iti.intake40.tripista.features.auth.signin.PhoneVerficiation.PREF_NAME;
 import static com.iti.intake40.tripista.features.auth.signin.SigninActivity.PHONE_ARG;
 
@@ -62,12 +67,25 @@ public class HomeActivity extends AppCompatActivity
     private HomeContract.PresenterInterface homePresenter;
     private FloatingActionButton goToAddTrip;
     private MapDelegate mapDelegate;
+    AlarmTest alarmTest = new AlarmTest();
+     Intent setAlarmIntent;
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         setViews();
+               setAlarmIntent = getIntent();
+             if (setAlarmIntent.getStringExtra("firstLogin") != null) {
+                 alarmTest.setAlarms(getBaseContext());
+        }
+//        if (getSharedPreferences(PREF_NAME, 0) == null) {
+//            alarmTest.setAlarms(getBaseContext());
+//
+//
+//        }
+
         toolbar.setTitle(R.string.upcomming_trips);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar,
                 R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -140,8 +158,8 @@ public class HomeActivity extends AppCompatActivity
                     public void onTripsLoaded(List<Trip> trips) {
 
                         Uri mapUri = Uri.parse(getAllTrips(trips));
-                        if(mapDelegate != null)
-                        mapDelegate.setMapUri(mapUri);
+                        if (mapDelegate != null)
+                            mapDelegate.setMapUri(mapUri);
 
                     }
                 });
@@ -150,7 +168,32 @@ public class HomeActivity extends AppCompatActivity
                 break;
             case R.id.nav_logout:
                 //log the user out
+
+                core.getTripsForCurrentUser(new OnTripsLoaded() {
+                    @Override
+                    public void onTripsLoaded(List<Trip> trips) {
+                        //receive all upcoming trips in list
+                        //loop the list for all the trips
+                        for (Trip t : trips) {
+                            //get the date & time for each trip
+                            cancelOneWayTripId = core.getTripCancelID(t);
+                            cancelRoundWayTripId = core.getTripBackCancelID(t);
+                            if (t.getType() == Trip.Type.ROUND_TRIP && t.getStatus() == Trip.Status.UPCOMMING) {
+                                alarmTest.clearAlarm(cancelOneWayTripId, getBaseContext());
+                                alarmTest.clearAlarm(cancelRoundWayTripId, getBaseContext());
+                            } else if (t.getType() == Trip.Type.ONE_WAY && t.getStatus() == Trip.Status.UPCOMMING) {
+                                alarmTest.clearAlarm(cancelOneWayTripId, getBaseContext());
+
+                            }
+
+                        }
+                    }
+
+                });
+
+
                 //go to signin screen
+
                 homePresenter.signOut();
                 LoginManager.getInstance().logOut();
                 SharedPreferences preferences = getSharedPreferences(PREF_NAME, 0);
@@ -163,6 +206,7 @@ public class HomeActivity extends AppCompatActivity
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
+
 
     private String getAllTrips(List<Trip> trips) {
         StringBuilder url = new StringBuilder(GOOGLE_MAP_API);

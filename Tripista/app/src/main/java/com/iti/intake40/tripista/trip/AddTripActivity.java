@@ -117,10 +117,14 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
     private Intent oneWayintent;
     private PendingIntent oneWayPendingIntent;
     private AlarmManager oneWayAlarmManager;
+    private Boolean isRoundTripValid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Intent   setIntent = getIntent();
+        setIntent.getStringExtra("firstLogin");
+        setIntent.putExtra("firstLogin","");
         core = FireBaseCore.getInstance();
         tripModel = new Trip();
         cal = Calendar.getInstance();
@@ -343,9 +347,12 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
         } else {
             tripTitle = titleTextView.getText().toString();
             if (isRoundTrip) {
-                setOneWayTrip();
                 setRoundTrip();
+                if(isRoundTripValid) {
+                    setOneWayTrip();
+                    setRoundTrip();
 
+                }
             } else {
                 setOneWayTrip();
 
@@ -371,12 +378,13 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
     public void setRoundTrip() {
 
         if (cal.compareTo(current) <= 0 || cal2.compareTo(current) <= 0 || cal2.compareTo(cal) <= 0 || tripTitle == null || startPlace == null || endPlace == null || strDate == null || strTime == null || backStrDate == null || backStrTime == null || cal2.compareTo(cal) == 0) {
+            isRoundTripValid = false;
             Toast.makeText(getApplicationContext(),
                     "Invalid Data"
                     , Toast.LENGTH_LONG).show();
 
         } else if (cal.compareTo(current) > 0 && cal2.compareTo(current) > 0 && strDate != null && strTime != null && backStrTime != null && backStrDate != null && cal2.compareTo(cal) > 0 && tripTitle != null && startPlace != null && endPlace != null) {
-
+            isRoundTripValid = true;
             setSecAlarm(cal2);
         }
     }
@@ -541,16 +549,19 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
-    public void setAlarm(Trip trip, Calendar calendar) {
-
+    public void setAlarm(Trip trip, Calendar calendar,String status,String type) {
         oneWayintent = new Intent(getBaseContext(), AlarmReceiver.class);
+        status =  trip.getStatus().toString();
+        type = trip.getType().toString();
         oneWayintent.putExtra("id", trip.getTripId());
         oneWayintent.putExtra("title", trip.getTitle());
-        oneWayintent.putExtra("status", trip.getStatus().toString());
-        oneWayintent.putExtra("type", trip.getType().toString());
+        oneWayintent.putExtra("status", status);
+        oneWayintent.putExtra("type", type);
+
         oneWayPendingIntent = PendingIntent.getBroadcast(getBaseContext(), id, oneWayintent, PendingIntent.FLAG_UPDATE_CURRENT);
         oneWayAlarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         oneWayAlarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), oneWayPendingIntent);
+
 
     }
 
@@ -559,11 +570,10 @@ public class AddTripActivity extends AppCompatActivity implements AddTripContrac
         Intent intent = new Intent(getBaseContext(), AlarmReceiver.class);
         intent.putExtra("id", tripModel.getTripId());
         intent.putExtra("title", tripModel.getTitle());
-        oneWayintent.putExtra("status", tripModel.getStatus().toString());
-        oneWayintent.putExtra("type", tripModel.getType().toString());
         PendingIntent pendingIntent = PendingIntent.getBroadcast(getBaseContext(), secId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         alarmManager.setExact(AlarmManager.RTC_WAKEUP, targetCal.getTimeInMillis(), pendingIntent);
+
     }
 
 

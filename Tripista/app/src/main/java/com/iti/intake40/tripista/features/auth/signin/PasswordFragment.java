@@ -27,6 +27,7 @@ public class PasswordFragment extends Fragment implements SigninContract.ViewInt
     private TextInputEditText et_password;
     private FloatingActionButton signIn;
     private TextInputLayout passwordLayout;
+
     public PasswordFragment() {
         // Required empty public constructor
     }
@@ -52,13 +53,11 @@ public class PasswordFragment extends Fragment implements SigninContract.ViewInt
             @Override
             public void onClick(View view) {
                 password = et_password.getText().toString();
-                if(password.length()<6) {
+                if (password.length() < 6) {
                     if (!TextUtils.isEmpty(email) && !TextUtils.isEmpty(password)) {
                         presenterInterface.signIn(email, password);
                     }
-                }
-                else
-                {
+                } else {
                     passwordLayout.setError(getResources().getString(R.string.password_small));
                 }
             }
@@ -82,7 +81,9 @@ public class PasswordFragment extends Fragment implements SigninContract.ViewInt
     @Override
     public void changeFragment() {
         Toast.makeText(getActivity(), "go home", Toast.LENGTH_LONG).show();
-        startActivity(new Intent(getActivity(), HomeActivity.class));
+//        startActivity(new Intent(getActivity(), HomeActivity.class));
+        Intent intent = new Intent(getActivity(), HomeActivity.class);
+        intent.putExtra("firstLogin", "first");
     }
 
     @Override

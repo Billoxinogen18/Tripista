@@ -26,6 +26,7 @@ import com.iti.intake40.tripista.map.ShowMap;
 import com.iti.intake40.tripista.note.AddNote;
 import com.iti.intake40.tripista.trip.AddTripActivity;
 import com.iti.intake40.tripista.trip.ShowNotes;
+import com.iti.intake40.tripista.utils.AlarmTest;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -45,6 +46,7 @@ public class UpcommingTripAdapter extends RecyclerView.Adapter<UpcommingTripAdap
     private FireBaseCore core = FireBaseCore.getInstance();
     private List<Trip> trips;
     private List<Trip> tripList = new ArrayList<>();
+    AlarmTest alarmTest = new AlarmTest();
 
 
     public UpcommingTripAdapter(Context context, List<Trip> trips) {
@@ -139,15 +141,7 @@ public class UpcommingTripAdapter extends RecyclerView.Adapter<UpcommingTripAdap
                                     break;
                                 case R.id.cancel:
                                     //cancel the alram
-                                    cancelOneWayTripId = core.getTripCancelID(currentTrip);
-                                    cancelRoundWayTripId = core.getTripBackCancelID(currentTrip);
-                                    if (currentTrip.getType() == Trip.Type.ROUND_TRIP && currentTrip.getStatus() == Trip.Status.UPCOMMING) {
-                                        cancelAlarm(cancelOneWayTripId);
-                                        cancelAlarm(cancelRoundWayTripId);
-                                    } else {
-                                        cancelAlarm(cancelOneWayTripId);
-                                    }
-
+                                    cancelCurrentAlarm();
                                     //cancel status
                                     core.changeStateOfTrip(Trip.Status.CANCELLED.toString(),
                                             trips.get(getAdapterPosition()).getTripId());
@@ -164,6 +158,7 @@ public class UpcommingTripAdapter extends RecyclerView.Adapter<UpcommingTripAdap
             startTrip.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    cancelCurrentAlarm();
                     String id = trips.get(getAdapterPosition()).getTripId();
                     Trip thisTrip = trips.get(getAdapterPosition());
                     if (thisTrip.getType().toString().equals(Trip.Type.ONE_WAY.toString())) {
@@ -217,6 +212,7 @@ public class UpcommingTripAdapter extends RecyclerView.Adapter<UpcommingTripAdap
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String tripId = trips.get(tripPos).getTripId();
+                        cancelCurrentAlarm();
                         core.deleteTrip(tripId, context);
                     }
                 });
@@ -265,6 +261,18 @@ public class UpcommingTripAdapter extends RecyclerView.Adapter<UpcommingTripAdap
         public static final String END_LG = "endLg";
         public static final String END_LT = "endLT";
         public static final String DISTANCE = "distance";
+    }
+
+    public void cancelCurrentAlarm() {
+        cancelOneWayTripId = core.getTripCancelID(currentTrip);
+        cancelRoundWayTripId = core.getTripBackCancelID(currentTrip);
+        if (currentTrip.getType() == Trip.Type.ROUND_TRIP && currentTrip.getStatus() == Trip.Status.UPCOMMING) {
+            alarmTest.clearAlarm(cancelOneWayTripId, context);
+            alarmTest.clearAlarm(cancelRoundWayTripId, context);
+        } else {
+            alarmTest.clearAlarm(cancelOneWayTripId, context);
+        }
+
     }
 }
 

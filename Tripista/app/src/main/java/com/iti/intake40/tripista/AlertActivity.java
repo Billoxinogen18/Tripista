@@ -13,9 +13,12 @@ import android.graphics.BitmapFactory;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.WindowManager;
+import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 
 import com.iti.intake40.tripista.core.FireBaseCore;
@@ -79,13 +82,14 @@ public class AlertActivity extends Activity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(intentExtra).setCancelable(
-                false).setPositiveButton(R.string.start, new DialogInterface.OnClickListener() {
+                false).setPositiveButton("start", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 if (getIntent() != null) {
                     String tripId = getIntent().getExtras().getString("id");
                     String tripStatus = getIntent().getStringExtra("status");
                     String tripType = getIntent().getStringExtra("type");
+
                     if (tripType.equals(Trip.Type.ONE_WAY.toString())) {
                         core.changeStateOfTrip(Trip.Status.DONE.toString(), tripId);
                     } else {
@@ -97,17 +101,19 @@ public class AlertActivity extends Activity {
                             core.changeStateOfTrip(Trip.Status.DONE.toString(), tripId);
                         }
                     }
-
                     Intent goMap = new Intent(AlertActivity.this, ShowMap.class);
                     goMap.putExtra("id", tripId);
                     startActivity(goMap);
+                    dialogInterface.cancel();
+                    ringtone.stop();
                     finish();
                 }
             }
-        }).setNeutralButton(R.string.snooze,
+        }).setNeutralButton("snooze",
                 new DialogInterface.OnClickListener() {
+                    @RequiresApi(api = Build.VERSION_CODES.O)
                     public void onClick(DialogInterface dialog, int id) {
-                        String tripId = getIntent().getExtras().getString("id");
+//                        String tripId = getIntent().getExtras().getString("id");
                         //core.changeStateOfTrip(, tripId);
                         id = notificationId;
                         show_Notification();
@@ -115,7 +121,7 @@ public class AlertActivity extends Activity {
                     }
 
 
-                }).setNegativeButton(R.string.stop,
+                }).setNegativeButton("stop",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         String tripId = getIntent().getExtras().getString("id");
@@ -143,43 +149,47 @@ public class AlertActivity extends Activity {
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public void show_Notification() {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            Intent intent = new Intent(getApplicationContext(), AlertActivity.class);
-            String CHANNEL_ID = generateString();
-            NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_ID, "name", NotificationManager.IMPORTANCE_HIGH);
-            PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), notificationId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-            Notification notification = new Notification.Builder(getApplicationContext(), CHANNEL_ID)
-                    .setContentText("You are waiting for your trip")
-                    .setContentTitle(intentExtra)
-                    .setContentIntent(pendingIntent)
-                    .setSmallIcon(R.mipmap.ic_launcher)
-                    .setLargeIcon((BitmapFactory.decodeResource(this.getResources(),
-                            R.mipmap.ic_launcher_foreground)))
-                    .setChannelId(CHANNEL_ID)
-                    .setOngoing(true)
-                    .setAutoCancel(true)
-                    .build();
+//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+        Intent notificationIntent = new Intent(getApplicationContext(), AlertActivity.class);
+        String CHANNEL_ID = generateString();
+        NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_ID, "name", NotificationManager.IMPORTANCE_HIGH);
+        notificationIntent.putExtra("title", intentExtra);
+        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), notificationId, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-            notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-            notificationManager.createNotificationChannel(notificationChannel);
-            notificationManager.notify(notificationId, notification);
-        } else {
-            PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), notificationId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-            Notification notification = new Notification.Builder(getApplicationContext())
-                    .setContentText("Your trip is waiting")
-                    .setContentTitle(intentExtra)
-                    .setContentIntent(pendingIntent)
-                    .setVibrate(new long[]{1000, 1000})
-                    .setSmallIcon(R.mipmap.ic_launcher)
-                    .setLargeIcon((BitmapFactory.decodeResource(this.getResources(),
-                            R.mipmap.ic_launcher_foreground)))
-                    .setOngoing(true)
-                    .setAutoCancel(true)
-                    .build();
-            NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-            notificationManager.notify(notificationId, notification);
-        }
+        Notification notification = new Notification.Builder(getApplicationContext(), CHANNEL_ID)
+                .setContentText("You are waiting for your trip")
+                .setContentTitle(intentExtra)
+                .setContentIntent(pendingIntent)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setLargeIcon((BitmapFactory.decodeResource(this.getResources(),
+                        R.mipmap.ic_launcher_foreground)))
+                .setChannelId(CHANNEL_ID)
+                .setOngoing(true)
+                .setAutoCancel(true)
+                .build();
+
+        notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.createNotificationChannel(notificationChannel);
+        notificationManager.notify(notificationId, notification);
+
+//        } else {
+//            PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), notificationId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+//            Notification notification = new Notification.Builder(getApplicationContext())
+//                    .setContentText("Your trip is waiting")
+//                    .setContentTitle(intentExtra)
+//                    .setContentIntent(pendingIntent)
+//                    .setVibrate(new long[]{1000, 1000})
+//                    .setSmallIcon(R.mipmap.ic_launcher)
+//                    .setLargeIcon((BitmapFactory.decodeResource(this.getResources(),
+//                            R.mipmap.ic_launcher_foreground)))
+//                    .setOngoing(true)
+//                    .setAutoCancel(true)
+//                    .build();
+//            NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+//            notificationManager.notify(notificationId, notification);
+//        }
         finish();
     }
 
@@ -196,5 +206,6 @@ public class AlertActivity extends Activity {
 
 
 }
+
 
 

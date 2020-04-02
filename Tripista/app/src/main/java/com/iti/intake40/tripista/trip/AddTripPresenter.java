@@ -9,6 +9,8 @@ public class AddTripPresenter implements AddTripContract.PresenterInterface {
     private FireBaseCore core;
     private AddTripContract.ViewInterface addTrip;
     private Calendar targetCalender;
+    private String status;
+    private String type;
 
     public AddTripPresenter(FireBaseCore core, AddTripContract.ViewInterface addTrip) {
         this.core = core;
@@ -28,11 +30,11 @@ public class AddTripPresenter implements AddTripContract.PresenterInterface {
     @Override
     public void addTrip(Trip trip, Calendar calendar) {
         targetCalender = calendar;
-        core.addTrip(trip,this);
+        core.addTrip(trip, this);
     }
 
     @Override
     public void setData(Trip trip) {
-       addTrip.setAlarm(trip,targetCalender);
+        addTrip.setAlarm(trip, targetCalender, status, type);
     }
 }
