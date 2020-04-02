@@ -20,10 +20,9 @@
             android:layout_marginStart="16dp"
             android:layout_marginLeft="16dp"
             android:layout_marginTop="16dp"
-            android:fontFamily="sans-serif-thin"
+            android:fontFamily="sans-serif-medium"
             android:text="TextView"
-            android:textColor="@android:color/black"
-            android:textStyle="bold"
+            android:textColor="#1789FC"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/map_preview" />
 
@@ -74,7 +73,9 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
             android:layout_marginRight="16dp"
+            android:fontFamily="sans-serif-medium"
             android:text="TextView"
+            android:textColor="#1789FC"
             app:layout_constraintEnd_toStartOf="@+id/arrow_imageView"
             app:layout_constraintTop_toTopOf="@+id/history_title_text" />
 
@@ -85,10 +86,11 @@
             android:layout_marginStart="16dp"
             android:layout_marginLeft="16dp"
             android:layout_marginTop="16dp"
-            android:fontFamily="sans-serif-medium"
+            android:fontFamily="sans-serif-condensed-medium"
             android:text="TextView"
+            android:textSize="16dp"
             android:textStyle="bold"
-            android:visibility="visible"
+            android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/history_title_text" />
 
@@ -99,8 +101,9 @@
             android:layout_marginStart="16dp"
             android:layout_marginLeft="16dp"
             android:layout_marginTop="16dp"
+            android:fontFamily="sans-serif-condensed"
             android:text="TextView"
-            android:visibility="visible"
+            android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/history_from_text" />
 
@@ -110,9 +113,12 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
+            android:fontFamily="sans-serif-light"
+            android:gravity="center"
             android:text="3.7"
-            android:textSize="18sp"
-            android:visibility="visible"
+            android:textColor="#000000"
+            android:textSize="16sp"
+            android:visibility="gone"
             app:layout_constraintEnd_toStartOf="@+id/km_text_view"
             app:layout_constraintTop_toTopOf="@+id/history_from_text" />
 
@@ -124,7 +130,7 @@
             android:layout_marginEnd="16dp"
             android:layout_marginRight="16dp"
             android:text="TextView"
-            android:visibility="visible"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/history_distance_text" />
 
@@ -139,7 +145,7 @@
             android:minWidth="48dp"
             android:padding="8dp"
             android:text="@string/view_notes"
-            android:visibility="visible"
+            android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/history_to_text" />
 
@@ -149,8 +155,11 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
             android:layout_marginRight="16dp"
+            android:fontFamily="sans-serif-light"
+            android:gravity="center"
             android:text="@string/km"
-            android:visibility="visible"
+            android:textColor="#000000"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/history_distance_text" />
 
@@ -174,6 +183,7 @@
             android:background="@drawable/button_delete"
             android:padding="8dp"
             android:text="@string/delete_trip"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/history_show_notes" />
     </androidx.constraintlayout.widget.ConstraintLayout>

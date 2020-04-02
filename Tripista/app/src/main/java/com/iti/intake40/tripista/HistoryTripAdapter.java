@@ -55,14 +55,36 @@ public class HistoryTripAdapter extends RecyclerView.Adapter<HistoryTripAdapter.
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
         this.currentTrip = this.trips.get(position);
         Log.d(TAG, "onBindViewHolder: " + currentTrip.toString());
+        String tripStatus = null;
+        String tripType = null;
+        switch (currentTrip.getStatus()) {
+            case DONE:
+                tripStatus = "Done";
+                break;
+            case CANCELLED:
+                tripStatus = "Cancelled";
+                break;
+            case IN_PROGRESS:
+                tripStatus = "In Progress";
+                break;
+        }
+
+        switch (currentTrip.getType()) {
+            case ONE_WAY:
+                tripType = "One Way";
+                break;
+            case ROUND_TRIP:
+                tripType = "Round Trip";
+                break;
+        }
         holder.tripDate.setText(currentTrip.getDate());
         holder.tripTime.setText(currentTrip.getTime());
         holder.tripTitle.setText(currentTrip.getTitle());
-        holder.tripStatus.setText(currentTrip.getStatus().toString());
+        holder.tripStatus.setText(tripStatus);
         holder.startPoint.setText(currentTrip.getStartPoint());
         holder.endPoint.setText(currentTrip.getEndPoint());
         //holder.distance.setText(); // get distance here
-        holder.type.setText(currentTrip.getType().toString());
+        holder.type.setText(tripType);
 
         StringBuilder urlStringBuilder = new StringBuilder("https://maps.googleapis.com/maps/api/staticmap?");
         //urlStringBuilder.append("center=Brooklyn+Bridge,New+York,NY"); //required if markers not present - defines the center of the map
