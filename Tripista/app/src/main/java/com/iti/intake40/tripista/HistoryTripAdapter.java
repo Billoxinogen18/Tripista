@@ -126,9 +126,11 @@ public class HistoryTripAdapter extends RecyclerView.Adapter<HistoryTripAdapter.
         private TextView endPoint;
         private TextView distance;
         private TextView type;
-        private ImageButton delete;
+        private Button delete;
         private Button showNotes;
         private ImageView mapPreview;
+        private TextView kmText;
+        private ImageView arrowImage;
         private ConstraintLayout rootLayout;
 
         ViewHolder(final View itemView) {
@@ -145,6 +147,8 @@ public class HistoryTripAdapter extends RecyclerView.Adapter<HistoryTripAdapter.
             delete = itemView.findViewById(R.id.history_delete);
             showNotes = itemView.findViewById(R.id.history_show_notes);
             mapPreview = itemView.findViewById(R.id.map_preview);
+            kmText = itemView.findViewById(R.id.km_text_view);
+            arrowImage = itemView.findViewById(R.id.arrow_imageView);
             rootLayout = itemView.findViewById(R.id.trip_row);
 
             showNotes.setOnClickListener(new View.OnClickListener() {
@@ -200,6 +204,12 @@ public class HistoryTripAdapter extends RecyclerView.Adapter<HistoryTripAdapter.
         holder.endPoint.setVisibility(visability);
         holder.type.setVisibility(visability);
         holder.distance.setVisibility(visability);
+        holder.kmText.setVisibility(visability);
+        if (visability == View.VISIBLE) {
+            holder.arrowImage.setImageResource(R.drawable.ic_up_arrow);
+        } else {
+            holder.arrowImage.setImageResource(R.drawable.ic_down_arrow);
+        }
     }
 }
 

@@ -89,4 +89,5 @@
     <string name="password_empty">password is empty</string>
     <string name="password_not_match">password don`t match</string>
     <string name="password_small">password less than 6 letter</string>
+    <string name="delete_trip">Delete Trip</string>
 </resources>
