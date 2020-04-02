@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.media.Image;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -12,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
@@ -64,13 +66,40 @@ public class UpcommingTripAdapter extends RecyclerView.Adapter<UpcommingTripAdap
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
         this.currentTrip = this.trips.get(position);
         Log.d(TAG, "onBindViewHolder: " + currentTrip.toString());
+
+        String tripStatus = null;
+        String tripType = null;
+        switch (currentTrip.getStatus()) {
+            case UPCOMMING:
+                tripStatus = "Upcomming";
+                break;
+            case DONE:
+                tripStatus = "Done";
+                break;
+            case CANCELLED:
+                tripStatus = "Cancelled";
+                break;
+            case IN_PROGRESS:
+                tripStatus = "In Progress";
+                break;
+        }
+
+        switch (currentTrip.getType()) {
+            case ONE_WAY:
+                tripType = "One Way";
+                break;
+            case ROUND_TRIP:
+                tripType = "Round Trip";
+                break;
+        }
+
         holder.tripDate.setText(currentTrip.getDate());
         holder.tripTime.setText(currentTrip.getTime());
         holder.tripTitle.setText(currentTrip.getTitle());
-        holder.tripStatus.setText(currentTrip.getStatus().toString());
+        holder.tripStatus.setText(tripStatus);
         holder.startPoint.setText(currentTrip.getStartPoint());
         holder.endPoint.setText(currentTrip.getEndPoint());
         DecimalFormat df = new DecimalFormat("#.##");
@@ -78,9 +107,20 @@ public class UpcommingTripAdapter extends RecyclerView.Adapter<UpcommingTripAdap
         holder.distance.setText(String.valueOf(distance));
 
         holder.rootLayout.setOnClickListener(new View.OnClickListener() {
+            boolean isExpanded = false;
+
             @Override
             public void onClick(View v) {
+                if (isExpanded) {
+                    //collapse
+                    changeVisibilityTo(holder, View.GONE);
+                    isExpanded = false;
 
+                } else {
+                    //expand();
+                    changeVisibilityTo(holder, View.VISIBLE);
+                    isExpanded = true;
+                }
             }
         });
     }
@@ -102,6 +142,8 @@ public class UpcommingTripAdapter extends RecyclerView.Adapter<UpcommingTripAdap
         private ConstraintLayout rootLayout;
         private ImageButton optionsButton, notes;
         private Button startTrip;
+        private ImageView arrowImage;
+        private TextView kmText;
 
 
         ViewHolder(final View itemView) {
@@ -118,6 +160,8 @@ public class UpcommingTripAdapter extends RecyclerView.Adapter<UpcommingTripAdap
             optionsButton = itemView.findViewById(R.id.textViewOptions);
             startTrip = itemView.findViewById(R.id.start_trip);
             notes = itemView.findViewById(R.id.notes_icon);
+            arrowImage = itemView.findViewById(R.id.arrow_image);
+            kmText = itemView.findViewById(R.id.txt_km);
             optionsButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -273,6 +317,19 @@ public class UpcommingTripAdapter extends RecyclerView.Adapter<UpcommingTripAdap
             alarmTest.clearAlarm(cancelOneWayTripId, context);
         }
 
+    }
+
+    private void changeVisibilityTo(ViewHolder holder, int visability) {
+        holder.startPoint.setVisibility(visability);
+        holder.endPoint.setVisibility(visability);
+        //holder.type.setVisibility(visability);
+        holder.distance.setVisibility(visability);
+        holder.kmText.setVisibility(visability);
+        if (visability == View.VISIBLE) {
+            holder.arrowImage.setImageResource(R.drawable.ic_up_arrow);
+        } else {
+            holder.arrowImage.setImageResource(R.drawable.ic_down_arrow);
+        }
     }
 }
 
