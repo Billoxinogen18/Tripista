@@ -113,6 +113,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         AlarmManager tripAlarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent tripAlarmIntent = new Intent(context, AlertActivity.class);
         tripAlarmIntent.putExtra("title", str);
+        tripAlarmIntent.putExtra("id", id);
         PendingIntent tripAlarmPendingIntent = PendingIntent.getActivity(context, id, tripAlarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         tripAlarmManager.setExact(AlarmManager.RTC_WAKEUP, myAlarmDate.getTimeInMillis(), tripAlarmPendingIntent);
 
