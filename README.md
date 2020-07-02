@@ -14,6 +14,16 @@ Android phone / Android Emulator <br />
 - **Option 2:** Run the code from IDE
   1. run the app in Android Studio
   
+ ### Built using
+ - Java.
+ - Firebase realtime database.
+ - Firebase storage.
+ - Alarm Manger.
+ - Google Places API.
+ - Places auto complete.
+ - Google maps.
+ - Widgets.
+  
  ### Authors
    - [Remon Shehata](https://github.com/RemonShehata)
    - [Mahmoud Mohammed](https://github.com/MahmoudMohamed960)
